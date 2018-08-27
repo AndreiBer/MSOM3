@@ -1,0 +1,64 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ImagingSession="clr-namespace:Xvue.MSOT.ViewModels.ProjectManager.ImagingSession;assembly=Xvue.MSOT.ViewModels" xmlns:Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF" x:Name="userControl" x:Class="ViewMSOTc.ViewPatientOverviewAnalysisDetails" 
+             mc:Ignorable="d" d:DesignWidth="450">
+
+    <UserControl.Resources>
+        <Converters:BooleanToVisibleConverter x:Key="BooleanToVisibleConverter"/>
+        <Converters:InvertedBooleanToVisibleConverter x:Key="InvertedBooleanToVisibleConverter"/>
+        <ImagingSession:ViewModelImagingSuperSession x:Key="ViewModelImagingSuperSessionDataSource" d:IsDataSource="True"/>
+        <ItemsPanelTemplate x:Key="scanItemsPanelTemplate">
+            <StackPanel IsItemsHost="True" Orientation="Vertical"/>
+        </ItemsPanelTemplate>
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot" d:DataContext="{Binding Source={StaticResource ViewModelImagingSuperSessionDataSource}}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="115"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>		
+        <Label HorizontalAlignment="Left" Content="Comparison details" FontWeight="Bold" FontSize="20" Margin="2" Grid.ColumnSpan="2"/>
+
+        <Label Grid.Row="1" HorizontalAlignment="Left" VerticalContentAlignment="Center" Content="Name:" Margin="2"/>
+        <Label Grid.Row="1" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Content="{Binding Name}" Margin="2" VerticalAlignment="Center" Visibility="{Binding IsEditEnabled, ConverterParameter=Collapsed, Converter={StaticResource InvertedBooleanToVisibleConverter}}"/>
+        <TextBox Grid.Row="1" TextWrapping="NoWrap" Padding="-8,0,0,0" Text="{Binding Name}" Grid.Column="1" VerticalAlignment="Center" Margin="2" Visibility="{Binding IsEditEnabled, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}}" GotFocus="TextBox_GotFocus"/>
+
+        <Label Grid.Row="2" HorizontalAlignment="Left" VerticalContentAlignment="Center" Content="Created:" Margin="2"/>
+        <Label Grid.Row="2" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Content="{Binding CreationTimeLocaleString}" Margin="2" VerticalAlignment="Center"/>
+
+        <Label Grid.Row="3" HorizontalAlignment="Left" VerticalContentAlignment="Center" Content="Modified:" Margin="2"/>
+        <Label Grid.Row="3" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Content="{Binding ModifiedTimeLocaleString}" Margin="2" VerticalAlignment="Center"/>
+
+        <Label Grid.Row="4" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Scans:" Margin="2"/>
+        <ItemsControl x:Name="scanItemsControl" Grid.Row="4" Grid.Column="2" Margin="2" VerticalAlignment="Top" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" 
+			ItemsSource="{Binding ImagingSessions}" ItemsPanel="{DynamicResource scanItemsPanelTemplate}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Label HorizontalAlignment="Left" Content="{Binding SessionName}"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+
+
+        <StackPanel Grid.ColumnSpan="2" Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right">
+            <StackPanel Grid.ColumnSpan="2" Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" Visibility="{Binding IsEditEnabled, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}}">
+                <Button x:Name="cancelButton" Content="Cancel" Width="100" Margin="10" Panel.ZIndex="2" Style="{DynamicResource UidButtonTextStyle2}" SnapsToDevicePixels="True" Click="cancelButton_Click" Command="{Binding CommandDiscardPendingChanges, Mode=OneWay}"/>
+                <Button x:Name="saveButton" Content="Save" Width="100" Margin="10" Panel.ZIndex="2" Style="{DynamicResource UidButtonTextStyle2}" SnapsToDevicePixels="True" Click="saveButton_Click" Command="{Binding CommandSavePendingChanges, Mode=OneWay}"/>
+            </StackPanel>
+        </StackPanel>
+
+        <Button x:Name="editButton"  Grid.ColumnSpan="2" Grid.Row="5" Content="{StaticResource IconEditInformation}" Margin="10" Style="{DynamicResource UidButtonStyle}" HorizontalAlignment="Left" Click="editButton_Click" Height="45" RenderTransformOrigin="-4.45,0.511" Command="{Binding CommandStartEdit, Mode=OneWay}"/>
+    </Grid>
+</UserControl>

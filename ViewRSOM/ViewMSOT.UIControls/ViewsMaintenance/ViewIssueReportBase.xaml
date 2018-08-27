@@ -1,0 +1,142 @@
+﻿<UserControl x:Name="userControl" x:Class="ViewMSOT.UIControls.ViewIssueReportBase"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ViewModels="clr-namespace:Xvue.MSOT.ViewModels;assembly=Xvue.MSOT.ViewModels"
+             xmlns:System_Globalization="clr-namespace:System.Globalization;assembly=mscorlib"
+             xmlns:local="clr-namespace:ViewMSOT.UIControls"
+             mc:Ignorable="d" 
+             Width="640">
+    <UserControl.Resources>
+        <ViewModels:ViewModelIssueReporting x:Key="ViewModelIssueReportingDataSource" d:IsDataSource="True"/>
+        <Storyboard x:Key="LabelErrorStoryboard">
+            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)">
+                <EasingColorKeyFrame KeyTime="0:0:0.0" Value="White"/>
+                <EasingColorKeyFrame KeyTime="0:0:0.4" Value="Red"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.0" Value="Red"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.2" Value="White"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.4" Value="Red"/>
+                <EasingColorKeyFrame KeyTime="0:0:2.0" Value="Red"/>
+                <EasingColorKeyFrame KeyTime="0:0:2.2" Value="White"/>
+                <EasingColorKeyFrame KeyTime="0:0:2.4" Value="Red"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.0" Value="Red"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.2" Value="White"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.4" Value="Red"/>
+                <EasingColorKeyFrame KeyTime="0:0:4.0" Value="#FFA83131"/>
+            </ColorAnimationUsingKeyFrames>
+        </Storyboard>
+    </UserControl.Resources>
+    <Grid x:Name="layoutRoot">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="150"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="150"/>
+        </Grid.RowDefinitions>
+
+        <Grid Margin="2" Grid.ColumnSpan="2">
+            <Grid.Style>
+                <Style TargetType="{x:Type Grid}">
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SystemMessage}" Value="">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>            
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="200"/>
+            </Grid.RowDefinitions>
+            <TextBlock x:Name="textBlockError" TextWrapping="Wrap" HorizontalAlignment="Center" TextAlignment="Center" Grid.ColumnSpan="2" FontSize="22" FontFamily="Segoe UI Semibold" Margin="2" Foreground="#FFA83131">
+                <TextBlock.Style>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=IsVisible}" Value="True">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard Storyboard="{StaticResource LabelErrorStoryboard}"/>
+                                </DataTrigger.EnterActions>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+                ViewMSOT has encountered a problem.<LineBreak/>
+                Please help us to fix this issue by providing some information below.
+            </TextBlock>
+            <Label HorizontalAlignment="Left" Grid.ColumnSpan="2" Grid.Row="2" Content="System message:" Margin="2"/>
+            <TextBox x:Name="systemMessageTextBox" Grid.ColumnSpan="2" Grid.Row="3" Height="Auto" Text="{Binding SystemMessage}" IsReadOnly="True" FontFamily="Courier New" FontSize="12" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Margin="8,10,8,10" VerticalAlignment="Stretch" VerticalContentAlignment="Top" Foreground="Black">
+                <TextBox.Template>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Border Background="#FFB9B9B9" BorderThickness="2" BorderBrush="#FFA83131">
+                            <ScrollViewer Margin="0" x:Name="PART_ContentHost" />
+                        </Border>
+                    </ControlTemplate>
+                </TextBox.Template>
+            </TextBox>
+        </Grid>
+
+        <TextBlock x:Name="textBlockFeedback" TextWrapping="Wrap" FontSize="22" FontFamily="Segoe UI Semibold" HorizontalAlignment="Center" TextAlignment="Center" Grid.ColumnSpan="2" Margin="0,20,0,50">
+            <TextBlock.Style>
+                <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SystemMessage}" Value="">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+            Thank you for helping us to improve ViewMSOT.<LineBreak/>
+            Please provide your feedback below.
+        </TextBlock>
+
+        <Label Grid.Row="2" HorizontalAlignment="Left" VerticalContentAlignment="Center" Content="Operator:" Margin="2"/>
+        <TextBox Grid.Row="2" x:Name="operatorName" MaxLength="32" Text="{Binding OperatorName, UpdateSourceTrigger=LostFocus}" Grid.Column="1" VerticalAlignment="Center" Margin="2,2,8,2" Height="Auto"/>
+
+        <Label Grid.Row="3" HorizontalAlignment="Left" Content="Created:" Margin="2" VerticalContentAlignment="Center"/>
+        <Label Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Margin="2" Content="{Binding Time}"/>
+
+        <Label Grid.Row="4" HorizontalAlignment="Left" Content="Description:" Margin="2"/>
+        <TextBox Height="Auto" Text="{Binding Description}" TextWrapping="Wrap" Grid.ColumnSpan="2" Grid.Row="5" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="8,10,8,10" VerticalAlignment="Stretch" VerticalContentAlignment="Top"/>
+
+        <Label Grid.Row="6" HorizontalAlignment="Left" Content="Steps to reproduce:" Margin="2"/>
+        <!--<TextBox Text="{Binding StepsToReproduce}" Tag="Please provide some information on how to reproduce this issue..." Height="Auto" TextWrapping="Wrap" Grid.ColumnSpan="2" Grid.Row="7" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="8,10,8,10" VerticalAlignment="Stretch" VerticalContentAlignment="Top"/>-->
+        <TextBox Height="Auto" TextWrapping="Wrap" Grid.ColumnSpan="2" Grid.Row="7" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="8,10,8,10" VerticalAlignment="Stretch" VerticalContentAlignment="Top" GotFocus="OnStepsToReproduceTextBoxGotFocus" LostFocus="OnStepsToReproduceTextBoxLostFocus">
+            <TextBox.Style>
+                <Style TargetType="TextBox" BasedOn="{StaticResource UidTextBox}">
+                    <Setter Property="Text" Value="{Binding StepsToReproduce, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsFocused, RelativeSource={RelativeSource Self}}" Value="False"/>
+                                <Condition Binding="{Binding IsStepsToReproduceEmpty, ElementName=userControl}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Text" Value="In case ViewMSOT is not working correctly, please provide some information here on how to reproduce this issue..."/>
+                            <Setter Property="Foreground" Value="LightGray"/>
+                            <Setter Property="FontStyle" Value="Italic"/>
+                        </MultiDataTrigger>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter Property="Text" Value="{Binding StepsToReproduce, UpdateSourceTrigger=PropertyChanged}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBox.Style>
+        </TextBox>
+    </Grid>
+</UserControl>

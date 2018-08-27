@@ -1,0 +1,53 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ViewMSOTc"
+             xmlns:ProjectManager="clr-namespace:Xvue.MSOT.ViewModels.ProjectManager;assembly=Xvue.MSOT.ViewModels" 
+             xmlns:dm="clr-namespace:Xvue.MSOT.DataModels.Plugins.ProjectManager;assembly=Xvue.MSOT" 
+             xmlns:Xvue_Framework_Views_WPF_Controls="clr-namespace:Xvue.Framework.Views.WPF.Controls;assembly=Xvue.Framework.Views.WPF"
+             x:Name="userControl"
+			 x:Class="ViewMSOTc.ViewPatientAnalysis"
+             mc:Ignorable="d" d:DesignWidth="962" IsVisibleChanged="userControl_IsVisibleChanged" Loaded="userControl_Loaded">
+
+    <UserControl.Resources>
+        <ProjectManager:ViewModelProjectManager x:Key="ViewModelProjectManagerDataSource" d:IsDataSource="True"/>
+        <Style TargetType="local:ViewPatientAnalysis">
+            <Setter Property="ShowSelectedSuperSession" Value="{Binding ActiveStudy.CanLoadSelectedSuperSession, Mode=TwoWay}"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Background="Transparent" d:DataContext="{Binding Source={StaticResource ViewModelProjectManagerDataSource}}">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="51"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <local:ViewPatientInformationExpander Panel.ZIndex="1" VerticalAlignment="Stretch" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="4,10,4,0" DataContext="{Binding PatientsManager.ActivePatient}"/>
+
+        <local:ViewImagingSuperSessionsGrid x:Name="superSessionGridControl" Grid.Column="1" DataContext="{Binding ActiveStudy.OpenedSelectedSuperSession}"/>
+        <Grid Background="Black" Grid.Column="1" Visibility="{Binding ActiveStudy.IsOpenedSelectedSuperSession, ConverterParameter=Collapsed, Converter={StaticResource InvertedBooleanToVisibleConverter}, Mode=OneWay}">
+            <TextBlock Foreground="White" Text="Nothing is loaded." VerticalAlignment="Center" HorizontalAlignment="Center" Background="Black"/>
+        </Grid>
+
+        <Grid Grid.Row="1" Grid.ColumnSpan="2" Margin="0,10,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Vertical" Background="Black" Visibility="Collapsed">
+                <Button x:Name="loadSuperSessionButton" Content="Load" Height="32" Width="50" Margin="2" Command="{Binding ActiveStudy.CommandLoadSuperSession, Mode=OneWay}" Click="onLoadSuperSessionButtonClick"/>
+                <Button x:Name="addSuperSessionSnapshotButton" Content="Add" Height="33" Width="50" Margin="2" VerticalAlignment="Bottom" Command="{Binding ActiveStudy.CommandAddToAnalysisSuperSession, Mode=OneWay}"/>
+                <Button x:Name="newComparisonSuperSessionButton" Content="New" Height="33" Width="50" Margin="2" VerticalAlignment="Bottom" Command="{Binding ActiveStudy.CommandNewAnalysisSuperSession, Mode=OneWay}" Click="onNewComparisonSuperSessionButtonClick"/>
+            </StackPanel>
+
+            <local:ViewSnapshotsStrip x:Name="superSessionStrip" IsDragDropEnabled="True" IsAnalysis="True" DataContext="{Binding ActiveStudy}" SelectedSuperSession="{Binding SelectedSuperSession, Mode=TwoWay}" Height="120" Grid.Column="1" />
+        </Grid>
+
+    </Grid>
+</UserControl>

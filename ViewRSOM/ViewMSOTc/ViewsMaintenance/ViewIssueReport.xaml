@@ -1,0 +1,52 @@
+﻿<UserControl x:Class="ViewMSOTc.ViewIssueReport"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF"
+             xmlns:ViewModels="clr-namespace:Xvue.MSOT.ViewModels;assembly=MSOTSystem"
+             xmlns:UIControls="clr-namespace:ViewMSOT.UIControls;assembly=ViewMSOT.UIControls"
+             xmlns:local="clr-namespace:ViewMSOTc"
+             mc:Ignorable="d" 
+             Width="Auto">
+    <UserControl.Resources>
+        <ViewModels:MSOTSystem x:Key="MSOTSystemDataSource" d:IsDataSource="True"/>
+        <Converters:WpfToolkitWindowStateToBoolean x:Key="WpfToolkitWindowStateToBoolean"/>
+        <Style TargetType="local:ViewIssueReport">
+            <Setter Property="CloseControl" Value="{Binding WindowState, Converter={StaticResource WpfToolkitWindowStateToBoolean}, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type xctk:ChildWindow}}}"/>
+        </Style>
+    </UserControl.Resources>
+    <Border d:DataContext="{Binding Mode=OneWay, Source={StaticResource MSOTSystemDataSource}}" >
+        <StackPanel DataContext="{Binding IssueReporter}">
+            <UIControls:ViewIssueReportBase x:Name="issueReport" DataContextChanged="OnViewIssueReportBaseDataContextChanged"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="cancelButton" Width="100" Margin="10" Panel.ZIndex="2" Content="Cancel" SnapsToDevicePixels="True" Click="OnCancelButtonClick">
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource UidButtonTextStyle2}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SystemMessage}" Value="">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Button x:Name="saveButton" Width="100" Margin="10" Panel.ZIndex="2" SnapsToDevicePixels="True" Command="{Binding CommandIssueReportSave}">
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource UidButtonTextStyle2}">
+                            <Setter Property="Content" Value="OK"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SystemMessage}" Value="">
+                                    <Setter Property="Content" Value="Save"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>                    
+            </StackPanel>
+        </StackPanel>
+    </Border>
+
+</UserControl>

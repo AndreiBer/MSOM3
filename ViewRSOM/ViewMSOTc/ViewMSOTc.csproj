@@ -1,0 +1,606 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{9C5A0B3F-991D-4A7B-B871-466EA5A08A7F}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ViewMSOTc</RootNamespace>
+    <AssemblyName>ViewMSOTc</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <ExpressionBlendVersion>12.0.60617.0</ExpressionBlendVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\..\Xvue.msot.compiledcomponents\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>..\..\Xvue.MSOT.ruleset</CodeAnalysisRuleSet>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\..\Xvue.msot.compiledcomponents\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <CodeAnalysisRuleSet>..\..\Xvue.MSOT.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>GFX\icons\msot.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="OxyPlot, Version=2014.1.546.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\xvue.msot.environment\OxyPlot\Core\lib\portable-net4+sl4+wp71+win8\OxyPlot.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot.Wpf, Version=2014.1.546.0, Culture=neutral, PublicKeyToken=75e952ba404cdbb0, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\xvue.msot.environment\OxyPlot\Wpf\lib\net40\OxyPlot.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot.Xps, Version=2014.1.546.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\xvue.msot.environment\OxyPlot\Wpf\lib\net40\OxyPlot.Xps.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework.Aero" />
+    <Reference Include="PresentationUI, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="ReachFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\xvue.msot.environment\Xceed\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExportTemplates\ReportScanPage.xaml.cs">
+      <DependentUpon>ReportScanPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ExportTemplates\ViewReportROIsTable.xaml.cs">
+      <DependentUpon>ViewReportROIsTable.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ExportTemplates\ViewLayerColorBar.xaml.cs">
+      <DependentUpon>ViewLayerColorBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="InstallerTasks\CreateEventSource.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="InstallerTasks\CreateEventSource.Designer.cs">
+      <DependentUpon>CreateEventSource.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InstallerTasks\ExtractOpenCLFiles.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="InstallerTasks\ExtractOpenCLFiles.Designer.cs">
+      <DependentUpon>ExtractOpenCLFiles.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsMaintenance\SelfTestWizard\ViewSelfTestFinished.xaml.cs">
+      <DependentUpon>ViewSelfTestFinished.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsMaintenance\SelfTestWizard\ViewSelfTestInterrupted.xaml.cs">
+      <DependentUpon>ViewSelfTestInterrupted.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsMaintenance\SelfTestWizard\ViewSelfTestRunning.xaml.cs">
+      <DependentUpon>ViewSelfTestRunning.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsMaintenance\SelfTestWizard\ViewSelfTestInitialized.xaml.cs">
+      <DependentUpon>ViewSelfTestInitialized.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsMaintenance\ViewIssueReport.xaml.cs">
+      <DependentUpon>ViewIssueReport.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsOAM\ViewOAMImageProperties3DMenu.xaml.cs">
+      <DependentUpon>ViewOAMImageProperties3DMenu.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsOAM\ViewSpeedOfSoundImaging.xaml.cs">
+      <DependentUpon>ViewSpeedOfSoundImaging.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsPatientAnalysis\ImagingSession\ViewImagePropertiesGridComparisonMenus.xaml.cs">
+      <DependentUpon>ViewImagePropertiesGridComparisonMenus.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsPatientAnalysis\ImagingSession\ViewImageProperties3DMenu.xaml.cs">
+      <DependentUpon>ViewImageProperties3DMenu.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsPatientAnalysis\ImagingSession\ViewMspExportAllImages.xaml.cs">
+      <DependentUpon>ViewMspExportAllImages.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsPatientAnalysis\ImagingSession\ViewMspExportName.xaml.cs">
+      <DependentUpon>ViewMspExportName.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsPatientAnalysis\ImagingSession\ViewReportGenerationProgressDialog.xaml.cs">
+      <DependentUpon>ViewReportGenerationProgressDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsPatientAnalysis\ImagingSession\ViewXpsReport.xaml.cs">
+      <DependentUpon>ViewXpsReport.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsPatientAnalysis\ViewRegionProperties.xaml.cs">
+      <DependentUpon>ViewRegionProperties.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsPatientOverview\ViewPatientOverviewInformation.xaml.cs">
+      <DependentUpon>ViewPatientOverviewInformation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModalChildWindow.cs" />
+    <Compile Include="ExportTemplates\ReportHeader.xaml.cs">
+      <DependentUpon>ReportHeader.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ExportTemplates\Report1stPage.xaml.cs">
+      <DependentUpon>Report1stPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SplashStartup.xaml.cs">
+      <DependentUpon>SplashStartup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ExportTemplates\Thumbnail2DContent.xaml.cs">
+      <DependentUpon>Thumbnail2DContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ExportTemplates\Thumbnail3DContent.xaml.cs">
+      <DependentUpon>Thumbnail3DContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewAboutMSOTc.xaml.cs">
+      <DependentUpon>ViewAboutMSOTc.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsOAM\ViewAnatomicalWLSelection.xaml.cs">
+      <DependentUpon>ViewAnatomicalWLSelection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsOAM\ViewDepthCorrection.xaml.cs">
+      <DependentUpon>ViewDepthCorrection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsOAM\ViewOAMImagePropertiesMenu.xaml.cs">
+      <DependentUpon>ViewOAMImagePropertiesMenu.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsOAM\ViewOAMMain3D.xaml.cs">
+      <DependentUpon>ViewOAMMain3D.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsMaintenance\ViewSelfTest.xaml.cs">
+      <DependentUpon>ViewSelfTest.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsOAM\ViewOAMSafetyGlassesDialog.xaml.cs">
+      <DependentUpon>ViewOAMSafetyGlassesDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsPatientAnalysis\ImagingSession\ViewImagePropertiesGridMenus.xaml.cs">
+      <DependentUpon>ViewImagePropertiesGridMenus.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsPatientAnalysis\ImagingSession\ViewImagingSession2D.xaml.cs">
+      <DependentUpon>ViewImagingSession2D.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsPatientAnalysis\ImagingSession\ViewImagingSession3D.xaml.cs">
+      <DependentUpon>ViewImagingSession3D.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsPatientAnalysis\ImagingSession\ViewImagingSessionGenericFull.xaml.cs">
+      <DependentUpon>ViewImagingSessionGenericFull.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsPatientAnalysis\ImagingSession\ViewImagingSessionGeneric.xaml.cs">
+      <DependentUpon>ViewImagingSessionGeneric.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsPatientAnalysis\ImagingSession\ViewMspVisualizationSelection.xaml.cs">
+      <DependentUpon>ViewMspVisualizationSelection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsPatientAnalysis\ImagingSession\ViewRepetitionSelector.xaml.cs">
+      <DependentUpon>ViewRepetitionSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsPatientAnalysis\ViewSuperSessionsMenu.xaml.cs">
+      <DependentUpon>ViewSuperSessionsMenu.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsPatientAnalysis\ViewImagingSuperSessionsGrid.xaml.cs">
+      <DependentUpon>ViewImagingSuperSessionsGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsOAM\ViewSpeedOfSound.xaml.cs">
+      <DependentUpon>ViewSpeedOfSound.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsMaintenance\ViewLogItem.xaml.cs">
+      <DependentUpon>ViewLogItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsMaintenance\ViewMaintenance.xaml.cs">
+      <DependentUpon>ViewMaintenance.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsProject\ViewScanInformation.xaml.cs">
+      <DependentUpon>ViewScanInformation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsProject\ViewPatientInformationExpander.xaml.cs">
+      <DependentUpon>ViewPatientInformationExpander.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsOAM\ViewOAMPresetsPopup.xaml.cs">
+      <DependentUpon>ViewOAMPresetsPopup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsOAM\ViewOAMMain2D.xaml.cs">
+      <DependentUpon>ViewOAMMain2D.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsOAM\ViewOAMScanInformation.xaml.cs">
+      <DependentUpon>ViewOAMScanInformation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsPatientAnalysis\ViewPatientAnalysisMeasurements.xaml.cs">
+      <DependentUpon>ViewPatientAnalysisMeasurements.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewMSOTcSystem.xaml.cs">
+      <DependentUpon>ViewMSOTcSystem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsProject\ViewThumbnailLength.xaml.cs">
+      <DependentUpon>ViewThumbnailLength.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsProject\ViewSnapshotsStrip.xaml.cs">
+      <DependentUpon>ViewSnapshotsStrip.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsPatientOverview\ViewPatientOverviewAnalysisDetails.xaml.cs">
+      <DependentUpon>ViewPatientOverviewAnalysisDetails.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsPatientOverview\ViewPatientOverviewScansDetails.xaml.cs">
+      <DependentUpon>ViewPatientOverviewScansDetails.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsProject\ViewPatientSelectionInfo.xaml.cs">
+      <DependentUpon>ViewPatientSelectionInfo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsPatientAnalysis\ViewPatientAnalysis.xaml.cs">
+      <DependentUpon>ViewPatientAnalysis.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsPatientOverview\ViewPatientOverview.xaml.cs">
+      <DependentUpon>ViewPatientOverview.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsOAM\ViewOAM.xaml.cs">
+      <DependentUpon>ViewOAM.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsProject\ViewPatientInformation.xaml.cs">
+      <DependentUpon>ViewPatientInformation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsProject\ViewPatientsPopup.xaml.cs">
+      <DependentUpon>ViewPatientsPopup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="XvueMessageBox.xaml.cs">
+      <DependentUpon>XvueMessageBox.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <AppDesigner Include="Properties\" />
+    <None Include="Properties\DataSources\Xvue.MSOT.Hardware.ViewModels.ViewModelHardwareSystem.datasource" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="ExportTemplates\ReportScanPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ExportTemplates\ViewReportROIsTable.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ExportTemplates\ViewLayerColorBar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Properties\DesignTimeResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <ContainsDesignTimeResources>true</ContainsDesignTimeResources>
+    </Page>
+    <Page Include="ViewsMaintenance\SelfTestWizard\ViewSelfTestFinished.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsMaintenance\SelfTestWizard\ViewSelfTestInterrupted.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewsMaintenance\SelfTestWizard\ViewSelfTestRunning.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsMaintenance\SelfTestWizard\ViewSelfTestInitialized.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewsMaintenance\ViewIssueReport.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewsOAM\ViewOAMImageProperties3DMenu.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsOAM\ViewSpeedOfSoundImaging.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsPatientAnalysis\ImagingSession\ViewImagePropertiesGridComparisonMenus.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsPatientAnalysis\ImagingSession\ViewImageProperties3DMenu.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsPatientAnalysis\ImagingSession\ViewMspExportAllImages.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsPatientAnalysis\ImagingSession\ViewMspExportName.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsPatientAnalysis\ImagingSession\ViewReportGenerationProgressDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewsPatientAnalysis\ImagingSession\ViewXpsReport.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewsPatientAnalysis\ViewRegionProperties.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsPatientOverview\ViewPatientOverviewInformation.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ExportTemplates\ReportHeader.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ExportTemplates\Report1stPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\ExportTemplatesResourceDictionary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GFX\icons\MSOTcVectorIcons.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SplashStartup.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\ClinicaliTheraStyling.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ExportTemplates\Thumbnail2DContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ExportTemplates\Thumbnail3DContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewAboutMSOTc.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsOAM\ViewAnatomicalWLSelection.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsOAM\ViewDepthCorrection.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsOAM\ViewOAMImagePropertiesMenu.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsOAM\ViewOAMMain3D.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsMaintenance\ViewSelfTest.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsOAM\ViewOAMSafetyGlassesDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsPatientAnalysis\ImagingSession\ViewImagePropertiesGridMenus.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsPatientAnalysis\ImagingSession\ViewImagingSession2D.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsPatientAnalysis\ImagingSession\ViewImagingSession3D.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsPatientAnalysis\ImagingSession\ViewImagingSessionGenericFull.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewsPatientAnalysis\ImagingSession\ViewImagingSessionGeneric.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewsPatientAnalysis\ImagingSession\ViewMspVisualizationSelection.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsPatientAnalysis\ImagingSession\ViewRepetitionSelector.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsPatientAnalysis\ViewSuperSessionsMenu.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsPatientAnalysis\ViewImagingSuperSessionsGrid.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsOAM\ViewSpeedOfSound.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewsMaintenance\ViewLogItem.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsMaintenance\ViewMaintenance.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsProject\ViewScanInformation.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsProject\ViewPatientInformationExpander.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewsOAM\ViewOAMPresetsPopup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewsOAM\ViewOAMMain2D.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewsOAM\ViewOAMScanInformation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewsPatientAnalysis\ViewPatientAnalysisMeasurements.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewMSOTcSystem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewsProject\ViewThumbnailLength.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsProject\ViewSnapshotsStrip.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewsPatientOverview\ViewPatientOverviewAnalysisDetails.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewsPatientOverview\ViewPatientOverviewScansDetails.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewsProject\ViewPatientSelectionInfo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewsPatientAnalysis\ViewPatientAnalysis.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewsPatientOverview\ViewPatientOverview.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewsOAM\ViewOAM.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsProject\ViewPatientInformation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewsProject\ViewPatientsPopup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="XvueMessageBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Xvue.MSOT\MSOTSystem\MSOTSystem.csproj">
+      <Project>{b9d76ca8-7b56-4098-8df4-aa76afc1d724}</Project>
+      <Name>MSOTSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Xvue.MSOT\Xvue.MSOT.Hardware.ViewModels\Xvue.MSOT.Hardware.ViewModels.csproj">
+      <Project>{66c51e25-4c21-47cd-96a5-25e7b01f4bf2}</Project>
+      <Name>Xvue.MSOT.Hardware.ViewModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Xvue.MSOT\Xvue.MSOT.ViewModels\Xvue.MSOT.ViewModels.csproj">
+      <Project>{fe070318-b076-442c-9bb6-c9d99ca69222}</Project>
+      <Name>Xvue.MSOT.ViewModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Xvue.MSOT\Xvue.MSOT\Xvue.MSOT.csproj">
+      <Project>{e8b1b385-3eec-4a3d-ba5b-7c31308461d2}</Project>
+      <Name>Xvue.MSOT</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Xvue.Public\Xvue.Framework\Xvue.Framework.Views.WPF\Xvue.Framework.Views.WPF.csproj">
+      <Project>{7725e813-1964-4d0d-9489-7d9f6e557e32}</Project>
+      <Name>Xvue.Framework.Views.WPF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Xvue.Public\Xvue.Framework\Xvue.Framework\Xvue.Framework.csproj">
+      <Project>{6db457f0-c6b4-4268-8304-4f5b586e50ff}</Project>
+      <Name>Xvue.Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ViewMSOT.UIControls\ViewMSOT.UIControls.csproj">
+      <Project>{52f52b94-97ce-41f4-90d2-1e6611180ef5}</Project>
+      <Name>ViewMSOT.UIControls</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="GFX\icons\msot.ico" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="..\..\msotCustomDictionary.xml">
+      <Link>msotCustomDictionary.xml</Link>
+    </CodeAnalysisDictionary>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

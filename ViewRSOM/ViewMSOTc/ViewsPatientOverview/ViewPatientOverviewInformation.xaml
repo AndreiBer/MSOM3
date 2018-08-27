@@ -1,0 +1,68 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Xvue_MSOT_EnumDescriptions_ProjectManager="clr-namespace:Xvue.MSOT.EnumDescriptions.ProjectManager;assembly=Xvue.MSOT"
+             xmlns:Xvue_Framework_Views_WPF_Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF"
+             xmlns:local="clr-namespace:ViewMSOTc"
+             xmlns:ProjectManager="clr-namespace:Xvue.MSOT.ViewModels.ProjectManager;assembly=Xvue.MSOT.ViewModels" x:Name="userControl" x:Class="ViewMSOTc.ViewPatientOverviewInformation"
+             mc:Ignorable="d" Width="440" DataContextChanged="UserControl_DataContextChanged" >
+
+    <UserControl.Resources>
+        <ProjectManager:ViewModelPatient x:Key="ViewModelPatientDataSource" d:IsDataSource="True"/>
+        <Xvue_MSOT_EnumDescriptions_ProjectManager:EnumConversionPatientSex x:Key="EnumConversionPatientSex"/>
+        <Xvue_MSOT_EnumDescriptions_ProjectManager:EnumConversionPatientSex x:Key="EnumConversionPatientSexDataSource" d:IsDataSource="True"/>
+        <Xvue_Framework_Views_WPF_Converters:BooleanToVisibleConverter x:Key="BooleanToVisibleConverter"/>
+        <Xvue_Framework_Views_WPF_Converters:InvertedBooleanToVisibleConverter x:Key="InvertedBooleanToVisibleConverter"/>
+    </UserControl.Resources>
+    <Grid x:Name="patientInformationGrid" Grid.Row="1" Grid.Column="1" d:DataContext="{Binding Source={StaticResource ViewModelPatientDataSource}}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="130"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Label HorizontalAlignment="Left" Content="Patient information" FontWeight="Bold" Margin="2" Grid.ColumnSpan="2"/>
+
+        <Label Grid.Row="1" HorizontalAlignment="Left" VerticalContentAlignment="Center" Content="Patient ID:" Margin="2"/>
+        <Label x:Name="patientIdLabel" Grid.Row="1" Content="{Binding Id}" Grid.Column="1" VerticalAlignment="Center" Margin="2"/>
+
+        <Label Grid.Row="2" HorizontalAlignment="Left" VerticalContentAlignment="Center" Content="Last name:" Margin="2"/>
+        <Label Grid.Row="2" Content="{Binding LastName}" Grid.Column="1" VerticalAlignment="Center" Margin="2"/>
+
+        <Label Grid.Row="3" HorizontalAlignment="Left" VerticalContentAlignment="Center" Content="First name:" Margin="2"/>
+        <Label Grid.Row="3" Content="{Binding FirstName}" Grid.Column="1" VerticalAlignment="Center" Margin="2"/>
+
+        <Label Grid.Row="4" HorizontalAlignment="Left" Content="Date of birth:" Margin="2" VerticalContentAlignment="Center"/>
+        <Label Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Margin="2" Content="{Binding BirthDateAsString}"/>
+
+        <Label Grid.Row="5" HorizontalAlignment="Left" VerticalContentAlignment="Center" Content="Gender:" Margin="2"/>
+        <Label Grid.Row="5" Grid.Column="1" HorizontalAlignment="Stretch" Width="Auto" Margin="2" Content="{Binding Sex, Converter={StaticResource EnumConversionPatientSex}}"/>
+
+        <Label x:Name="commentLabel" Grid.Row="6" HorizontalAlignment="Left" Content="Comment:" Margin="2,8,2,0"/>
+        <TextBox Height="Auto" Text="{Binding Comment, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="7" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="4,0,4,4" VerticalContentAlignment="Top" Visibility="{Binding IsEditEnabled, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}}"/>
+        <TextBlock Padding="{Binding Padding, ElementName=commentLabel}" Height="Auto" Text="{Binding Comment}" TextWrapping="Wrap" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="7" Margin="2,0,4,4" Visibility="{Binding IsEditEnabled, ConverterParameter=Collapsed, Converter={StaticResource InvertedBooleanToVisibleConverter}}"/>
+
+        <StackPanel Grid.ColumnSpan="2" Grid.Row="8" Orientation="Horizontal" HorizontalAlignment="Right" IsEnabled="{Binding MSOTService.IMSOTHardware.IMSOTLaser.TriggerState, Converter={StaticResource InverseBoolConverter}}">
+            <StackPanel Grid.ColumnSpan="2" Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" Visibility="{Binding IsEditEnabled, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}}">
+                <Button x:Name="cancelButton" Content="Cancel" Width="100" Margin="10" Panel.ZIndex="2" Style="{DynamicResource UidButtonTextStyle2}" SnapsToDevicePixels="True" Click="cancelButton_Click" Command="{Binding CommandDiscardPendingChanges, Mode=OneWay}"/>
+                <Button x:Name="saveButton" Content="Save" Width="100" Margin="10" Panel.ZIndex="2" Style="{DynamicResource UidButtonTextStyle2}" SnapsToDevicePixels="True" Click="saveButton_Click" Command="{Binding CommandSavePendingChanges, Mode=OneWay}"/>
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel Grid.ColumnSpan="2" Grid.Row="8" Orientation="Horizontal" IsEnabled="{Binding MSOTService.IMSOTHardware.IMSOTLaser.TriggerState, Converter={StaticResource InverseBoolConverter}}" HorizontalAlignment="Left">
+            <Button x:Name="editButton"  Content="{StaticResource IconEditInformation}" Margin="10" Style="{DynamicResource UidButtonStyle}" Click="editButton_Click" Height="45" Command="{Binding CommandStartEdit, Mode=OneWay}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

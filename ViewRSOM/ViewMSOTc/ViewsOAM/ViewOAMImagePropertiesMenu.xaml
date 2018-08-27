@@ -1,0 +1,82 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:Imaging="clr-namespace:Xvue.MSOT.EnumDescriptions.Imaging;assembly=Xvue.MSOT" 
+    xmlns:ServicesImaging="clr-namespace:Xvue.MSOT.Services.Imaging;assembly=Xvue.MSOT" 
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" 
+    xmlns:Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF" 
+    xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+    xmlns:UIControls="clr-namespace:ViewMSOT.UIControls;assembly=ViewMSOT.UIControls"
+    xmlns:Xvue_MSOT_ViewModels_ProjectManager_ImagingSession="clr-namespace:Xvue.MSOT.ViewModels.ProjectManager.ImagingSession;assembly=Xvue.MSOT.ViewModels"
+    xmlns:local="clr-namespace:ViewMSOTc"
+	xmlns:Experiment="clr-namespace:Xvue.MSOT.Hardware.ViewModels.Experiment;assembly=Xvue.MSOT.Hardware.ViewModels"
+	mc:Ignorable="d"
+	x:Class="ViewMSOTc.ViewOAMImagePropertiesMenu"
+	x:Name="UserControl">
+
+    <UserControl.Resources>
+        <Converters:InvertedBooleanToVisibleConverter x:Key="InvertedBooleanToVisibleConverter"/>
+        <Experiment:ViewModelExperiment x:Key="ViewModelExperimentDataSource" d:IsDataSource="True"/>
+        <Imaging:EnumConversionGridStyle x:Key="EnumConversionGridStyleDataSource" d:IsDataSource="True"/>
+        <Imaging:EnumConversionGridStyle x:Key="EnumConversionGridStyle"/>
+        <Converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter"/>
+        <Converters:BooleanToColorConverter x:Key="BooleanToColorConverter"/>
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot" VerticalAlignment="Top" HorizontalAlignment="Left" d:DataContext="{Binding Source={StaticResource ViewModelExperimentDataSource}}">
+		<Grid.RowDefinitions>
+			<RowDefinition/>
+			<RowDefinition/>
+			<RowDefinition/>
+			<RowDefinition/>
+		</Grid.RowDefinitions>
+        <UIControls:ViewRulerControlClinicalExperimentToggleButton x:Name="rulerDrawingToggleButton" Grid.Row="0" ToolTip="Distance"/>
+        <Menu x:Name="imageDisplayOptionsMenu" Background="{x:Null}" Grid.Row="1" Margin="0,4,0,0" >
+			<MenuItem x:Name="imageDisplayOptionsMenuItem" Template="{DynamicResource MenuItemInvertedVectorIconControlTemplate}" Header="{DynamicResource IconImageControlGear}" ToolTip="Image display controls">
+				<!--<MenuItem x:Name="selectLayersMenuItem" Header="Select Layers..." Style="{DynamicResource UidMenuItemStyle}" Click="selectLayersMenuItem_Click" IsEnabled="False" Visibility="Collapsed"/>-->				
+				<MenuItem Header="Grid overlay" Style="{DynamicResource UidMenuItemStyle}" ToolTip="Grid overlay" StaysOpenOnClick="True">
+                    <MenuItem Style="{DynamicResource MenuItemCustomContentStyle}" StaysOpenOnClick="True">
+						<MenuItem.Header>
+							<UIControls:ViewRulerToolsControl 
+								GridColor="{Binding ImageGridLineColor, Mode=TwoWay}"
+								GridSize="{Binding ImageGridLineStepSize, Mode=TwoWay}"
+								GridStyle="{Binding ImageGridLineType, Mode=TwoWay}"
+								IsImageGridLineOptionsAvailable="{Binding IsImageGridLineOptionsAvailable}"
+                                />
+						</MenuItem.Header>
+					</MenuItem>
+				</MenuItem>
+                <MenuItem Header="Reset properties to preset values" Style="{DynamicResource UidMenuItemStyle}" Command="{Binding CommandResetImageProperties}" ToolTip="Reset properties to preset values"/>
+            </MenuItem>
+		</Menu>
+        <ContentControl Grid.Row="2">
+            <ContentControl.Style>
+                <Style TargetType="ContentControl">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ContentControl">
+                                <Grid/>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding MSOTService.MSOTHardware.Sensor2DVisibility, Mode=OneWay}" Value="false">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ContentControl">
+                                        <local:ViewOAMImageProperties3DMenu/>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+        </ContentControl>
+        <Menu Grid.Row="3" Background="{x:Null}" >
+        </Menu>
+        <Button Grid.Row="3" ToolTip="Tag image" Content="{DynamicResource IconTagImage}" Style="{DynamicResource UidButtonInvertedStyle}" Command="{Binding CommandTagImage, Mode=OneWay}" Margin="0,4,0,0"/>
+    </Grid>
+</UserControl>

@@ -1,0 +1,54 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:gl="clr-namespace:System.Globalization;assembly=mscorlib"
+             xmlns:Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF"			 
+			 xmlns:Xvue_MSOT_Hardware_ViewModels_Experiment="clr-namespace:Xvue.MSOT.Hardware.ViewModels.Experiment;assembly=Xvue.MSOT.Hardware.ViewModels"
+             xmlns:ViewModels="clr-namespace:Xvue.MSOT.ViewModels;assembly=MSOTSystem" x:Name="userControl" x:Class="ViewMSOTc.ViewOAMScanInformation"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+    	<ViewModels:MSOTSystem x:Key="MSOTSystemDataSource" d:IsDataSource="True"/>
+        <Converters:BooleanToVisibleConverter x:Key="BooleanToVisibleConverter"/>
+        <Converters:InvertedBooleanToVisibleConverter x:Key="InvertedBooleanToVisibleConverter"/>
+    </UserControl.Resources>
+	<Grid d:DataContext="{Binding Source={StaticResource MSOTSystemDataSource}}">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="150"/>
+			<ColumnDefinition Width="300"/>
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="200"/>
+		</Grid.RowDefinitions>
+
+		<Label Grid.Row="0" HorizontalAlignment="Left" Content="Operator:" Margin="2"/>
+		<Label Grid.Row="0" Content="{Binding MSOTHardware.ExperimentManualScan.NewScanScientistName}" Grid.Column="1" VerticalAlignment="Center" Margin="2"/>
+
+		<Label Grid.Row="1" HorizontalAlignment="Left" Content="Scan name:" Margin="2" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="1" HorizontalAlignment="Stretch" Grid.Column="1" Text="{Binding MSOTHardware.ExperimentManualScan.NewScanName, Mode=TwoWay}" Margin="2" VerticalAlignment="Center" GotFocus="textBox_GotFocus"/>
+
+		<Label Grid.Row="2" HorizontalAlignment="Left" Content="Preset:" Margin="2" VerticalAlignment="Center"/>
+		<Grid Grid.Row="2" Grid.Column="1"  Margin="2">
+            <Label Content="{Binding CurrentStudyPreset.Name}" ToolTip="{Binding CurrentStudyPreset.Name}"  VerticalAlignment="Center" MaxWidth="230" HorizontalAlignment="Left"/>
+			<Button x:Name="SelectPresetButton" HorizontalAlignment="Right" VerticalAlignment="Center" Content="{StaticResource IconEditSettings}" ToolTip="Select preset" 
+			Click="Button_Click" Style="{DynamicResource UidButtonStyle}" Margin="2" 
+			IsEnabled="{Binding IsPresetChangeEnabled, ElementName=userControl}" 
+			Command="{Binding MSOTHardware.ExperimentManualScan.CommandAcceptInput, Mode=OneWay}"
+			CommandParameter="{x:Static Xvue_MSOT_Hardware_ViewModels_Experiment:MsotExperimentInput.EditPresets}"/>
+		</Grid>
+
+
+		<Label Grid.Row="3" HorizontalAlignment="Left" Content="Date:" Margin="2"/>
+		<Label Grid.Row="3" Grid.Column="1" Margin="2" Content="{Binding MSOTHardware.ExperimentManualScan.NewScanCreationDateTimeAsString}" VerticalAlignment="Center" Visibility="{Binding IsPresetChangeEnabled, ConverterParameter=Collapsed, Converter={StaticResource InvertedBooleanToVisibleConverter}, ElementName=userControl}"/>
+		<Label Grid.Row="3" Grid.Column="1" Margin="2" Content="-" VerticalAlignment="Center" Visibility="{Binding IsPresetChangeEnabled, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}, ElementName=userControl}"/>
+
+		<Label x:Name="commentLabel" Grid.Row="4" HorizontalAlignment="Left" Content="Scan comment:" Margin="2"/>
+        <TextBox Padding="{Binding Padding, ElementName=commentLabel}"  Height="Auto" Text="{Binding MSOTHardware.ExperimentManualScan.NewScanComments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" Grid.ColumnSpan="2" Grid.Row="5" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="2,10,2,10" VerticalAlignment="Stretch" VerticalContentAlignment="Top"/>
+	</Grid>
+</UserControl>

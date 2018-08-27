@@ -1,0 +1,461 @@
+﻿<UserControl xmlns:Controls="clr-namespace:Xvue.Framework.Views.WPF.Controls;assembly=Xvue.Framework.Views.WPF" 
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:exceedToolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+    xmlns:local="clr-namespace:ViewMSOTc"
+	xmlns:Experiment="clr-namespace:Xvue.MSOT.Hardware.ViewModels.Experiment;assembly=Xvue.MSOT.Hardware.ViewModels"
+    xmlns:ViewModels="clr-namespace:Xvue.MSOT.ViewModels;assembly=MSOTSystem"
+	xmlns:Xvue_MSOT_Hardware_ViewModels_Experiment="clr-namespace:Xvue.MSOT.Hardware.ViewModels.Experiment;assembly=Xvue.MSOT.Hardware.ViewModels"
+    xmlns:Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF"
+    xmlns:System="clr-namespace:System;assembly=mscorlib"
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+    xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"             
+    x:Class="ViewMSOTc.ViewOAM"
+	mc:Ignorable="d"
+    d:DesignWidth="1200" d:DesignHeight="900"
+	x:Name="UserControl" Loaded="UserControl_Loaded" DataContextChanged="UserControl_DataContextChanged">
+
+    <UserControl.Resources>
+        <Converters:BooleanToVisibleConverter x:Key="BooleanToVisibleConverter"/>
+        <Converters:BooleanAndToVisibleConverter x:Key="BooleanAndToVisibleConverter"/>
+        <Converters:BooleanOrToVisibleConverter x:Key="BooleanOrToVisibleConverter"/>
+        <Converters:InvertedBooleanToVisibleConverter x:Key="InvertedBooleanToVisibleConverter"/>
+        <ViewModels:MSOTSystem x:Key="MSOTSystemDataSource" d:IsDataSource="True"/>
+        <System:Double x:Key="UidMainButtonsSize">115</System:Double>
+        <SolidColorBrush x:Key="UidMainButtonsBorderBrush" Color="Black"/>
+        <Style x:Key="ToggleButtonLaserStyle" TargetType="{x:Type ToggleButton}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource UidMainButtonsBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="{StaticResource UidButtonPadding}"/>
+            <Setter Property="Width" Value="{DynamicResource UidMainButtonsSize}"/>
+            <Setter Property="Height" Value="{DynamicResource UidMainButtonsSize}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Border x:Name="border" BorderThickness="1" Width="Auto" BorderBrush="{TemplateBinding BorderBrush}" Height="{TemplateBinding Height}" CornerRadius="{DynamicResource UidButtonCornerRadius}" Background="Yellow">
+                            <Grid Margin="{TemplateBinding Padding}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Path x:Name="path" Fill="Black" Stretch="Uniform" Data="{Binding Content, RelativeSource={RelativeSource Mode=TemplatedParent}}"/>
+                                <Label x:Name="label" Content="View" Grid.Row="1" Foreground="Black" Height="35" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="Black"/>
+                                <Setter TargetName="path" Property="Fill" Value="Yellow"/>
+                                <Setter TargetName="label" Property="Foreground" Value="Yellow"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter TargetName="border" Property="Background" Value="#FFADAD00"/>
+                                <Setter TargetName="path" Property="Fill" Value="#FF535353"/>
+                                <Setter TargetName="label" Property="Foreground" Value="#FF535353"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <DataTemplate x:Key="ViewOAM3DTemplate">
+            <local:ViewOAMMain3D/>
+        </DataTemplate>
+        <DataTemplate x:Key="ViewOAM2DTemplate">
+            <local:ViewOAMMain2D/>
+        </DataTemplate>
+        <Style x:Key="ViewOAMMainContentStyle" TargetType="{x:Type ContentControl}">
+            <Setter Property="ContentTemplate" Value="{StaticResource ViewOAM3DTemplate}" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding DataContext.MSOTHardware.Sensor2DVisibility, ElementName=UserControl}" Value="True">
+                    <Setter Property="ContentTemplate" Value="{StaticResource ViewOAM2DTemplate}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="ToggleButtonPauseLaserStyle" TargetType="{x:Type ToggleButton}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource UidMainButtonsBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="{StaticResource UidButtonPadding}"/>
+            <Setter Property="Width" Value="{DynamicResource UidMainButtonsSize}"/>
+            <Setter Property="Height" Value="{DynamicResource UidMainButtonsSize}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Border x:Name="border" BorderThickness="1" Width="Auto" BorderBrush="{TemplateBinding BorderBrush}" Height="{TemplateBinding Height}" CornerRadius="{DynamicResource UidButtonCornerRadius}" Background="Black">
+                            <Grid Margin="{TemplateBinding Padding}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Path x:Name="path" Fill="Yellow" Stretch="Uniform" Data="{Binding Content, RelativeSource={RelativeSource Mode=TemplatedParent}}"/>
+                                <Label x:Name="label" Content="Freeze" Grid.Row="1" Foreground="Yellow" Height="35" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="Yellow"/>
+                                <Setter TargetName="path" Property="Fill" Value="Black"/>
+                                <Setter TargetName="label" Property="Foreground" Value="Black"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter TargetName="border" Property="Background" Value="#FF535353"/>
+                                <Setter TargetName="path" Property="Fill" Value="#FFADAD00"/>
+                                <Setter TargetName="label" Property="Foreground" Value="#FFADAD00"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ToggleButtonRecordStyle" TargetType="{x:Type ToggleButton}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource UidMainButtonsBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="{StaticResource UidButtonPadding}"/>
+            <Setter Property="Width" Value="{DynamicResource UidMainButtonsSize}"/>
+            <Setter Property="Height" Value="{DynamicResource UidMainButtonsSize}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Border x:Name="border" BorderThickness="1" Width="Auto" BorderBrush="{TemplateBinding BorderBrush}" Height="{TemplateBinding Height}" CornerRadius="{DynamicResource UidButtonCornerRadius}" Background="#FF548BD4">
+                            <Grid Margin="{TemplateBinding Padding}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Path x:Name="path" Fill="Black" Stretch="Uniform" Data="{Binding Content, RelativeSource={RelativeSource Mode=TemplatedParent}}"/>
+                                <Label x:Name="label" Content="Record" Grid.Row="1" Foreground="Black" Height="35" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="Black"/>
+                                <Setter TargetName="path" Property="Fill" Value="#FF548BD4"/>
+                                <Setter TargetName="label" Property="Foreground" Value="#FF548BD4"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter TargetName="border" Property="Background" Value="#FF7F9DD4"/>
+                                <Setter TargetName="path" Property="Fill" Value="#FF535353"/>
+                                <Setter TargetName="label" Property="Foreground" Value="#FF535353"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ToggleButtonStopStyle" TargetType="{x:Type ToggleButton}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource UidMainButtonsBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="{StaticResource UidButtonPadding}"/>
+            <Setter Property="Width" Value="{DynamicResource UidMainButtonsSize}"/>
+            <Setter Property="Height" Value="{DynamicResource UidMainButtonsSize}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Border x:Name="border" BorderThickness="1" Width="Auto" BorderBrush="{TemplateBinding BorderBrush}" Height="{TemplateBinding Height}" CornerRadius="{DynamicResource UidButtonCornerRadius}" Background="Black">
+                            <Grid Margin="{TemplateBinding Padding}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Path x:Name="path" Fill="#FF548BD4" Stretch="Uniform" Data="{Binding Content, RelativeSource={RelativeSource Mode=TemplatedParent}}"/>
+                                <Label x:Name="label" Content="Stop" Grid.Row="1" Foreground="#FF548BD4" Height="35" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FF548BD4"/>
+                                <Setter TargetName="path" Property="Fill" Value="Black"/>
+                                <Setter TargetName="label" Property="Foreground" Value="Black"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter TargetName="border" Property="Background" Value="#FF535353"/>
+                                <Setter TargetName="path" Property="Fill" Value="#FF7F9DD4"/>
+                                <Setter TargetName="label" Property="Foreground" Value="#FF7F9DD4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ButtonSnapshotStyle" TargetType="{x:Type Button}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource UidMainButtonsBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="{StaticResource UidButtonPadding}"/>
+            <Setter Property="Width" Value="{DynamicResource UidMainButtonsSize}"/>
+            <Setter Property="Height" Value="{DynamicResource UidMainButtonsSize}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="border" BorderThickness="1" Width="Auto" BorderBrush="{TemplateBinding BorderBrush}" Height="{TemplateBinding Height}" CornerRadius="{DynamicResource UidButtonCornerRadius}" Background="#FF789440">
+                            <Grid Margin="{TemplateBinding Padding}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Path x:Name="path" Fill="Black" Stretch="Uniform" Data="{Binding Content, RelativeSource={RelativeSource Mode=TemplatedParent}}"/>
+                                <Label x:Name="label" Content="Snapshot" Grid.Row="1" Foreground="Black" Height="35" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="Black"/>
+                                <Setter TargetName="path" Property="Fill" Value="#FF789440"/>
+                                <Setter TargetName="label" Property="Foreground" Value="#FF789440"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter TargetName="border" Property="Background" Value="#FF8B946C"/>
+                                <Setter TargetName="path" Property="Fill" Value="#FF535353"/>
+                                <Setter TargetName="label" Property="Foreground" Value="#FF535353"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Background="Transparent" d:DataContext="{Binding Source={StaticResource MSOTSystemDataSource}}">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="51"/>
+            <ColumnDefinition Width="371"/>
+            <ColumnDefinition Width="170"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <local:ViewPatientInformationExpander VerticalAlignment="Stretch" Grid.Row="0" Grid.RowSpan="1" Grid.ColumnSpan="4" Margin="4,10,4,10" Panel.ZIndex="1" HorizontalAlignment="Left" DataContext="{Binding ProjectManager.PatientsManager.ActivePatient}"/>
+
+        <Grid Margin="10,0,0,0" Grid.Row="1" Grid.Column="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <Controls:ClosingPopup x:Name="OAMScanInformationClosingPopup" StaysOpen="False" IsOpen="{Binding IsChecked, ElementName=currentScanInformationToggleButton, Mode=TwoWay}" PlacementTarget="{Binding ElementName=currentScanInformationToggleButton, Mode=OneWay}" Placement="Top" HorizontalOffset="-200" OpacityMask="Black" ControlToggleButton="{Binding ElementName=currentScanInformationToggleButton, Mode=OneWay}">
+                <Border Background="White" BorderBrush="Cyan" BorderThickness="1" Width="Auto">
+                    <local:ViewOAMScanInformation x:Name="viewOAMScanInformation" DataContext="{Binding}" ParentPopup="{Binding ElementName=OAMScanInformationClosingPopup, Mode=OneWay}" IsPresetChangeEnabled="True"/>
+                </Border>
+            </Controls:ClosingPopup>
+        </Grid>
+
+        <Grid Margin="0,0,0,0" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Background="White">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            
+            <ToggleButton x:Name="previewStartToggleButton" Margin="12" Grid.Column="0" Command="{Binding MSOTHardware.ExperimentManualScan.ToggleQswitchCommand, Mode=OneWay}" Content="{StaticResource IconViewOAM}" Style="{DynamicResource ToggleButtonLaserStyle}"  IsEnabled="{Binding MSOTHardware.ExperimentManualScan.IsRecordingData, Converter={StaticResource InverseBoolConverter}}">
+                <ToggleButton.Visibility>
+                    <MultiBinding Converter="{StaticResource BooleanOrToVisibleConverter}" ConverterParameter="Collapsed">
+                        <Binding Path="MSOTHardware.Laser.TriggerState" Converter="{StaticResource InverseBoolConverter}"/>
+                        <Binding Path="MSOTHardware.ExperimentManualScan.IsRecordingData"/>
+                    </MultiBinding>
+                </ToggleButton.Visibility>
+            </ToggleButton>
+            <Grid Grid.Column="0"></Grid>
+            <ToggleButton x:Name="previewPauseToggleButton" Margin="12" Grid.Column="0" Command="{Binding MSOTHardware.ExperimentManualScan.ToggleQswitchCommand, Mode=OneWay}" Content="{StaticResource IconPause}" Style="{DynamicResource ToggleButtonPauseLaserStyle}" IsEnabled="{Binding MSOTHardware.ExperimentManualScan.IsRecordingData, Converter={StaticResource InverseBoolConverter}}">
+                <ToggleButton.Visibility>
+                    <MultiBinding Converter="{StaticResource BooleanAndToVisibleConverter}" ConverterParameter="Collapsed">
+                        <Binding Path="MSOTHardware.Laser.TriggerState"/>
+                        <Binding Path="MSOTHardware.ExperimentManualScan.IsRecordingData" Converter="{StaticResource InverseBoolConverter}"/>
+                    </MultiBinding>
+                </ToggleButton.Visibility>
+            </ToggleButton>
+            
+            <Button Grid.Column="1" Content="{StaticResource IconSnapshotOAM}" Margin="12" Command="{Binding MSOTHardware.ExperimentManualScan.CommandSaveSnapshotSession, Mode=OneWay}" Style="{DynamicResource ButtonSnapshotStyle}" IsEnabled="{Binding MSOTHardware.ExperimentManualScan.IsRecordingData, Converter={StaticResource InverseBoolConverter}}"/>
+            
+            <ToggleButton x:Name="startRecordingToggleButton" Grid.Column="2" Content="{StaticResource IconRecordOAM}" Command="{Binding MSOTHardware.ExperimentManualScan.CommandAcceptInput, Mode=OneWay}" CommandParameter="{x:Static Xvue_MSOT_Hardware_ViewModels_Experiment:MsotExperimentInput.StartSnapshotRec}" Style="{DynamicResource ToggleButtonRecordStyle}" Margin="12" Visibility="{Binding MSOTHardware.ExperimentManualScan.IsRecordingData, ConverterParameter=Collapsed, Converter={StaticResource InverseBoolConverter}, Mode=OneWay}"/>
+            <Border BorderBrush="White" BorderThickness="8" Width="133" Height="135" Padding="2" Background="White" Grid.Column="2" Visibility="{Binding MSOTHardware.ExperimentManualScan.IsRecordingData, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}, Mode=OneWay}">
+                <ToggleButton Content="{StaticResource IconStopOAM}" Height="{DynamicResource UidMainButtonsSize}" Command="{Binding MSOTHardware.ExperimentManualScan.CommandAcceptInput, Mode=OneWay}" CommandParameter="{x:Static Xvue_MSOT_Hardware_ViewModels_Experiment:MsotExperimentInput.StopSnapshotRec}" Style="{DynamicResource ToggleButtonStopStyle}"/>
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Style.Triggers>
+                            <EventTrigger RoutedEvent="Control.Loaded">
+                                <BeginStoryboard>
+                                    <Storyboard BeginTime="00:00:00" 
+                                        RepeatBehavior="Forever" 
+                                        Storyboard.TargetProperty="BorderBrush.Color">
+                                        <ColorAnimation From="White" To="Yellow" BeginTime="00:00:00" Duration="0:0:0"/>
+                                        <ColorAnimation From="Yellow" To="Yellow" BeginTime="00:00:00" Duration="0:0:1"/>
+                                        <ColorAnimation From="Yellow" To="White" BeginTime="00:00:01" Duration="0:0:0"/>
+                                        <ColorAnimation From="White" To="White" BeginTime="00:00:01" Duration="0:0:1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+            </Border>
+        </Grid>
+
+        <Grid Margin="10,10,0,10" Grid.Column="1" Grid.ColumnSpan="3" Background="Black" DataContext="{Binding MSOTHardware.ExperimentManualScan, Mode=OneWay}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <StackPanel x:Name="oamMenuStackPanel" Orientation="Vertical" Margin="2">
+                <Grid>
+                    <ToggleButton x:Name="speedOfSoundToggleButton" Content="{StaticResource IconFocus}" ToolTip="Focus" Margin="4" Style="{DynamicResource UidToggleButtonInvertedStyle}"/>
+                    <Controls:StoryboardControlledClosingPopup x:Name="speedOfSoundPopup" Grid.Row="0" StaysOpen="False" IsOpen="{Binding IsChecked, ElementName=speedOfSoundToggleButton, Mode=TwoWay}" PlacementTarget="{Binding ElementName=speedOfSoundToggleButton, Mode=OneWay}" Placement="Right" HorizontalOffset="7" OpacityMask="Black" ControlToggleButton="{Binding ElementName=speedOfSoundToggleButton, Mode=OneWay}">
+                        <Border Background="White" BorderBrush="Cyan" BorderThickness="1" IsEnabled="{Binding IsRecordingData, Converter={StaticResource InverseBoolConverter}, Mode=OneWay}">
+                            <local:ViewSpeedOfSound/>
+                        </Border>
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="ShortcutDrivenSpeedOfSoundChangedEvent" SourceObject="{Binding AnatomicalPreview.CurrentReconPreset}">
+                                <ei:ControlStoryboardAction ControlStoryboardOption="Play">
+                                    <ei:ControlStoryboardAction.Storyboard>
+                                        <Storyboard>
+                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="speedOfSoundPopup" Storyboard.TargetProperty="OpenForSeconds" FillBehavior="Stop" Duration="0:0:0.1">
+                                                <SplineDoubleKeyFrame Value="5" KeyTime="0:0:0"/>
+                                            </DoubleAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </ei:ControlStoryboardAction.Storyboard>
+                                </ei:ControlStoryboardAction>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="ShortcutDrivenPresetPropertiesChangedEvent" SourceObject="{Binding AnatomicalPreview.CurrentReconPreset}">
+                                <ei:ControlStoryboardAction ControlStoryboardOption="Play">
+                                    <ei:ControlStoryboardAction.Storyboard>
+                                        <Storyboard>
+                                            <BooleanAnimationUsingKeyFrames Storyboard.TargetName="speedOfSoundPopup" Storyboard.TargetProperty="CloseImmediately" FillBehavior="Stop" Duration="0:0:0.1">
+                                                <DiscreteBooleanKeyFrame Value="True" KeyTime="0:0:0"/>
+                                            </BooleanAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </ei:ControlStoryboardAction.Storyboard>
+                                </ei:ControlStoryboardAction>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="ShortcutDrivenPropertiesChangedEvent" SourceObject="{Binding AnatomicalPreview.AnatomicalImageProperties}">
+                                <ei:ControlStoryboardAction ControlStoryboardOption="Play">
+                                    <ei:ControlStoryboardAction.Storyboard>
+                                        <Storyboard>
+                                            <BooleanAnimationUsingKeyFrames Storyboard.TargetName="speedOfSoundPopup" Storyboard.TargetProperty="CloseImmediately" FillBehavior="Stop" Duration="0:0:0.1">
+                                                <DiscreteBooleanKeyFrame Value="True" KeyTime="0:0:0"/>
+                                            </BooleanAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </ei:ControlStoryboardAction.Storyboard>
+                                </ei:ControlStoryboardAction>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="ShortcutDrivenPropertiesChangedEvent" SourceObject="{Binding MspPreview.MspImageProperties}">
+                                <ei:ControlStoryboardAction ControlStoryboardOption="Play">
+                                    <ei:ControlStoryboardAction.Storyboard>
+                                        <Storyboard>
+                                            <BooleanAnimationUsingKeyFrames Storyboard.TargetName="speedOfSoundPopup" Storyboard.TargetProperty="CloseImmediately" FillBehavior="Stop" Duration="0:0:0.1">
+                                                <DiscreteBooleanKeyFrame Value="True" KeyTime="0:0:0"/>
+                                            </BooleanAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </ei:ControlStoryboardAction.Storyboard>
+                                </ei:ControlStoryboardAction>
+                            </i:EventTrigger>                            
+                            <i:EventTrigger EventName="ShortcutDrivenEvent" SourceObject="{Binding}">
+                                <ei:ControlStoryboardAction ControlStoryboardOption="Play">
+                                    <ei:ControlStoryboardAction.Storyboard>
+                                        <Storyboard>
+                                            <BooleanAnimationUsingKeyFrames Storyboard.TargetName="speedOfSoundPopup" Storyboard.TargetProperty="CloseImmediately" FillBehavior="Stop" Duration="0:0:0.1">
+                                                <DiscreteBooleanKeyFrame Value="True" KeyTime="0:0:0"/>
+                                            </BooleanAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </ei:ControlStoryboardAction.Storyboard>
+                                </ei:ControlStoryboardAction>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Controls:StoryboardControlledClosingPopup>
+                </Grid>
+                <ToggleButton x:Name="depthCorrectionToggleButton" Content="{StaticResource IconDepthCorrection}" ToolTip="Depth correction" Margin="4" Style="{DynamicResource UidToggleButtonInvertedStyle}"/>
+                <Controls:ClosingPopup StaysOpen="False" IsOpen="{Binding IsChecked, ElementName=depthCorrectionToggleButton, Mode=TwoWay}" PlacementTarget="{Binding ElementName=depthCorrectionToggleButton, Mode=OneWay}" Placement="Right" HorizontalOffset="7" OpacityMask="Black" ControlToggleButton="{Binding ElementName=depthCorrectionToggleButton, Mode=OneWay}">
+                    <Border Background="White" BorderBrush="Cyan" BorderThickness="1" IsEnabled="{Binding IsRecordingData, Converter={StaticResource InverseBoolConverter}, Mode=OneWay}">
+                        <local:ViewDepthCorrection DataContext="{Binding AnatomicalPreview.CurrentReconPreset, Mode=OneWay}" Padding="5"/>
+                    </Border>
+                </Controls:ClosingPopup>
+
+                <local:ViewOAMImagePropertiesMenu x:Name="imagePropertiesMenuOAMControl" HorizontalAlignment="Center"/>
+
+                <!--<Menu x:Name="cycleWavelengthsMenu" Background="{x:Null}" Margin="4" Grid.Row="2" >
+                    <MenuItem x:Name="cycleWavelengthsMenuItem" Template="{DynamicResource MenuItemInvertedVectorIconControlTemplate}" Header="{DynamicResource IconCycleWL}" ToolTip="Cycle Wavelengths">
+                        <MenuItem Header="Cycle all Wavelengths" IsChecked="{Binding ExperimentPreset.DisplayAllWavelengths}" IsCheckable="True" Style="{DynamicResource UidMenuItemRadioStyle}"/>
+                        <MenuItem Header="Single Wavelength" IsChecked="{Binding ExperimentPreset.DisplayAllWavelengths, Converter={StaticResource InverseBoolConverter}}" IsCheckable="True" Style="{DynamicResource UidMenuItemRadioStyle}"/>
+                    </MenuItem>
+                </Menu>-->
+            </StackPanel>
+
+            <ContentControl Grid.Column="1" Style="{StaticResource ViewOAMMainContentStyle}" Content="{Binding Mode=OneWay}"/>
+        </Grid>
+
+        <Grid Background="Black" Height="120" Grid.Column="2" Margin="10,2,0,2" Grid.Row="1" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Rectangle Grid.Column="1" Height="Auto" Margin="4,4,0,4" Width="1" Fill="White"/>
+
+            <Border  Margin="4" BorderBrush="White" BorderThickness="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <ToggleButton x:Name="currentScanInformationToggleButton" Width="{DynamicResource UidMainButtonsSize}" Height="{DynamicResource UidMainButtonsSize}">
+                    <ToggleButton.Style>
+                        <Style TargetType="{x:Type ToggleButton}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                        <Grid Background="Black">
+                                            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <TextBlock x:Name="nextScanLabel" Text="Next scan:" HorizontalAlignment="Left" Margin="0,0,0,0" Foreground="White" VerticalAlignment="Center" FontSize="18"/>
+                                                <TextBlock x:Name="selectedPresetLabel" Text="{Binding CurrentStudyPreset.NamePart1}" ToolTip="{Binding CurrentStudyPreset.Name}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="1,0,4,0" Foreground="White" Padding="2" FontSize="18" />
+                                                <TextBlock x:Name="selectedPresetLabel2" Text="{Binding CurrentStudyPreset.NamePart2}" ToolTip="{Binding CurrentStudyPreset.Name}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="1,0,4,0" Foreground="White" Padding="2" FontSize="18">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding CurrentStudyPreset.NamePart2}" Value="">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsFocused" Value="True"/>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Foreground" TargetName="nextScanLabel" Value="{DynamicResource UidIconPressedBrush}"/>
+                                                <Setter Property="Foreground" TargetName="selectedPresetLabel" Value="{DynamicResource UidIconPressedBrush}"/>
+                                                <Setter Property="Foreground" TargetName="selectedPresetLabel2" Value="{DynamicResource UidIconPressedBrush}"/>
+                                            </Trigger>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter Property="Foreground" TargetName="nextScanLabel" Value="{DynamicResource UidIconPressedBrush}"/>
+                                                <Setter Property="Foreground" TargetName="selectedPresetLabel" Value="{DynamicResource UidIconPressedBrush}"/>
+                                                <Setter Property="Foreground" TargetName="selectedPresetLabel2" Value="{DynamicResource UidIconPressedBrush}"/>
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Foreground" TargetName="nextScanLabel" Value="{DynamicResource UidIconDisabledBrush}"/>
+                                                <Setter Property="Foreground" TargetName="selectedPresetLabel" Value="{DynamicResource UidIconDisabledBrush}"/>
+                                                <Setter Property="Foreground" TargetName="selectedPresetLabel2" Value="{DynamicResource UidIconDisabledBrush}"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
+            </Border>
+
+            <local:ViewSnapshotsStrip x:Name="snapshotsStrip" VerticalAlignment="Center" IsDragDropEnabled="False" DataContext="{Binding ProjectManager.ActiveStudy}" SelectedSuperSession="{Binding SelectedSuperSession, Mode=TwoWay}" Grid.Column="2"/>
+        </Grid>
+    </Grid>
+
+</UserControl>

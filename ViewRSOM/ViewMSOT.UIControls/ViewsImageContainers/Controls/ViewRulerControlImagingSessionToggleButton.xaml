@@ -1,0 +1,22 @@
+﻿<Controls:ViewRulerControlToggleButtonBase x:Class="ViewMSOT.UIControls.ViewRulerControlImagingSessionToggleButton"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d"
+             xmlns:Controls="clr-namespace:Xvue.Framework.Views.WPF.Controls;assembly=Xvue.Framework.Views.WPF"
+             xmlns:local="clr-namespace:ViewMSOT.UIControls;assembly=ViewMSOT.UIControls"
+             xmlns:Xvue_MSOT_ViewModels_Imaging="clr-namespace:Xvue.MSOT.ViewModels.Imaging;assembly=Xvue.MSOT.ViewModels">
+
+    <Controls:ViewRulerControlToggleButtonBase.Resources>
+        <Style x:Key="DistanceToggleButtonStyle" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource UidToggleButtonInvertedStyle}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsRulerDrawing}" Value="True">
+                    <Setter Property="IsChecked" Value="{Binding IsRulerDrawing, Mode=OneWay}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Xvue_MSOT_ViewModels_Imaging:ViewModelImageProperties x:Key="ViewModelImagePropertiesDataSource" d:IsDataSource="True"/>
+    </Controls:ViewRulerControlToggleButtonBase.Resources>
+    <ToggleButton x:Name="toggleButton" Content="{DynamicResource IconRuler}" Style="{DynamicResource DistanceToggleButtonStyle}" Checked="DistanceToggleButtonOnChecked" Unchecked="DistanceToggleButtonOnUnchecked" Loaded="DistanceToggleButtonOnLoaded"/>
+</Controls:ViewRulerControlToggleButtonBase>

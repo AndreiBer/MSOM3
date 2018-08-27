@@ -1,0 +1,279 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+	xmlns:Xvue_MSOT_ViewModels_Imaging="clr-namespace:Xvue.MSOT.ViewModels.Imaging;assembly=Xvue.MSOT.ViewModels"
+	xmlns:Xvue_Framework_Views_WPF_Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF"
+	xmlns:Xceed_Wpf_Toolkit_Core_Converters="clr-namespace:Xceed.Wpf.Toolkit.Core.Converters;assembly=Xceed.Wpf.Toolkit" 
+    xmlns:Xvue_MSOT_EnumDescriptions_Imaging="clr-namespace:Xvue.MSOT.EnumDescriptions.Imaging;assembly=Xvue.MSOT"
+	xmlns:local="clr-namespace:ViewMSOT.UIControls"
+    xmlns:extToolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+	mc:Ignorable="d"
+	x:Class="ViewMSOT.UIControls.View3DGrid"
+	x:Name="UserControl"
+	d:DesignWidth="600" d:DesignHeight="714.16" Loaded="UserControl_Loaded" DataContextChanged="UserControl_DataContextChanged">
+
+    <UserControl.Resources>
+        <Xvue_MSOT_EnumDescriptions_Imaging:EnumConversionGridStyle x:Key="EnumConversionGridStyle"/>
+        <Xvue_MSOT_EnumDescriptions_Imaging:EnumConversionGridStyle x:Key="EnumConversionGridStyleDataSource" d:IsDataSource="True"/>
+        <Xvue_MSOT_EnumDescriptions_Imaging:EnumConversionROIsStyle x:Key="EnumConversionROIsStyle"/>
+        <Xvue_MSOT_EnumDescriptions_Imaging:EnumConversionROIsStyle x:Key="EnumConversionROIsStyleDataSource" d:IsDataSource="True"/>
+        <Xvue_Framework_Views_WPF_Converters:DoubleToStringConverter x:Key="DoubleToStringConverter"/>
+        <Xvue_Framework_Views_WPF_Converters:InvertedBooleanToVisibleConverter x:Key="InvertedBooleanToVisibleConverter"/>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <Xvue_Framework_Views_WPF_Converters:BooleanAndConverter x:Key="BooleanAndConverter"/>
+        <Xvue_Framework_Views_WPF_Converters:BooleanToVisibleConverter x:Key="BooleanToVisibleConverter"/>
+        <Xvue_Framework_Views_WPF_Converters:DoubleToPoint3DConverter x:Key="DoubleToPoint3DConverter"/>
+        <Xceed_Wpf_Toolkit_Core_Converters:InverseBoolConverter x:Key="InverseBoolConverter"/>
+        <Xvue_MSOT_ViewModels_Imaging:ViewModel3DPane x:Key="ViewModel3DPaneDataSource" d:IsDataSource="True"/>
+        <Style TargetType="local:View3DGrid">
+            <Setter Property="ShowMIPCrop" Value="{Binding ImageProperties.ShowMIPCrop}"/>
+        </Style>
+        <Style x:Key="PolygonControlThumbStyle" d:IsControlPart="True" TargetType="{x:Type Thumb}" BasedOn="{x:Null}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Grid Margin="0,0,0,0" x:Name="Grid" Visibility="Visible" Opacity="0.45">
+                            <Ellipse HorizontalAlignment="Stretch" x:Name="Rectangle" VerticalAlignment="Stretch" Width="12" Height="12" Stroke="{DynamicResource NormalBorderBrush}" Fill="#D700E200"/>
+                            <Ellipse HorizontalAlignment="Stretch" x:Name="RectangleExpander" VerticalAlignment="Stretch" Width="{DynamicResource ControlThumbsTouchAreaLength}" Height="{DynamicResource ControlThumbsTouchAreaLength}" Stroke="Transparent" Fill="Transparent"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True"/>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Fill" TargetName="Rectangle" Value="Yellow"/>
+                                <Setter Property="Visibility" TargetName="Grid" Value="Visible"/>
+                                <Setter Property="Opacity" TargetName="Grid" Value="1"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False"/>
+                            <Trigger Property="IsDragging" Value="True"/>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsDragging" Value="False"/>
+                <EventTrigger RoutedEvent="FrameworkElement.Loaded"/>
+            </Style.Triggers>
+        </Style>
+		<Style x:Key="PolygonThumbStyle" d:IsControlPart="True" TargetType="{x:Type Thumb}" BasedOn="{x:Null}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Grid Margin="0,0,0,0" x:Name="Grid" Visibility="Collapsed" Opacity="0.45">
+                            <Ellipse HorizontalAlignment="Stretch" x:Name="Rectangle" VerticalAlignment="Stretch" Width="12" Height="12" Stroke="{DynamicResource NormalBorderBrush}" Fill="#D700E200"/>
+                            <Ellipse HorizontalAlignment="Stretch" x:Name="RectangleExpander" VerticalAlignment="Stretch" Width="{DynamicResource ControlThumbsTouchAreaLength}" Height="{DynamicResource ControlThumbsTouchAreaLength}" Stroke="Transparent" Fill="Transparent"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True"/>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Fill" TargetName="Rectangle" Value="Yellow"/>
+                                <Setter Property="Visibility" TargetName="Grid" Value="Visible"/>
+                                <Setter Property="Opacity" TargetName="Grid" Value="1"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False"/>
+                            <Trigger Property="IsDragging" Value="True"/>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsDragging" Value="False"/>
+                <EventTrigger RoutedEvent="FrameworkElement.Loaded"/>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="AnchorControlThumbStyle" d:IsControlPart="True" TargetType="{x:Type Thumb}" BasedOn="{x:Null}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Grid Margin="0,0,0,0" x:Name="Grid" Visibility="Visible" Opacity="0.45">
+                            <Ellipse HorizontalAlignment="Stretch" x:Name="Rectangle" VerticalAlignment="Stretch" Width="12" Height="12" Stroke="{DynamicResource NormalBorderBrush}" Fill="#FF0027FF"/>
+                            <Ellipse HorizontalAlignment="Stretch" x:Name="RectangleExpander" VerticalAlignment="Stretch" Width="{DynamicResource ControlThumbsTouchAreaLength}" Height="{DynamicResource ControlThumbsTouchAreaLength}" Stroke="Transparent" Fill="Transparent"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True"/>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Fill" TargetName="Rectangle" Value="Yellow"/>
+                                <Setter Property="Visibility" TargetName="Grid" Value="Visible"/>
+                                <Setter Property="Opacity" TargetName="Grid" Value="1"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False"/>
+                            <Trigger Property="IsDragging" Value="True"/>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsDragging" Value="False"/>
+                <EventTrigger RoutedEvent="FrameworkElement.Loaded"/>
+            </Style.Triggers>
+        </Style>
+		<Style x:Key="AnchorThumbStyle" d:IsControlPart="True" TargetType="{x:Type Thumb}" BasedOn="{x:Null}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Grid Margin="0,0,0,0" x:Name="Grid" Visibility="Collapsed" Opacity="0.45">
+                            <Ellipse HorizontalAlignment="Stretch" x:Name="Rectangle" VerticalAlignment="Stretch" Width="12" Height="12" Stroke="{DynamicResource NormalBorderBrush}" Fill="#FF0027FF"/>
+                            <Ellipse HorizontalAlignment="Stretch" x:Name="RectangleExpander" VerticalAlignment="Stretch" Width="{DynamicResource ControlThumbsTouchAreaLength}" Height="{DynamicResource ControlThumbsTouchAreaLength}" Stroke="Transparent" Fill="Transparent"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True"/>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Fill" TargetName="Rectangle" Value="Yellow"/>
+                                <Setter Property="Visibility" TargetName="Grid" Value="Visible"/>
+                                <Setter Property="Opacity" TargetName="Grid" Value="1"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False"/>
+                            <Trigger Property="IsDragging" Value="True"/>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsDragging" Value="False"/>
+                <EventTrigger RoutedEvent="FrameworkElement.Loaded"/>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot" d:DataContext="{Binding Source={StaticResource ViewModel3DPaneDataSource}}" KeyDown="LayoutRoot_KeyDown">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="1" x:Name="mainGrid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="gridColumnLeft" Width="0.5*"/>
+                <ColumnDefinition Width="2.5"/>
+                <ColumnDefinition x:Name="gridColumnRight" Width="0.5*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition x:Name="gridRowTop" Height="0.5*"/>
+                <RowDefinition Height="2.5"/>
+                <RowDefinition x:Name="gridRowBottom" Height="0.5*"/>
+            </Grid.RowDefinitions>
+            <!--<GridSplitter x:Name="vertivalGridSplitter" Grid.Column="1" Grid.RowSpan="3" HorizontalAlignment="Stretch" Margin="-10,0" BorderThickness="10,0" BorderBrush="Transparent" Panel.ZIndex="2"/>-->
+            <!--<GridSplitter x:Name="horizontalGridSplitter" Grid.Row="1" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" Margin="0,-10" BorderThickness="0,10" BorderBrush="Transparent" Panel.ZIndex="2"/>-->
+            <Rectangle x:Name="vertivalGridSplitter" Grid.Column="1" Grid.RowSpan="3" Fill="White"></Rectangle>
+            <Rectangle x:Name="horizontalGridSplitter" Grid.Row="1" Grid.ColumnSpan="3" Fill="White"></Rectangle>
+
+            <Grid x:Name="xyGrid">
+                <local:ViewImage x:Name="imageViewXY"
+                                Zoom="{Binding ImageProperties.CurrentZoom, Mode=TwoWay}" 
+                                ActiveImageSource="{Binding ReconstructedImageXY, Mode=OneWay}"
+                                WCenter="{Binding ImageProperties.VolumeZoomCenter3D, Converter={StaticResource DoubleToPoint3DConverter}, ConverterParameter=X, Mode=TwoWay}"
+                                HCenter="{Binding ImageProperties.VolumeZoomCenter3D, Converter={StaticResource DoubleToPoint3DConverter}, ConverterParameter=Y, Mode=TwoWay}"
+                                IsROIDrawEnabled="True"
+                                RulerMeasurementTools="{Binding ImageProperties.RulersViewingPlanes.RulerMeasurementToolsXY}"
+                                MinimumZoomAllowed="{Binding ImageProperties.MinimumZoomAllowedXY, Mode=TwoWay}"
+                                ImageHeight="{Binding ImageProperties.HeightInPixels, Mode=OneWay}"
+                                ImageWidth="{Binding ImageProperties.WidthInPixels, Mode=OneWay}"
+                                RoiLowX="{Binding ImageProperties.ImageLowRoiDrawLimitX, Mode=OneWay}"
+                                RoiHighX="{Binding ImageProperties.ImageHighRoiDrawLimitX, Mode=OneWay}"
+                                RoiLowY="{Binding ImageProperties.ImageLowRoiDrawLimitY, Mode=OneWay}"
+                                RoiHighY="{Binding ImageProperties.ImageHighRoiDrawLimitY, Mode=OneWay}"
+                                CrosshairVisibility="{Binding ImageProperties.ShowMIP, Converter={StaticResource InvertedBooleanToVisibleConverter}}"/>
+                <local:ViewSelectPlane x:Name="ViewSelectPaneXY" DataContext="{Binding ImageProperties}" Visible3DGridPlaneSelection="XY" Margin="3" HorizontalAlignment="Right" VerticalAlignment="Top">
+                    <local:ViewSelectPlane.IsEnabled>
+                        <MultiBinding Converter="{StaticResource BooleanAndConverter}">
+                            <Binding Path="ViewSelectPlaneIsEnabledXY" ElementName="UserControl"/>
+                            <Binding Path="IsEmptyMainImage" Converter="{StaticResource InverseBoolConverter}"/>
+                        </MultiBinding>
+                    </local:ViewSelectPlane.IsEnabled>
+                </local:ViewSelectPlane>                    
+            </Grid>
+
+            <Grid x:Name="yzGrid" Grid.Column="2">
+                <local:ViewImage x:Name="imageViewYZ" 
+                                Zoom="{Binding ImageProperties.CurrentZoom, Mode=TwoWay}" 
+                                ActiveImageSource="{Binding ReconstructedImageYZ, Mode=OneWay}"
+                                WCenter="{Binding ImageProperties.VolumeZoomCenter3D, Converter={StaticResource DoubleToPoint3DConverter}, ConverterParameter=Z, Mode=TwoWay}"
+                                HCenter="{Binding ImageProperties.VolumeZoomCenter3D, Converter={StaticResource DoubleToPoint3DConverter}, ConverterParameter=Y, Mode=TwoWay}"
+                                RulerMeasurementTools="{Binding ImageProperties.RulersViewingPlanes.RulerMeasurementToolsYZ}"
+                                IsROIDrawEnabled="False"
+                                MinimumZoomAllowed="{Binding ImageProperties.MinimumZoomAllowedYZ, Mode=TwoWay}"
+                                ImageHeight="{Binding ImageProperties.HeightInPixels, Mode=OneWay}"
+                                ImageWidth="{Binding ImageProperties.DepthInPixels, Mode=OneWay}"
+                                RoiLowX="{Binding ImageProperties.ImageLowRoiDrawLimitZ, Mode=OneWay}"
+                                RoiHighX="{Binding ImageProperties.ImageHighRoiDrawLimitZ, Mode=OneWay}"
+                                RoiLowY="{Binding ImageProperties.ImageLowRoiDrawLimitY, Mode=OneWay}"
+                                RoiHighY="{Binding ImageProperties.ImageHighRoiDrawLimitY, Mode=OneWay}"
+                                RoiXOffset="{Binding ImageProperties.ParentPropertiesService.AxialOffsetValue}"
+                                CrosshairVisibility="{Binding ImageProperties.ShowMIP, Converter={StaticResource InvertedBooleanToVisibleConverter}}"/>
+                <local:ViewSelectPlane x:Name="ViewSelectPaneYZ" Grid.Column="2" DataContext="{Binding ImageProperties}" Visible3DGridPlaneSelection="YZ" Margin="3" HorizontalAlignment="Right" VerticalAlignment="Top">
+                    <local:ViewSelectPlane.IsEnabled>
+                        <MultiBinding Converter="{StaticResource BooleanAndConverter}">
+                            <Binding Path="ViewSelectPlaneIsEnabledYZ" ElementName="UserControl"/>
+                            <Binding Path="IsEmptyMainImage" Converter="{StaticResource InverseBoolConverter}"/>
+                        </MultiBinding>
+                    </local:ViewSelectPlane.IsEnabled>
+                </local:ViewSelectPlane>                    
+            </Grid>
+
+            <Grid x:Name="xzGrid" Grid.Row="2">
+                <local:ViewImage x:Name="imageViewXZ"
+                                Zoom="{Binding ImageProperties.CurrentZoom, Mode=TwoWay}" 
+                                ActiveImageSource="{Binding ReconstructedImageXZ, Mode=OneWay}"
+                                WCenter="{Binding ImageProperties.VolumeZoomCenter3D, Converter={StaticResource DoubleToPoint3DConverter}, ConverterParameter=X, Mode=TwoWay}"
+                                HCenter="{Binding ImageProperties.VolumeZoomCenter3D, Converter={StaticResource DoubleToPoint3DConverter}, ConverterParameter=Z, Mode=TwoWay}"
+                                RulerMeasurementTools="{Binding ImageProperties.RulersViewingPlanes.RulerMeasurementToolsXZ}"
+                                IsROIDrawEnabled="False"
+                                MinimumZoomAllowed="{Binding ImageProperties.MinimumZoomAllowedXZ, Mode=TwoWay}"
+                                ImageHeight="{Binding ImageProperties.DepthInPixels, Mode=OneWay}"
+                                ImageWidth="{Binding ImageProperties.WidthInPixels, Mode=OneWay}"
+                                RoiLowX="{Binding ImageProperties.ImageLowRoiDrawLimitX, Mode=OneWay}"
+                                RoiHighX="{Binding ImageProperties.ImageHighRoiDrawLimitX, Mode=OneWay}"
+                                RoiLowY="{Binding ImageProperties.ImageLowRoiDrawLimitZ, Mode=OneWay}"
+                                RoiHighY="{Binding ImageProperties.ImageHighRoiDrawLimitZ, Mode=OneWay}"
+                                RoiYOffset="{Binding ImageProperties.ParentPropertiesService.AxialOffsetValue}"
+                                CrosshairVisibility="{Binding ImageProperties.ShowMIP, Converter={StaticResource InvertedBooleanToVisibleConverter}}"/>
+                <local:ViewSelectPlane x:Name="ViewSelectPaneXZ" DataContext="{Binding ImageProperties}" Visible3DGridPlaneSelection="XZ" Margin="3" HorizontalAlignment="Right" VerticalAlignment="Top">
+                    <local:ViewSelectPlane.IsEnabled>
+                        <MultiBinding Converter="{StaticResource BooleanAndConverter}">
+                            <Binding Path="ViewSelectPlaneIsEnabledXZ" ElementName="UserControl"/>
+                            <Binding Path="IsEmptyMainImage" Converter="{StaticResource InverseBoolConverter}"/>
+                        </MultiBinding>
+                    </local:ViewSelectPlane.IsEnabled>
+                </local:ViewSelectPlane>                    
+            </Grid>
+
+            <Grid x:Name="volume3DGrid" Grid.Column="2" Grid.Row="2" Visibility="{Binding IsChecked, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=show3DViewsCheckBox}">
+                <local:Visualizations3DControl x:Name="_3DRenderingControl"/>
+                <local:ViewSelectPlane x:Name="ViewSelectPane3D" DataContext="{Binding ImageProperties}" Visible3DGridPlaneSelection="View3D"  Margin="3" HorizontalAlignment="Right" VerticalAlignment="Top">
+                    <local:ViewSelectPlane.IsEnabled>
+                        <MultiBinding Converter="{StaticResource BooleanAndConverter}">
+                            <Binding Path="ViewSelectPlaneIsEnabledView3D" ElementName="UserControl"/>
+                            <Binding Path="IsEmptyMainImage" Converter="{StaticResource InverseBoolConverter}"/>
+                        </MultiBinding>
+                    </local:ViewSelectPlane.IsEnabled>
+                </local:ViewSelectPlane>
+            </Grid>
+                
+        </Grid>
+
+        <TextBlock x:Name="cropLimitsDetails" Text="{Binding ImageProperties.CropLimitsDetails}" TextWrapping="WrapWithOverflow" Foreground="White"  HorizontalAlignment="Right" VerticalAlignment="Bottom" MinWidth="30" Grid.Row="1" Margin="0,0,6,6" Visibility="{Binding IsChecked, Converter={StaticResource InvertedBooleanToVisibleConverter}, ElementName=show3DViewsCheckBox}" IsHitTestVisible="False"/>
+        <CheckBox x:Name="show3DViewsCheckBox" Content="3D View" VerticalAlignment="Center" HorizontalAlignment="Right" Foreground="White" Margin="1,0,10,0" Grid.Row="3" IsChecked="{Binding ImageProperties.Show3DViews, Mode=TwoWay}" Visibility="Collapsed"/>
+
+        <ScrollViewer x:Name="imageDetailsScrollViewer" Grid.Column="0" MinWidth="30" Grid.Row="2" ScrollViewer.VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <TextBlock Text="{Binding ImageProperties.ImageDetails}" TextWrapping="WrapWithOverflow" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="30">
+                    <TextBlock.Style>
+                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                            <Setter Property="Foreground" Value="White"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ImageProperties.ParentVisualization.SelectedVisibleSlice.IsImageTagged}" Value="True">
+                                    <Setter Property="Foreground" Value="Red"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>                    
+                </TextBlock>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

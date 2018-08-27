@@ -1,0 +1,48 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:MSOTApp_WPF_Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF"     
+    xmlns:Xvue_Framework_Views_WPF_Controls="clr-namespace:Xvue.Framework.Views.WPF.Controls;assembly=Xvue.Framework.Views.WPF"
+	xmlns:Xvue_MSOT_ViewModels_Imaging="clr-namespace:Xvue.MSOT.ViewModels.Imaging;assembly=Xvue.MSOT.ViewModels"
+	mc:Ignorable="d"
+	x:Class="ViewMSOT.UIControls.ViewFFTFilter"
+	x:Name="UserControl">
+	<UserControl.Resources>					
+				
+		<Xvue_MSOT_ViewModels_Imaging:ViewModelFilterFFT x:Key="ViewModelFilterFFTDataSource" d:IsDataSource="True"/>
+
+        <MSOTApp_WPF_Converters:DoubleToStringConverter x:Key="DoubleToStringConverter"/>
+    </UserControl.Resources>
+	<Grid VerticalAlignment="Top" d:DataContext="{Binding Source={StaticResource ViewModelFilterFFTDataSource}}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="110"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Label Content="Lower cutoff" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,5"/>
+        <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,5">
+            <TextBox x:Name="highCutOffTextBox"  TextWrapping="NoWrap" Text="{Binding Value, Converter={StaticResource DoubleToStringConverter}, ConverterParameter=F0, ElementName=highCutOffSlider, NotifyOnSourceUpdated=True, Mode=TwoWay}" SourceUpdated="highCutOffTextBoxTextBox_TargetUpdated" GotFocus="textBox_GotFocus" TextAlignment="Right" MinWidth="59"/>
+            <Label Content="%" VerticalAlignment="Center"/>
+        </StackPanel>
+        
+        <Xvue_Framework_Views_WPF_Controls:SlowMovingSlider x:Name="highCutOffSlider" Margin="10,5" Grid.Row="1" Grid.ColumnSpan="2" Value="{Binding HighBandBegin, Mode=TwoWay, UpdateSourceTrigger=Explicit}" VerticalAlignment="Center" Minimum="{Binding MinSliderFrequency, Mode=Default}" Maximum="{Binding MaxSliderFrequency, Mode=Default}"
+			ToolTipService.InitialShowDelay="0" ToolTipService.BetweenShowDelay="0" ToolTipService.ShowDuration="20000" Style="{DynamicResource UidSliderStyle}" Background="{DynamicResource UidIconActiveBrush}" ToolTip="Background Absorption"/>
+
+        <Label Content="Upper cutoff" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,5"/>
+        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,5">
+            <TextBox x:Name="lowCutOffTextBox" TextWrapping="NoWrap" Text="{Binding Value, Converter={StaticResource DoubleToStringConverter}, ConverterParameter=F0, ElementName=lowCutOffSlider, NotifyOnSourceUpdated=True, Mode=TwoWay}" SourceUpdated="lowCutOffTextBoxTextBox_TargetUpdated" GotFocus="textBox_GotFocus" TextAlignment="Right" MinWidth="59"/>
+            <Label Content="%" VerticalAlignment="Center"/>
+        </StackPanel>
+
+        <Xvue_Framework_Views_WPF_Controls:SlowMovingSlider x:Name="lowCutOffSlider" Margin="10,5" Grid.Row="3" Grid.ColumnSpan="2" Value="{Binding LowBandEnd, Mode=TwoWay, UpdateSourceTrigger=Explicit}" VerticalAlignment="Center" Minimum="{Binding MinSliderFrequency, Mode=Default}" Maximum="{Binding MaxSliderFrequency, Mode=Default}"
+			ToolTipService.InitialShowDelay="0" ToolTipService.BetweenShowDelay="0" ToolTipService.ShowDuration="20000" Style="{DynamicResource UidSliderStyle}" Background="{DynamicResource UidIconActiveBrush}" ToolTip="Background Absorption"/>
+    </Grid>
+</UserControl>

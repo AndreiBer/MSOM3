@@ -1,0 +1,23 @@
+
+#On this file the code related changes of Xceed.Wpf.Toolkit are tracked
+
+1) Core/Converters/InverseBoolConverter.cs:public object ConvertBack( object value, Type targetType, object parameter, System.Globalization.CultureInfo culture )
+#Reason: Converter can used in both directions
+        //throw new NotImplementedException();
+        return !(bool)value;
+
+2) Core/VersionResourceDictionary.cs:void ISupportInitialize.EndInit()
+#Reason: Format of the given uri absolute
+        //string uriStr = string.Format( @"{0};v{1};component/{2}", this.AssemblyName, _XceedVersionInfo.Version, this.SourcePath );
+        string uriStr = string.Format(@"pack://application:,,,/{0};v{1};component/{2}", this.AssemblyName, _XceedVersionInfo.Version, this.SourcePath);
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Other project changes include:
+- Configuration platform
+- Assembly key file
+- Warning level
+- Tool version
+- Target version
+
+

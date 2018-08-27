@@ -1,0 +1,63 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:Controls="clr-namespace:Xvue.Framework.Views.WPF.Controls;assembly=Xvue.Framework.Views.WPF" 
+	xmlns:local="clr-namespace:ViewMSOTc"
+	xmlns:ImagingSession="clr-namespace:Xvue.MSOT.ViewModels.ProjectManager.ImagingSession;assembly=Xvue.MSOT.ViewModels"
+	xmlns:Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF"
+    xmlns:dm="clr-namespace:Xvue.MSOT.DataModels.Plugins.ProjectManager;assembly=Xvue.MSOT"
+	mc:Ignorable="d"
+	x:Class="ViewMSOTc.ViewSuperSessionsMenu"
+	x:Name="UserControl">
+
+    <UserControl.Resources>
+        <Converters:BooleanToVisibleConverter x:Key="BooleanToVisibleConverter"/>
+        <Converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter"/>
+        <ImagingSession:ViewModelImagingSuperSession x:Key="ViewModelImagingSuperSessionDataSource" d:IsDataSource="True"/>
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot" d:DataContext="{Binding Source={StaticResource ViewModelImagingSuperSessionDataSource}}" IsEnabled="{Binding PreviewingStatus, Converter={StaticResource InverseBoolConverter}}">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Menu x:Name="comparisonRelatedControlsMenu" Background="{x:Null}" Margin="4" Visibility="{Binding IsComparisonSuperSession, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}, Mode=OneWay}">
+            <MenuItem Template="{DynamicResource MenuItemInvertedVectorIconControlTemplate}" Header="{DynamicResource IconComparisonControl}" ToolTip="Number of visible scans" >
+                <MenuItem x:Name="layout1MenuItem" Icon="{StaticResource IconLayout1Scan}" Header="1 scan"  Style="{DynamicResource UidMenuItemStyle}" IsCheckable="True" IsChecked="{Binding ViewingLayout, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static dm:SuperSessionViewingLayout.Layout1}}"/>
+                <MenuItem x:Name="layout2MenuItem" Icon="{StaticResource IconLayout2Scan}" Header="2 scans" Style="{DynamicResource UidMenuItemStyle}" IsCheckable="True" IsChecked="{Binding ViewingLayout, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static dm:SuperSessionViewingLayout.Layout2}}"/>
+                <MenuItem x:Name="layout4MenuItem" Icon="{StaticResource IconLayout4Scan}" Header="4 scans" Style="{DynamicResource UidMenuItemStyle}" IsCheckable="True" IsChecked="{Binding ViewingLayout, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static dm:SuperSessionViewingLayout.Layout4}}"/>
+                <MenuItem x:Name="layout6MenuItem" Icon="{StaticResource IconLayout6Scan}" Header="6 scans" Style="{DynamicResource UidMenuItemStyle}" IsCheckable="True" IsChecked="{Binding ViewingLayout, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static dm:SuperSessionViewingLayout.Layout6}}"/>
+            </MenuItem>
+        </Menu>
+        
+        <Menu x:Name="exportSaveReportMenu" Grid.Row="1" Background="{x:Null}" Margin="4">
+            <MenuItem Template="{DynamicResource MenuItemInvertedVectorIconControlTemplate}" Header="{DynamicResource IconSaveAndExport}" ToolTip="Save and export">
+                <MenuItem Header="Save changes" Icon="{StaticResource IconDisketteSave}" Style="{DynamicResource UidMenuItemStyle}" Click="MenuItem_Click"/>
+                <MenuItem Header="Save as" x:Name="saveAsMenuItem" Icon="{StaticResource IconDisketteSaveAs}" Style="{DynamicResource UidMenuItemStyle}" Visibility="{Binding IsComparisonSuperSession, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}, Mode=OneWay}" Click="saveAsMenuItem_Click"/>
+                <MenuItem Header="Export images" Style="{DynamicResource UidMenuItemStyle}" Click="ExportImages_Click" Command="{Binding CommandExportImages, Mode=OneWay}"/>
+                <MenuItem Header="Export Test Images" Style="{DynamicResource UidMenuItemStyle}" Click="ExportTestImages_Click" Command="{Binding CommandExportImages, Mode=OneWay}" Visibility="{Binding MSOTService.DiagnosticMode, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}}"/>
+                <MenuItem Header="Create report" x:Name="createReportMenuItem" Style="{DynamicResource UidMenuItemStyle}" IsEnabled="{Binding AreAllSessionsEmpty, Converter={StaticResource InverseBoolConverter}}" Click="createReportMenuItem_Click"/>
+            </MenuItem>
+        </Menu>
+
+        <!--<Menu x:Name="exportReportMenu" Grid.Row="1" Background="{x:Null}" Margin="4">
+            <MenuItem Template="{DynamicResource MenuItemInvertedVectorIconControlTemplate}" Header="{DynamicResource IconExportControl}" ToolTip="Export/Report">
+                <MenuItem Header="Export images" Style="{DynamicResource UidMenuItemStyle}" Click="ExportImages_Click" Command="{Binding CommandExportImages, Mode=OneWay}"/>
+                <MenuItem Header="Export Test Images" Style="{DynamicResource UidMenuItemStyle}" Click="ExportTestImages_Click" Command="{Binding CommandExportImages, Mode=OneWay}" Visibility="{Binding MSOTService.DiagnosticMode, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}}"/>
+                <MenuItem Header="Create Report" Style="{DynamicResource UidMenuItemStyle}" IsEnabled="True" 
+                          Command="{Binding CommandGenerateReport, Mode=OneWay}"/>
+            </MenuItem>
+        </Menu>
+        <Menu x:Name="saveMenu" Grid.Row="2" Background="{x:Null}" Margin="4">
+            <MenuItem Template="{DynamicResource MenuItemInvertedVectorIconControlTemplate}" Header="{DynamicResource IconSaveControl}" ToolTip="Comparison Related Controls">
+                <MenuItem Header="Save" Icon="{StaticResource IconDisketteSave}" Style="{DynamicResource UidMenuItemStyle}" Click="MenuItem_Click"/>
+                <MenuItem Header="Save As" Icon="{StaticResource IconDisketteSaveAs}" Style="{DynamicResource UidMenuItemStyle}" IsEnabled="False"/>
+                <MenuItem Header="Create Comparison" Style="{DynamicResource UidMenuItemStyle}" Command="{Binding CreateComparisonAnalysis, ElementName=UserControl}"/>
+            </MenuItem>
+        </Menu>-->
+    </Grid>
+</UserControl>

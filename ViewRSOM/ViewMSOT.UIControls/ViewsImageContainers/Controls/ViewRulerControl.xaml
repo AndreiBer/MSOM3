@@ -1,0 +1,71 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:ViewMSOT.UIControls"
+	mc:Ignorable="d"
+	x:Class="ViewMSOT.UIControls.ViewRulerControl"
+	x:Name="UserControl"
+	d:DesignWidth="100" d:DesignHeight="100" DataContextChanged="UserControl_DataContextChanged" SizeChanged="UserControl_SizeChanged" ContextMenuOpening="UserControl_ContextMenuOpening">
+
+    <UserControl.Resources>
+        <Style TargetType="local:ViewRulerControl">
+            <Setter Property="RulerPoints" Value="{Binding RulerPoints}"/>
+            <Setter Property="IsDrawing" Value="{Binding IsDrawing, Mode=TwoWay}"/>
+            <Setter Property="IsRulerSelected" Value="{Binding IsRulerSelected, Mode=TwoWay}"/>
+        </Style>
+        <Style x:Key="PolygonControlThumbStyle" d:IsControlPart="True" TargetType="{x:Type Thumb}" BasedOn="{x:Null}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Grid Margin="0,0,0,0" x:Name="Grid" Visibility="Visible" Opacity="0.45" Width="{DynamicResource ControlThumbsTouchAreaLength}" Height="{DynamicResource ControlThumbsTouchAreaLength}">
+                            <Ellipse HorizontalAlignment="Center" x:Name="ExpanderRectangle" Width="{DynamicResource ControlThumbsTouchAreaLength}" Height="{DynamicResource ControlThumbsTouchAreaLength}" VerticalAlignment="Center" Stroke="Transparent" Fill="Transparent"/>
+                            <Ellipse HorizontalAlignment="Center" x:Name="Rectangle" Width="12" Height="12" VerticalAlignment="Center"  Stroke="{DynamicResource NormalBorderBrush}" Fill="#D700E200"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True"/>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Fill" TargetName="Rectangle" Value="Yellow"/>
+                                <Setter Property="Visibility" TargetName="Grid" Value="Visible"/>
+                                <Setter Property="Opacity" TargetName="Grid" Value="1"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False"/>
+                            <Trigger Property="IsDragging" Value="True"/>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsDragging" Value="False"/>
+                <EventTrigger RoutedEvent="FrameworkElement.Loaded"/>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <UserControl.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="Remove" Style="{DynamicResource UidMenuItemStyle}" Command="{Binding DeleteSelectedRulersCommand, Mode=OneWay}"/>
+            <MenuItem Header="Remove all" Style="{DynamicResource UidMenuItemStyle}" Command="{Binding DeleteAllRulerToolsCommand, Mode=OneWay}"/>
+        </ContextMenu>
+    </UserControl.ContextMenu>
+    
+    <Grid x:Name="LayoutRoot" SnapsToDevicePixels="False">
+        <Canvas x:Name="drawingCanvas">
+            <Thumb x:Name="point0Thumb" Cursor="SizeAll" Style="{DynamicResource PolygonControlThumbStyle}"
+                   DragDelta="pointThumb_DragDelta" Tag="0" Panel.ZIndex="2"/>
+
+            <Thumb x:Name="point1Thumb" Cursor="SizeAll" Style="{DynamicResource PolygonControlThumbStyle}"
+                   DragDelta="pointThumb_DragDelta" Tag="1" Panel.ZIndex="2"/>
+
+            <Label x:Name="detailsLabel" Content="{Binding DistanceMM}" Foreground="{Binding RulerLabelForeground}" Background="{Binding RulerLabelBackground}" SizeChanged="detailsLabel_SizeChanged" MouseEnter="detailsLabel_MouseEnter" MouseLeave="detailsLabel_MouseLeave" Panel.ZIndex="1"/>
+
+            <Path x:Name="rulerPath" Stroke="{Binding RulerPathStroke}" StrokeThickness="1" MouseEnter="detailsLabel_MouseEnter" MouseLeave="detailsLabel_MouseLeave" Panel.ZIndex="0">
+                <Path.Data>
+                    <LineGeometry StartPoint="{Binding PathPoint0, ElementName=UserControl}" 
+                                  EndPoint="{Binding PathPoint1, ElementName=UserControl}"/>
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Grid>
+</UserControl>

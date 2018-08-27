@@ -1,0 +1,32 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+            xmlns:Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF" 
+            x:Name="userControl" x:Class="ViewMSOT.UIControls.CurveControl" 
+            mc:Ignorable="d" SizeChanged="UserControl_SizeChanged"
+            d:DesignWidth="140" d:DesignHeight="140">
+
+    <UserControl.Resources>
+        <Converters:BooleanToVisibleConverter x:Key="BooleanToVisibleConverter"/>
+    </UserControl.Resources>
+
+    <Grid Margin="2">
+        <Canvas x:Name="curveCanvas" d:LayoutOverrides="Width, Height">
+            <Ellipse x:Name="cp1Thumb" Width="{DynamicResource ControlThumbsTouchAreaLength}" Height="{DynamicResource ControlThumbsTouchAreaLength}" Fill="Transparent" 
+				PreviewMouseMove="cpThumb_PreviewMouseMove" 
+				PreviewMouseLeftButtonUp="cpThumb_PreviewMouseLeftButtonUp" 
+				PreviewMouseLeftButtonDown="cpThumb_PreviewMouseLeftButtonDown" Cursor="SizeWE" Visibility="{Binding IsEnabled, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}, ElementName=userControl}"/>
+            <Ellipse x:Name="cp1YellowThumb" Width="9" Height="9" Fill="Yellow" IsHitTestVisible="False"
+                     Visibility="{Binding IsEnabled, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}, ElementName=userControl}"/>
+            <Ellipse x:Name="cp2Thumb" Width="{DynamicResource ControlThumbsTouchAreaLength}" Height="{DynamicResource ControlThumbsTouchAreaLength}" Fill="Transparent" 
+				PreviewMouseMove="cpThumb_PreviewMouseMove" 
+				PreviewMouseLeftButtonUp="cpThumb_PreviewMouseLeftButtonUp" 
+				PreviewMouseLeftButtonDown="cpThumb_PreviewMouseLeftButtonDown" Cursor="SizeAll" Visibility="{Binding IsEnabled, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}, ElementName=userControl}"/>
+            <Ellipse x:Name="cp2YellowThumb" Width="9" Height="9" Fill="Yellow" IsHitTestVisible="False"
+                     Visibility="{Binding IsEnabled, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}, ElementName=userControl}"/>
+            <Path x:Name="pathCurve" Stroke="Yellow" Visibility="{Binding IsEnabled, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}, ElementName=userControl}"/>
+        </Canvas>
+    </Grid>
+</UserControl>

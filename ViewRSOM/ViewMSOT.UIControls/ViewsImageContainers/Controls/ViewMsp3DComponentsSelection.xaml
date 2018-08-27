@@ -1,0 +1,140 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:local="clr-namespace:ViewMSOT.UIControls" 
+	xmlns:Xvue_Framework_Views_WPF_Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF" 
+	xmlns:Xvue_MSOT_ViewModels_ProjectManager_ImagingSession="clr-namespace:Xvue.MSOT.ViewModels.ProjectManager.ImagingSession;assembly=Xvue.MSOT"
+	xmlns:Xvue_MSOT_ViewModels_Imaging="clr-namespace:Xvue.MSOT.ViewModels.Imaging;assembly=Xvue.MSOT.ViewModels" 
+    xmlns:Xvue_MSOT_EnumDescriptions_Imaging="clr-namespace:Xvue.MSOT.EnumDescriptions.Imaging;assembly=Xvue.MSOT"
+    xmlns:oxy="http://oxyplot.org/wpf"
+    xmlns:UIControls="clr-namespace:ViewMSOT.UIControls"        
+	mc:Ignorable="d"
+	x:Class="ViewMSOT.UIControls.ViewMsp3DComponentsSelection"
+	x:Name="UserControl"
+	d:DesignWidth="640" Height="Auto">
+    <UserControl.Resources>
+
+        <Xvue_Framework_Views_WPF_Converters:BooleanToVisibleConverter x:Key="BooleanToVisibleConverter1"/>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <Xvue_Framework_Views_WPF_Converters:BooleanToVisibleConverter x:Key="BooleanToVisibleConverter"/>
+        <Xvue_Framework_Views_WPF_Converters:InvertedBooleanToVisibleConverter x:Key="InvertedBooleanToVisibleConverter"/>
+		<Xvue_MSOT_EnumDescriptions_Imaging:EnumConversionPaletteType x:Key="EnumConversionPaletteTypeDataSource" d:IsDataSource="True"/>
+        <Xvue_MSOT_EnumDescriptions_Imaging:EnumConversionPaletteType x:Key="EnumConversionPaletteType"/>
+        <Xvue_MSOT_EnumDescriptions_Imaging:EnumConversionComposeMethod x:Key="EnumConversionComposeMethodDataSource" d:IsDataSource="True"/>
+        <Xvue_MSOT_EnumDescriptions_Imaging:EnumConversionComposeMethod x:Key="EnumConversionComposeMethod"/>
+        <DataTemplate x:Key="ColorNameDataTemplate">
+            <local:ViewNameItem/>
+        </DataTemplate>
+        <DataTemplate x:Key="ComponentTaskDataTemplate">
+            <StackPanel x:Name="stackPanel" Orientation="Horizontal" Margin="0,2" Visibility="{Binding VisibleFrameComponent, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter1}}" IsEnabled="{Binding EnableFrameComponent, Mode=OneWay}" >
+
+                <StackPanel Width="Auto" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" >
+                    <Button Width="14" Command="{Binding ImageLayer.ImagingComponent.MoveLayerUpCommand, Mode=OneWay}" Content="{DynamicResource IconFLeft}" Style="{DynamicResource UidButtonStyle}" >
+                        <Button.LayoutTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform/>
+                                <RotateTransform Angle="90"/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </Button.LayoutTransform>
+                    </Button>
+                    <Button Width="14" Command="{Binding ImageLayer.ImagingComponent.MoveLayerDownCommand, Mode=OneWay}"  Content="{DynamicResource IconFRight}" Style="{DynamicResource UidButtonStyle}" >
+                        <Button.LayoutTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform/>
+                                <RotateTransform Angle="90"/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </Button.LayoutTransform>
+                    </Button>
+                </StackPanel>
+
+                <CheckBox IsChecked="{Binding IsScheduled}" Margin="2,0,6,0" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Load Component"/>
+                <Border Height="60" Margin="0,0,5,0" Width="60" Background="Black" >
+                    <Image Source="{Binding ImageLayer.Image, Mode=OneWay}"/>
+                </Border>
+                <StackPanel Orientation="Vertical" Width="110" VerticalAlignment="Center">
+                    <TextBox TextWrapping="WrapWithOverflow" Text="{Binding ImageLayer.ImagingComponent.LayerName, Mode=TwoWay, UpdateSourceTrigger=Default}" VerticalAlignment="Center" MinWidth="100" Margin="0" d:LayoutOverrides="Width"/>
+                    <ComboBox 
+						ItemsSource="{Binding ImageLayer.ImagingComponent.UsedPalette.PaletteNames}"  
+						SelectedItem="{Binding ImageLayer.ImagingComponent.UsedPalette.SelectedPaletteName, Mode=TwoWay}" Style="{DynamicResource UidComboBoxStyle}" Margin="0,4,0,0"/>
+                </StackPanel>
+                <CheckBox Content="Flip" Margin="2,0,0,0" IsChecked="{Binding ImageLayer.ImagingComponent.Flip}" Visibility="{Binding IsIcaRegressionComponentAndNotOxyMap, Converter={StaticResource BooleanToVisibleConverter}}" VerticalAlignment="Center"/>
+                <StackPanel Margin="10,0,0,0">
+                    <UIControls:ViewOxyPlotChart x:Name="ViewMsp3DComponentsSelectionOxyPlotChart" LineSeries="{Binding SpectraPoints, Mode=OneWay}" Style="{StaticResource SpectrumViewOxyPlotChartStyle}"  Visibility="{Binding SpectrumExists, Converter={StaticResource BooleanToVisibleConverter}, Mode=OneWay}">
+                        <UIControls:ViewOxyPlotChart.OxyPlotViewAxes>
+                            <oxy:LinearAxis Style="{StaticResource SpectrumOxyAxisXStyle}"/>
+                            <oxy:LinearAxis Style="{StaticResource SpectrumOxyAxisYStyle}"/>
+                        </UIControls:ViewOxyPlotChart.OxyPlotViewAxes>
+                    </UIControls:ViewOxyPlotChart>                    
+                </StackPanel>
+                <!--	<ComboBox Visibility="{Binding SpectrumExists, Converter={StaticResource BooleanToVisibleConverter}}"	
+					ItemsSource="{Binding SpectrumColors}" ItemTemplate="{DynamicResource ColorNameDataTemplate}"
+					SelectedItem="{Binding Color, Mode=TwoWay}"
+					VerticalContentAlignment="Center" HorizontalAlignment="Center" 
+					VerticalAlignment="Center" />-->
+                <CheckBox Content="Display Difference Image" Margin="5,0" IsChecked="{Binding ImageLayer.ImagingComponent.Tlp}" VerticalAlignment="Center" IsEnabled="{Binding DataContext.IsTlpEnabled, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=OneWay}" Visibility="Collapsed"/>
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="FramesPerComponentTaskDataTemplate">
+            <StackPanel x:Name="stackPanel" Orientation="Horizontal" >
+                <CheckBox IsChecked="{Binding IsScheduled}" Margin="0,0,2,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <TextBlock TextWrapping="Wrap" Text="{Binding Item.Value}"/>
+            </StackPanel>
+        </DataTemplate>
+        <Xvue_MSOT_ViewModels_Imaging:ViewModel3DPane x:Key="ViewModel3DPaneSessionDataSource" d:IsDataSource="True"/>
+    </UserControl.Resources>
+
+    <Grid d:DataContext="{Binding Source={StaticResource ViewModel3DPaneSessionDataSource}}" Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="65"/>
+            <RowDefinition Height="4"/>
+            <RowDefinition MinHeight="100" MaxHeight="250"/>
+            <RowDefinition Height="60"/>
+        </Grid.RowDefinitions>
+        <StackPanel x:Name="stackPanel" Orientation="Horizontal" Margin="0,2" Grid.Row="1" >
+            <Border Height="60" Margin="25,0,5,0" Width="60" Background="Black">
+                <Image Source="{Binding ComponentsPreviewProperties.MainImageBackgroundLayer.Image}"/>
+            </Border>
+            <StackPanel Orientation="Vertical" Width="110" VerticalAlignment="Center">
+                <TextBox TextWrapping="Wrap" VerticalAlignment="Center" MinWidth="100" Margin="0" d:LayoutOverrides="Width" IsReadOnly="True" Text="Background"/>
+                <ComboBox 
+					ItemsSource="{Binding ComponentsPreviewProperties.MainImageBackgroundLayer.ImagingComponent.UsedPalette.PaletteNames}"  
+					SelectedItem="{Binding ComponentsPreviewProperties.MainImageBackgroundLayer.ImagingComponent.UsedPalette.SelectedPaletteName, Mode=TwoWay}" Margin="0,4,0,0" Style="{DynamicResource UidComboBoxStyle}"/>
+            </StackPanel>
+            <StackPanel Orientation="Vertical" Width="160" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="83,0,0,0">
+                <Label VerticalAlignment="Center" Margin="0" d:LayoutOverrides="Width" Content="Component Layers:"/>
+                <ComboBox 
+					ItemsSource="{Binding DisplayNames, Source={StaticResource EnumConversionComposeMethodDataSource}}" 
+					SelectedItem="{Binding ComponentsPreviewProperties.ImageLayersComposeMethod, Converter={StaticResource EnumConversionComposeMethod}, Mode=TwoWay}" Margin="0,4,0,0" Style="{DynamicResource UidComboBoxStyle}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Width="auto" VerticalAlignment="Center" HorizontalAlignment="center" Margin="27,0,0,0" Visibility="{Binding OxyMapComponentTasksAvailable, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <CheckBox x:Name="oxyMapCheckBox" Style="{DynamicResource SimpleCheckBox}" Content=" Oxygenation Map" IsChecked="{Binding ComponentsPreviewProperties.IsOxyMapEnabled, Mode=Twoway}" ToolTip="Show oxygenation map" Width="auto" Margin="0,0,0,0" Visibility="Collapsed"/>
+            </StackPanel>
+        </StackPanel>
+        <Rectangle Fill="Black" Stroke="Black" Grid.Row="2"/>
+        <ListView x:Name="ComponentsList" ToolTip="Components" d:LayoutOverrides="Height"
+			VirtualizingStackPanel.IsVirtualizing="False"
+			ItemsSource="{Binding ComponentTasks}" 
+			ItemTemplate="{DynamicResource ComponentTaskDataTemplate}" Margin="0,2" Grid.Row="3" Grid.RowSpan="1" />
+        <StackPanel  Orientation="Horizontal" Margin="4,2" Grid.Row="4"  Visibility="{Binding CanFramesPerComponentTasks, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TextBlock  Text="Frames/Component:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,3,4,0" />
+            <ListView x:Name="FramesPerComponentList" ToolTip="Frames per Component" BorderBrush="Transparent"
+				VirtualizingStackPanel.IsVirtualizing="False"
+				ItemsSource="{Binding FramesPerComponentTasks}" 
+				ItemTemplate="{DynamicResource FramesPerComponentTaskDataTemplate}" Margin="5,2,0,2" Width="100" IsEnabled="{Binding CanFramesPerComponentTasks, Mode=OneWay}">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Setter Property="Focusable" Value="false"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
+        </StackPanel>
+        <Button Content="Apply" Height="27" Width="75" x:Name="applyChanges" Command="{Binding CommandGetComponentsUpdates}" HorizontalAlignment="Right" Grid.Row="4" Margin="0,10,25,10"/>
+    </Grid>
+</UserControl>

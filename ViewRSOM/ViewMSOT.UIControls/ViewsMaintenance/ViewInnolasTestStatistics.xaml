@@ -1,0 +1,167 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:local="clr-namespace:ViewMSOT.UIControls"
+	xmlns:Xvue_MSOT_Hardware_ViewModels_Experiment="clr-namespace:Xvue.MSOT.Hardware.ViewModels.Experiment;assembly=Xvue.MSOT.Hardware.ViewModels" 
+	xmlns:Xvue_Framework_Views_WPF_Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF"
+	xmlns:Xvue_Framework_Views_WPF_Controls="clr-namespace:Xvue.Framework.Views.WPF.Controls;assembly=Xvue.Framework.Views.WPF"
+	xmlns:oxy="http://oxyplot.org/wpf"
+	mc:Ignorable="d"
+	x:Class="ViewMSOT.UIControls.ViewInnolasTestStatistics"
+	x:Name="UserControl"
+	d:DesignWidth="640" d:DesignHeight="480">
+    <UserControl.Resources>
+        <Xvue_Framework_Views_WPF_Converters:BooleanToVisibleConverter x:Key="BooleanToVisibleConverter"/>
+        <Xvue_Framework_Views_WPF_Converters:DoubleToStringConverter x:Key="DoubleToStringConverter"/>
+        <Xvue_MSOT_Hardware_ViewModels_Experiment:ViewModelLaserSelfTestResults x:Key="ViewModelLaserSelfTestResultsDataSource" d:IsDataSource="True"/>
+        <DataTemplate x:Key="PointDataTemplate">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding X}" Margin="0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <TextBlock Text="nm" TextWrapping="Wrap" Margin="2,0,0,0" />
+                <TextBlock Text="{Binding Y}" Margin="8,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            </StackPanel>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot" d:DataContext="{Binding Source={StaticResource ViewModelLaserSelfTestResultsDataSource}}">
+        <TabControl Style="{DynamicResource TabControlNeonStyle}" ItemContainerStyle="{StaticResource TabItemNeonStyle}">
+            <TabItem Header="Summary"  VerticalAlignment="Bottom" Margin="0">
+                <Grid Background="{DynamicResource BackgroundLightColor}">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="28"/>
+                        <RowDefinition Height="28"/>
+                        <RowDefinition Height="28"/>
+                        <RowDefinition Height="28"/>
+                        <RowDefinition Height="28"/>
+                        <RowDefinition/>
+                        <RowDefinition Height="28"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin">
+                        <TextBlock Text="Energy Test :" />
+                        <TextBlock Text="{Binding LaserPowerMessage, Mode=OneWay}" Margin="5,0,0,0" />
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin">
+                        <TextBlock Text="Tunning accuracy test :" />
+                        <TextBlock Text="{Binding LaserAccuracyMessage, Mode=OneWay}" Padding="5,0,0,0" />
+                    </StackPanel>
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin">
+                        <TextBlock Text="Flash-Lamp shot counter :" />
+                        <TextBlock Text="{Binding FlashLampShotCounter}" Padding="5,0,0,0"/>
+                        <TextBlock Text="{Binding FlashLampShotMessage, Mode=OneWay}" Margin="5,0,0,0" />
+                    </StackPanel>
+                    <StackPanel Grid.Row="3" Orientation="Horizontal" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin">
+                        <TextBlock Text="PockelScell shot counter :" />
+                        <TextBlock Text="{Binding PockelsCellCounter}" Margin="5,0,0,0"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="4" Orientation="Horizontal" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin">
+                        <TextBlock Text="Water-Flow :" />
+                        <TextBlock Text="{Binding WaterFlow, ConverterParameter=F1, Converter={StaticResource DoubleToStringConverter}, Mode=OneWay}" Margin="5,0,0,0"/>
+                        <TextBlock Text="l/min" Margin="1,0,0,0"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="5" Orientation="Horizontal" Grid.RowSpan="2" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin">
+                        <TextBlock Text="Water temperature:" />
+                        <TextBlock Text="{Binding WaterTemperature, ConverterParameter=F1, Converter={StaticResource DoubleToStringConverter}, Mode=OneWay}" Margin="4,0,0,0"/>
+                        <TextBlock Text="°" Padding="1,0,0,0"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin" Grid.Row="6">
+                        <TextBlock Text="Spectrometer data present :" />
+                        <TextBlock Text="{Binding SpectralDataAvailable, Mode=OneWay}" Margin="5,0,0,0" />
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Energy" VerticalAlignment="Bottom" Margin="0">
+                <Grid Background="{DynamicResource BackgroundLightColor}">
+                    <local:ViewOxyPlotChart x:Name="ViewInnolasTestStatisticsOxyPlotChart" Margin="0" Grid.ColumnSpan="5" ChartData="{Binding PowerChartData, Mode=OneWay}" Style="{StaticResource InnolasTestStatisticsChartStyle}"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Wavelengths" VerticalAlignment="Bottom" Visibility="{Binding SpectralDataAvailable, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}, Mode=OneWay}">
+                <Grid Background="{DynamicResource BackgroundLightColor}" Visibility="{Binding SpectralDataAvailable, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}, Mode=OneWay}">
+                    <local:ViewOxyPlotChart x:Name="ViewInnolasTestStatisticsOxyPlotChart2" Margin="0" Grid.ColumnSpan="5" ChartData="{Binding WavelengthChartData, Mode=OneWay}" Style="{StaticResource InnolasTestStatisticsChartStyle}"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="All Samples" Visibility="{Binding SpectralDataAvailable, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}, Mode=OneWay}">
+                <Grid x:Name="LayoutRoot1" Visibility="{Binding SpectralDataAvailable, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}, Mode=OneWay}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="90"/>
+                        <ColumnDefinition Width="62"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Border BorderBrush="#FF2BAB08" BorderThickness="2" Grid.ColumnSpan="3">
+                        <local:ViewOxyPlotChart x:Name="ViewInnolasTestStatisticsOxyPlotChart3" Margin="0" Grid.ColumnSpan="5" ChartData="{Binding AllSamplesChartData, Mode=OneWay}" Style="{StaticResource InnolasTestStatisticsChartStyle}"/>
+                    </Border>
+                    <Xvue_Framework_Views_WPF_Controls:SlowMovingSlider Maximum="{Binding InnolasSelfTestSpectraLength, Mode=OneWay}" Value="{Binding InnolasSelfTestSpectraIndex, UpdateSourceTrigger=Explicit}" Minimum="0" Margin="4,4" TickPlacement="Both" TickFrequency="8" RenderTransformOrigin="0.5,0.5" SmallChange="1" Grid.Row="1" Grid.Column="2" Grid.RowSpan="5" VerticalAlignment="Top">
+                        <Xvue_Framework_Views_WPF_Controls:SlowMovingSlider.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform ScaleX="1" ScaleY="-1"/>
+                                <SkewTransform AngleX="0" AngleY="0"/>
+                                <RotateTransform Angle="0"/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </Xvue_Framework_Views_WPF_Controls:SlowMovingSlider.RenderTransform>
+                    </Xvue_Framework_Views_WPF_Controls:SlowMovingSlider>
+                    <Label Content="Expected Wl" d:LayoutOverrides="Width, Height" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Row="2"/>
+                    <StackPanel Orientation="Horizontal" d:LayoutOverrides="Height" Grid.Column="1" VerticalAlignment="Center" Grid.Row="2">
+                        <TextBlock TextWrapping="Wrap" Text="{Binding SelectedShotWavelength, ConverterParameter=F0, Converter={StaticResource DoubleToStringConverter}, Mode=OneWay}" d:LayoutOverrides="Width"/>
+                        <TextBlock TextWrapping="Wrap" Text="nm" Margin="2,0,0,0"/>
+                    </StackPanel>
+                    <Label Content="Actual Wl" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Row="3"/>
+                    <StackPanel Orientation="Horizontal" Grid.Column="1" VerticalAlignment="Center" Grid.Row="3">
+                        <TextBlock TextWrapping="Wrap" Text="{Binding SelectedShotActualWavelength, ConverterParameter=F0, Converter={StaticResource DoubleToStringConverter}, Mode=OneWay}" d:LayoutOverrides="Width"/>
+                        <TextBlock TextWrapping="Wrap" Text="nm" Margin="2,0,0,0"/>
+                    </StackPanel>
+                    <Label Content="Wl Offset" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Row="4"/>
+                    <StackPanel Orientation="Horizontal" Grid.Column="1" VerticalAlignment="Center" Grid.Row="4">
+                        <TextBlock TextWrapping="Wrap" Text="{Binding SelectedShotActualWavelengthOffset, ConverterParameter=F0, Converter={StaticResource DoubleToStringConverter}, Mode=OneWay}" d:LayoutOverrides="Width"/>
+                        <TextBlock TextWrapping="Wrap" Text="nm" Margin="2,0,0,0"/>
+                    </StackPanel>
+                    <Label Content="Energy" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Row="5"/>
+                    <StackPanel Orientation="Horizontal" Grid.Column="1" VerticalAlignment="Center" Grid.Row="5">
+                        <TextBlock TextWrapping="Wrap" Text="{Binding SelectedShotPower, ConverterParameter=F0, Converter={StaticResource DoubleToStringConverter}, Mode=OneWay}" d:LayoutOverrides="Width"/>
+                        <TextBlock TextWrapping="Wrap" Text="mJ" Margin="2,0,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Debug" VerticalAlignment="Bottom" Margin="0,0,-4,0" Visibility="Hidden">
+                <Grid Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="0.447*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.2*"/>
+                        <ColumnDefinition Width="0.2*"/>
+                        <ColumnDefinition Width="0.2*"/>
+                        <ColumnDefinition Width="0.2*"/>
+                        <ColumnDefinition Width="0.2*"/>
+                        <ColumnDefinition Width="0.2*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Average Energy" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Row="1"/>
+                    <ListBox x:Name="averagePower" Grid.Row="2" ItemsSource="{Binding AverageLaserPowerSamples}" ItemTemplate="{DynamicResource PointDataTemplate}"/>
+                    <Label Content="StdDev Energy" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Row="1" Grid.Column="1"/>
+                    <ListBox x:Name="stdDevPower" Grid.Row="2" ItemsSource="{Binding StdDevLaserPowerSamples}" Grid.Column="1"/>
+                    <Label Content="WL Offsets" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Row="1" Grid.Column="2"/>
+                    <ListBox x:Name="offsetValues" Grid.Row="2" ItemsSource="{Binding WavelengthsOffsets}" Grid.Column="2"/>
+                    <Label Content="Wl. Std. Deviation" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Row="1" Grid.Column="3"/>
+                    <ListBox x:Name="stdValues" Grid.Row="2" ItemsSource="{Binding WavelengthsStdDeviations}" Grid.Column="3"/>
+                    <Label Content="All actual WLs" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Row="1" Grid.Column="4"/>
+                    <ListBox x:Name="unaveragedWlValues" Grid.Row="2" ItemsSource="{Binding ActualWavelengths}" Grid.Column="4"/>
+                    <Label Content="All Energy Samples" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="5" Grid.Row="1"/>
+                    <ListBox x:Name="unaveragedPower" Grid.Row="2" Grid.Column="5" ItemsSource="{Binding LaserPowerSamples}" ItemTemplate="{DynamicResource PointDataTemplate}"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

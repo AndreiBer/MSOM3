@@ -1,0 +1,29 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"	
+    xmlns:oxy="http://oxyplot.org/wpf"
+	xmlns:Xvue_Framework_Views_WPF_Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF"	
+	mc:Ignorable="d"
+	x:Class="ViewMSOT.UIControls.ViewSpectrumGraphTooltip"
+	x:Name="UserControl"
+	 Background="#FFCECECE">
+	<UserControl.Resources>
+        <Xvue_Framework_Views_WPF_Converters:DoubleToStringConverter x:Key="DoubleToStringConverter"/>
+    </UserControl.Resources>	
+    
+	<Grid Width="150" Height="90">
+        <oxy:PlotView x:Name="spectraPlotView" PlotType="XY" Background="LightGray" PlotAreaBackground="WhiteSmoke" Padding="7,3,3,3">
+            <oxy:PlotView.Axes>
+                <oxy:LinearAxis MaximumPadding="0.05" MinimumPadding="0.01" IsAxisVisible="False" IsZoomEnabled="False" IsPanEnabled="False"/>
+                <oxy:LinearAxis MaximumPadding="0.05" MinimumPadding="0"  AxisTickToLabelDistance="0" 
+                                Position="Bottom" FontSize="10" IsZoomEnabled="False" IsPanEnabled="False"/>
+            </oxy:PlotView.Axes>
+            <oxy:PlotView.Series>
+                <oxy:LineSeries ItemsSource="{Binding ElementName=UserControl, Path=LineSeries}" StrokeThickness="2" MarkerSize="3" Color="Orange"/>
+            </oxy:PlotView.Series>
+        </oxy:PlotView>
+
+    </Grid>	
+</UserControl>

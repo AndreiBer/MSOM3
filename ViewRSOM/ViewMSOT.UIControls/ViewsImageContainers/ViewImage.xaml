@@ -1,0 +1,244 @@
+﻿<local:ViewImageBase
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:local="clr-namespace:ViewMSOT.UIControls"
+	xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+	xmlns:Xvue_MSOT_ViewModels_Imaging="clr-namespace:Xvue.MSOT.ViewModels.Imaging;assembly=Xvue.MSOT.ViewModels"
+	xmlns:Xvue_Framework_Views_WPF_Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF"
+	mc:Ignorable="d"
+	x:Class="ViewMSOT.UIControls.ViewImage"
+	d:DesignWidth="387" d:DesignHeight="398" Loaded="UserControlLoaded" DataContextChanged="UserControlDataContextChanged" PreviewKeyDown="UserControlKeyDown" Focusable="True" ContextMenuOpening="UserControl_ContextMenuOpening">
+	<local:ViewImageBase.Resources>
+		<Style TargetType="local:ViewImage">
+			<Setter Property="IsRulerDrawing" Value="{Binding ImageProperties.RulersViewingPlanes.IsRulerDrawing}"/>
+			<Setter Property="IsMultipleRulerDrawing" Value="{Binding ImageProperties.RulersViewingPlanes.IsMultipleRulerDrawing}"/>
+			<Setter Property="ZoomInfo" Value="{Binding ImageProperties.ZoomInfo, Mode=TwoWay}"/>
+		</Style>
+		<Xvue_Framework_Views_WPF_Converters:BooleanToBitmapScalingModeConverter x:Key="BooleanToBitmapScalingModeConverter"/>
+		<Xvue_Framework_Views_WPF_Converters:InvertedBooleanToVisibleConverter x:Key="InvertedBooleanToVisibleConverter"/>
+		<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+		<Xvue_Framework_Views_WPF_Converters:BooleanOrToVisibleConverter x:Key="BooleanOrToVisibleConverter"/>
+		<Xvue_Framework_Views_WPF_Converters:BooleanAndToVisibleConverter x:Key="BooleanAndToVisibleConverter"/>
+		<Xvue_MSOT_ViewModels_Imaging:ViewModelPreview x:Key="ViewModelPreviewDataSource" d:IsDataSource="True"/>
+		<!-- Simple Thumb - The Thumb is the draggable part of the Scrollbar -->
+		<Style x:Key="PolygonControlThumbStyle" d:IsControlPart="True" TargetType="{x:Type Thumb}" BasedOn="{x:Null}">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type Thumb}">
+						<Grid Margin="0,0,0,0" x:Name="Grid" Visibility="Visible" Opacity="0.45">
+							<Ellipse HorizontalAlignment="Stretch" x:Name="Rectangle" VerticalAlignment="Stretch" Width="12" Height="12" Stroke="{DynamicResource NormalBorderBrush}" Fill="#FFCA1C00"/>
+							<Ellipse HorizontalAlignment="Stretch" x:Name="RectangleExpander" VerticalAlignment="Stretch" Width="{DynamicResource ControlThumbsTouchAreaLength}" Height="{DynamicResource ControlThumbsTouchAreaLength}" Stroke="Transparent" Fill="Transparent"/>
+						</Grid>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsFocused" Value="True"/>
+							<Trigger Property="IsMouseOver" Value="True">
+								<Setter Property="Fill" TargetName="Rectangle" Value="#FFCA1C00"/>
+								<Setter Property="Visibility" TargetName="Grid" Value="Visible"/>
+								<Setter Property="Opacity" TargetName="Grid" Value="1"/>
+							</Trigger>
+							<Trigger Property="IsEnabled" Value="False"/>
+							<Trigger Property="IsDragging" Value="True"/>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+			<Style.Triggers>
+				<Trigger Property="IsDragging" Value="False"/>
+				<EventTrigger RoutedEvent="FrameworkElement.Loaded"/>
+			</Style.Triggers>
+		</Style>
+		<Style x:Key="AnchorControlThumbStyle" d:IsControlPart="True" TargetType="{x:Type Thumb}" BasedOn="{x:Null}">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type Thumb}">
+						<Grid Margin="0,0,0,0" x:Name="Grid" Visibility="Visible" Opacity="0.45">
+							<Ellipse HorizontalAlignment="Stretch" x:Name="Rectangle" VerticalAlignment="Stretch" Width="12" Height="12" Stroke="{DynamicResource NormalBorderBrush}" Fill="#FF0027FF"/>
+							<Ellipse HorizontalAlignment="Stretch" x:Name="RectangleExpander" VerticalAlignment="Stretch" Width="{DynamicResource ControlThumbsTouchAreaLength}" Height="{DynamicResource ControlThumbsTouchAreaLength}" Stroke="Transparent" Fill="Transparent"/>
+						</Grid>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsFocused" Value="True"/>
+							<Trigger Property="IsMouseOver" Value="True">
+								<Setter Property="Fill" TargetName="Rectangle" Value="#FFCA1C00"/>
+								<Setter Property="Visibility" TargetName="Grid" Value="Visible"/>
+								<Setter Property="Opacity" TargetName="Grid" Value="1"/>
+							</Trigger>
+							<Trigger Property="IsEnabled" Value="False"/>
+							<Trigger Property="IsDragging" Value="True"/>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+			<Style.Triggers>
+				<Trigger Property="IsDragging" Value="False"/>
+				<EventTrigger RoutedEvent="FrameworkElement.Loaded"/>
+			</Style.Triggers>
+		</Style>
+		<Style x:Key="ListBoxStyle1" TargetType="{x:Type ListBox}">
+			<Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type ListBox}">
+						<ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+	</local:ViewImageBase.Resources>
+
+	<local:ViewImageBase.ContextMenu>
+		<ContextMenu Opened="ContextMenuOpened">
+			<ContextMenu.Visibility>
+				<MultiBinding Converter="{StaticResource BooleanOrToVisibleConverter}" ConverterParameter="Hidden">
+					<Binding Path="ImageProperties.DrawingRegions2D.IsPasteRoiAvailable"/>
+					<Binding Path="ImageProperties.ParentVisualization.IsCreateComparisonAllowed"/>
+					<Binding Path="ImageProperties.ParentVisualization.IsDeleteImagingSessionAllowed"/>
+				</MultiBinding>
+			</ContextMenu.Visibility>
+			<MenuItem Header="Paste ROI" Style="{DynamicResource UidMenuItemStyle}" Command="{Binding ImageProperties.DrawingRegions2D.PasteRegionCommand, Mode=OneWay}"
+					  Visibility="{Binding ImageProperties.DrawingRegions2D.IsPasteRoiAvailable, Mode=OneWay, Converter={StaticResource BooleanToVisibleConverter}, ConverterParameter=Collapsed}"/>
+			<Separator>
+				<Separator.Style>
+					<Style TargetType="Separator">
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding ImageProperties.DrawingRegions2D.IsPasteRoiAvailable}" Value="False">
+								<Setter Property="Visibility" Value="Collapsed"/>
+							</DataTrigger>
+							<MultiDataTrigger>
+								<MultiDataTrigger.Conditions>
+									<Condition Binding="{Binding ImageProperties.DrawingRegions2D.IsPasteRoiAvailable}" Value="True"/>
+									<Condition Binding="{Binding ImageProperties.ParentVisualization.IsCreateComparisonAllowed}" Value="False"/>
+									<Condition Binding="{Binding ImageProperties.ParentVisualization.IsDeleteImagingSessionAllowed}" Value="False"/>
+								</MultiDataTrigger.Conditions>
+								<Setter Property="Visibility" Value="Collapsed"/>
+							</MultiDataTrigger>
+						</Style.Triggers>
+					</Style>
+				</Separator.Style>
+			</Separator>
+			<MenuItem Header="Create comparison" Style="{DynamicResource UidMenuItemStyle}" DataContext="{Binding ImageProperties.ParentVisualization}"
+					  Visibility="{Binding IsCreateComparisonAllowed, Mode=OneWay, Converter={StaticResource BooleanToVisibleConverter}, ConverterParameter=Collapsed}"
+					  Click="MenuItemClick"/>
+			<MenuItem Header="Remove from comparison" Style="{DynamicResource UidMenuItemStyle}" DataContext="{Binding ImageProperties.ParentVisualization}"
+					  Visibility="{Binding IsDeleteImagingSessionAllowed, Mode=OneWay, Converter={StaticResource BooleanToVisibleConverter}, ConverterParameter=Collapsed}"
+					  Command="{Binding CommandRemoveClinicalImagingSession, Mode=OneWay}"/>
+			<MenuItem Header="Copy properties to another scan" Style="{DynamicResource UidMenuItemStyle}" DataContext="{Binding ImageProperties.ParentVisualization}"
+					  Visibility="{Binding IsCopyImageSessionSettingsAllowed, Mode=OneWay, Converter={StaticResource BooleanToVisibleConverter}, ConverterParameter=Collapsed}"
+					  Command="{Binding CommandCopyImageSessionSettings, Mode=OneWay}"/>
+			<MenuItem Header="Copy properties to all scans" Style="{DynamicResource UidMenuItemStyle}" DataContext="{Binding ImageProperties.ParentVisualization}"
+					  Visibility="{Binding IsCopyPasteImageSessionSettingsToAllAllowed, Mode=OneWay, Converter={StaticResource BooleanToVisibleConverter}, ConverterParameter=Collapsed}"
+					  Command="{Binding CommandCopyPasteImageSessionSettingsToAll, Mode=OneWay}"/>
+		</ContextMenu>
+	</local:ViewImageBase.ContextMenu>
+
+	<AdornerDecorator HorizontalAlignment="Stretch" SnapsToDevicePixels="True">
+
+		<Grid x:Name="grid" Background="Black" d:DataContext="{Binding Mode=OneWay, Source={StaticResource ViewModelPreviewDataSource}}">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="33"/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*"/>
+				<RowDefinition Height="33"/>
+			</Grid.RowDefinitions>
+
+			<Viewbox x:Name="zpViewBox" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="50" Panel.ZIndex="1" Margin="3" IsHitTestVisible="False">
+				<Border x:Name="zpImageBorder" BorderBrush="#FF47F904" BorderThickness="3" Background="#00000000" >
+					<Canvas Background="#33F0FFFF" ClipToBounds="True" Height="{Binding ActualHeight, ElementName=imageCanvas}" Width="{Binding ActualWidth, ElementName=imageCanvas, Mode=OneWay}">
+						<Rectangle x:Name="zpViewportRect" Stroke="Black" StrokeThickness="3" Width="{Binding ActualWidth, ElementName=grid}" Height="{Binding ActualHeight, ElementName=grid}"/>
+					</Canvas>
+				</Border>
+			</Viewbox>
+
+			<Border Grid.Column="1" Background="Black" BorderBrush="Gray" ClipToBounds="True"  x:Name="borderGrid"  BorderThickness="0" d:LayoutOverrides="Width" 
+					MouseWheel="borderGridMouseWheel" 
+					SizeChanged="BorderGridSizeChanged"
+					TouchEnter="borderGridTouchEnter" TouchLeave="borderGridTouchLeave" TouchMove="borderGridTouchMove">
+				<Canvas x:Name="placementCanvas"  Focusable="False">
+					<Border x:Name="imageCanvasBorder" HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="Blue" BorderThickness="1" >
+						<Canvas x:Name="imageCanvas" HorizontalAlignment="Center" VerticalAlignment="Center" 
+								Width="{Binding ActualWidth, ElementName=backgroundImage, Mode=OneWay}" 
+								Height="{Binding ActualHeight, ElementName=backgroundImage, Mode=OneWay}"
+								SizeChanged="imageCanvasSizeChanged"                             
+								MouseMove="imageCanvasMouseMove" 
+								MouseLeftButtonDown="imageCanvasMouseLeftButtonDown" 
+								MouseLeftButtonUp="imageCanvasMouseLeftButtonUp" 
+								MouseRightButtonDown="imageCanvasMouseRightButtonDown">
+
+							<Grid x:Name="imageGrid" MouseDown="imageGridMouseDown">
+								<Image x:Name="backgroundImage" RenderOptions.BitmapScalingMode="{Binding MSOTService.PixelatedRenderingMode, Converter={StaticResource BooleanToBitmapScalingModeConverter}}"
+								   Source="{Binding RelativeSource={RelativeSource AncestorType=local:ViewImageBase}, Path=ActiveImageSource, Mode=OneWay, NotifyOnTargetUpdated=True}"                                
+								   LayoutTransform="{Binding RelativeSource={RelativeSource AncestorType=local:ViewImageBase}, Path=ActiveImageTransform, Mode=OneWay}"
+								   TargetUpdated="backgroundImageTargetUpdated"/>
+
+								<local:CrosshairControl x:Name="crossHairControl" 
+									Panel.ZIndex="1" 
+									Visibility="{Binding CrosshairVisibility, RelativeSource={RelativeSource AncestorType=local:ViewImageBase}}" 
+									Width="{Binding ActualWidth, ElementName=backgroundImage}" 
+									VerticalPosition="{Binding ActualHeight, ElementName=backgroundImage}"/>
+
+                                <ListBox x:Name="rulersList" ItemsSource="{Binding RulerMeasurementTools, RelativeSource={RelativeSource AncestorType=local:ViewImageBase}, Mode=TwoWay}" LayoutTransform="{Binding RelativeSource={RelativeSource AncestorType=local:ViewImageBase}, Path=ActiveImageTransform, Mode=OneWay}"
+										 Background="Transparent" Style="{DynamicResource ListBoxStyle1}" SelectionMode="Multiple" SelectionChanged="rulersListSelectionChanged">
+                                    <ListBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <Canvas/>
+                                        </ItemsPanelTemplate>
+                                    </ListBox.ItemsPanel>
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="{x:Type ListBoxItem}" BasedOn="{x:Null}">
+                                            <Setter Property="IsSelected" Value="{Binding IsRulerSelected, Mode=TwoWay}"/>
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                                        <local:ViewRulerControl Background="Transparent"
+													        ZoomScale="{Binding Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ViewImage}}}"
+													        ImageElementTransform="{Binding ActiveImageTransform, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ViewImage}}}"
+													        ParentHeight="{Binding ActualHeight, ElementName=backgroundImage, Mode=OneWay}"
+													        ParentWidth="{Binding ActualWidth, ElementName=backgroundImage, Mode=OneWay}"/>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+                                </ListBox>
+
+                                <ListBox x:Name="roisList" ItemsSource="{Binding Region2DAllLayers, RelativeSource={RelativeSource AncestorType=local:ViewImageBase}, Mode=TwoWay}" LayoutTransform="{Binding RelativeSource={RelativeSource AncestorType=local:ViewImageBase}, Path=ActiveImageTransform, Mode=OneWay}"
+										 Background="Transparent" Style="{DynamicResource ListBoxStyle1}" SelectionMode="Single" SelectionChanged="roisListSelectionChanged">
+                                    <ListBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <Canvas/>
+                                        </ItemsPanelTemplate>
+                                    </ListBox.ItemsPanel>
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="{x:Type ListBoxItem}" BasedOn="{x:Null}">
+                                            <Setter Property="IsSelected" Value="{Binding IsRoiSelected, Mode=TwoWay}"/>
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                                        <local:ViewRegionControl Background="Transparent"
+													        ZoomScale="{Binding Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ViewImage}}}"
+													        ParentHeight="{Binding ActualHeight, ElementName=backgroundImage, Mode=OneWay}"
+													        ParentWidth="{Binding ActualWidth, ElementName=backgroundImage, Mode=OneWay}"
+													        RoisStyle="{Binding DataContext.ImageProperties.SelectedROIsStyle, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ViewImage}}}"
+													        ValidPolygonFirstControlPointClick="ViewRegionControlValidPolygonFirstControlPointClick"/>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+                                </ListBox>
+
+                            </Grid>
+						</Canvas>
+					</Border>
+				</Canvas>
+
+			</Border>
+
+	  </Grid>
+
+	</AdornerDecorator>
+	
+</local:ViewImageBase>

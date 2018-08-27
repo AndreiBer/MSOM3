@@ -1,0 +1,196 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser.Innolas
+{
+    internal static class StandardCommandsDictionary
+    {
+        static readonly Dictionary<StandardCommandType, ProtocolCommand> _standardCommands;
+        static readonly Dictionary<string, IncomingMessageType> _standardErrors;
+
+        internal static Dictionary<string, IncomingMessageType> StandardErrors { get { return _standardErrors; } }
+        internal static Dictionary<StandardCommandType, ProtocolCommand> StandardCommands { get { return _standardCommands; } }
+
+        static StandardCommandsDictionary()
+        {
+            _standardCommands = new Dictionary<StandardCommandType, ProtocolCommand>()
+            {
+                { StandardCommandType.StartupLaser,
+                    new ProtocolCommand( 30000, "STARTUP_LASER",  new string[] { "LASER_STATE=WARMUP.PfcOk" } ) },                
+                { StandardCommandType.SetUserModeAdmin, 
+                    new ProtocolCommand( 2000, "SET_USERMODE_ADMIN=", new string[] { "USERMODE=" } ) },
+                { StandardCommandType.GetGuiVersion,
+                    new ProtocolCommand( 3000, "GET_VERSIONS",  new string[] { "GUI_VERSION=" } ) },
+                { StandardCommandType.GetControllerVersion,
+                    new ProtocolCommand( 3000, "GET_VERSIONS",  new string[] { "CONTROLLER_SW_VERSION=" } ) },
+                { StandardCommandType.GetFPGAVersion,
+                    new ProtocolCommand( 3000, "GET_VERSIONS",  new string[] { "FPGA_SW_VERSION=" } ) },
+                { StandardCommandType.GetHWVersion,
+                    new ProtocolCommand( 3000, "GET_VERSIONS",  new string[] { "HW_VERSION=" } ) },
+                { StandardCommandType.GetEMONVersion,
+                    new ProtocolCommand( 3000, "GET_VERSIONS",  new string[] { "ENERGY_MONITOR_VERSION=" } ) },
+                { StandardCommandType.GetOPOVersion,
+                    new ProtocolCommand( 3000, "GET_VERSIONS",  new string[] { "OPO_VERSION=" } ) },
+                { StandardCommandType.GetMaxWavelength, 
+                    new ProtocolCommand( 1000, "GET_MAX_OPO_WAVELENGTH=", new string[] { "MAX_OPO_WAVELENGTH=" } ) },           
+                { StandardCommandType.GetMinWavelength, 
+                    new ProtocolCommand( 1000, "GET_MIN_OPO_WAVELENGTH=",  new string[] { "MIN_OPO_WAVELENGTH=" } ) },           
+                { StandardCommandType.GetChannelSwitch, 
+                    new ProtocolCommand( 1000, "GET_CHANNEL_SWITCH=",  new string[] { "CHANNEL_SWITCH=" } ) },
+                { StandardCommandType.SetChannelSwitch, 
+                    new ProtocolCommand( 1000, "SET_CHANNEL_SWITCH=",  new string[] { "CHANNEL_SWITCH=" } ) },
+                { StandardCommandType.IsChecksumValid,
+                    new ProtocolCommand( 3000, "IS_CHECKSUM_VALID",  new string[] {"CHECKSUM_VALID=YES", "SWEEP_STATE=SWEEP_POSSIBLE" } ) },
+                { StandardCommandType.FlashLampOn,
+                    new ProtocolCommand( 1000, "FLASHLAMP_ON",  new string[] {"SHOT_COUNTER=" } ) },
+                { StandardCommandType.GetPockelscellTriggerState,
+                    new ProtocolCommand( 1000, "GET_POCKELSCELL_TRIGGER_STATE",   new string[] {"POCKELSCELL_TRIGGER_STATE=" } ) },
+                { StandardCommandType.SetPockelscellTriggerState,
+                    new ProtocolCommand( 1000, "SET_POCKELSCELL_TRIGGER_STATE=",  new string[] {"POCKELSCELL_TRIGGER_STATE=ENABLED" } ) },
+                { StandardCommandType.GetPockelScellDelay1,
+                    new ProtocolCommand( 1000, "GET_POCKELSCELL_DELAY_1=",  new string[] {"POCKELSCELL_DELAY_1=" } ) },                                    
+                { StandardCommandType.SetPockelScellDelay1,
+                    new ProtocolCommand( 1000, "SET_POCKELSCELL_DELAY_1=",  new string[] {"POCKELSCELL_DELAY_1=" } ) },
+                { StandardCommandType.GetAmplifierDelay,
+                    new ProtocolCommand( 1000, "GET_AMPLIFIER_DELAY=",  new string[] {"AMPLIFIER_DELAY=" } ) },
+                { StandardCommandType.SetAttenuation,
+                    new ProtocolCommand( 1000, "SET_ATTENUATION=", new string[] { } ) },
+                { StandardCommandType.SetAmplifierDelay,
+                    new ProtocolCommand( 1000, "SET_AMPLIFIER_DELAY=",  new string[] {"AMPLIFIER_DELAY=" } ) },                                    
+                { StandardCommandType.GetPulseDivider,
+                    new ProtocolCommand( 1000, "GET_PULSE_DIVIDER=",  new string[] {"PULSE_DIVIDER=" } ) },                    
+                { StandardCommandType.SetPulseDivider,
+                    new ProtocolCommand( 1000, "SET_PULSE_DIVIDER=", new string[] { } ) },//,  new string[] {"PULSE_DIVIDER=" } ) },
+                { StandardCommandType.SetShutterState,
+                    new ProtocolCommand( 1000, "SET_SHUTTER_STATE=",  new string[] {"SHUTTER_STATE=" } ) },
+                { StandardCommandType.GetShutterState,
+                    new ProtocolCommand( 2000, "GET_SHUTTER_STATE",   new string[] {"SHUTTER_STATE=" } ) },//"LASER_STATE=EMISSION." } ) },
+                { StandardCommandType.ShutdownLaser,
+                    new ProtocolCommand( 35000, "SHUTDOWN_LASER",  new string[] {"LASER_STATE=OFF.FlowOff" } ) },
+                    { StandardCommandType.ShutdownWorkAround,
+                        new ProtocolCommand( 35000, "GET_LASER_STATE",  new string[] {"LASER_STATE=OFF.FlowOff", "LASER_STATE=WARMUP" } ) },
+                
+                { StandardCommandType.SimmerOn,
+                    new ProtocolCommand( 10000, "SIMMER_ON",  new string[] {"SIMMER_STATE=ON","LASER_STATE=READY.PcOnPulseOnShutter" } ) },
+                 //{ InnolasCommandType.SimmerOn,
+                //    new InnolasCommand( 10000, "SIMMER_ON",  new string[] {"SIMMER_STATE=ON","LASER_STATE=READY.PcOnPulseOnShutter" } ) },
+                //{ StandardCommandType.SimmerOn,
+                //    new ProtocolCommand( 10000, "SIMMER_ON",  new string[] {"SIMMER_STATE=ON","LASER_STATE=READY.PcOn" } ) },
+                //{ InnolasCommandType.SimmerOff,
+                //    new InnolasCommand( 10000, "SIMMER_OFF",  new string[] {"SIMMER_STATE=OFF" } ) },
+                { StandardCommandType.GetSimmertState,
+                    new ProtocolCommand( 10000, "GET_SIMMER_STATE",  new string[] {"SIMMER_STATE=" } ) },
+                { StandardCommandType.CheckPowerCorrectionFactorStatus,
+                    new ProtocolCommand( 2000, "GET_LASER_STATE",  new string[] {"LASER_STATE=WARMUP.PfcOk" } ) },
+                { StandardCommandType.FlashLampOff,
+                    new ProtocolCommand( "FLASHLAMP_OFF") },
+                { StandardCommandType.ResetSweepTable,
+                    new ProtocolCommand( "RESET_SWEEP_TABLE") },
+                { StandardCommandType.SetNumberOfPulsesPerWavelength,
+                    new ProtocolCommand( "SET_NUMBER_OF_PULSES_PER_WAVELENGTH=") },
+                { StandardCommandType.SetNumberOfSweeps,
+                    new ProtocolCommand( "SET_NUMBER_OF_SWEEPS=" ) },
+                { StandardCommandType.SetNumberOfSweepTableLines,
+                    new ProtocolCommand( "SET_NUMBER_OF_SWEEP_TABLE_LINES=") },
+                { StandardCommandType.AddSweepTableLine,
+                    new ProtocolCommand( "ADD_SWEEP_TABLE_LINE=") },
+                { StandardCommandType.GetSweepState,
+                    new ProtocolCommand( 1000, "GET_SWEEP_STATE",  new string[] {"SWEEP_STATE=" } ) },
+                { StandardCommandType.StartSweep,
+                    new ProtocolCommand( "START_SWEEP") },
+                { StandardCommandType.StopSweep,
+                    new ProtocolCommand( "STOP_SWEEP") },
+                { StandardCommandType.GetWarningList,
+                    new ProtocolCommand( "GET_WARNING_LIST" ) },
+                { StandardCommandType.GetLaserState,
+                    new ProtocolCommand( 2000, "GET_LASER_STATE",  new string[] {"LASER_STATE=" } ) },
+                { StandardCommandType.SetWavelength,
+                    new ProtocolCommand( "SET_WAVELENGTH=") },
+                { StandardCommandType.ShutterState,
+                    new ProtocolCommand( "SHUTTER_STATE=") },
+                    
+            };
+
+            
+
+            _standardErrors = new Dictionary<string, IncomingMessageType>()
+            {
+#region LASER_ERRORS
+                { "ERROR=MAIN_SWITCH_OPEN" ,IncomingMessageType.Error}, 
+                { "ERROR=EXTERNAL_INTERLOCK_OPEN", IncomingMessageType.Error},
+                { "ERROR=HEAD_INTERLOCK_OPEN",IncomingMessageType.Error },
+                { "ERROR=INTERNAL_INTERLOCK_OPEN",IncomingMessageType.Error},
+                { "ERROR=WATCHDOG_DOWN", IncomingMessageType.Error },
+                { "ERROR=WATER_TEMPERATURE_TOO_HIGH",IncomingMessageType.Error},
+                { "ERROR=WATER_TEMPERATURE_TOO_LOW",IncomingMessageType.Error },
+                { "ERROR=WATER_LEVEL_TOO_LOW",IncomingMessageType.Error},
+                { "ERROR=WATER_FLOW_TOO_LOW",IncomingMessageType.Error},
+                { "ERROR=SHUTTER_ERROR",IncomingMessageType.Error},
+                { "ERROR=K2_OPEN",IncomingMessageType.Error},
+                { "ERROR=NO_END_OF_CHARGE",IncomingMessageType.Error},
+                { "ERROR=EMERGENCY",IncomingMessageType.Error},
+                { "ERROR=CONTROLLING_SW_DISCONNECTED",IncomingMessageType.Error},
+                { "ERROR=MAINS_RELAY_ERROR",IncomingMessageType.Error},
+                { "ERROR=MISSING_AUXILIARY_VOLTAGE",IncomingMessageType.Error },
+                { "ERROR=CHARGER_ERROR", IncomingMessageType.Error},
+                { "ERROR=LOADING_RESISTOR_ERROR",IncomingMessageType.Error},
+                { "ERROR=LAMP_NOT_BURNING",IncomingMessageType.Error },
+                { "ERROR=COOLING_PLATE_TOO_HOT",IncomingMessageType.Error},
+                { "ERROR=AUXILIARY_VOLTAGE_ON_INTERLOCK_3_NOT_LOW",IncomingMessageType.Error},
+                { "ERROR=CAN_HIB_COOLER",IncomingMessageType.Error},
+                { "ERROR=SHUTTER_WRONGLY_ON",IncomingMessageType.Error},
+                { "ERROR=K1_WRONGLY_ON",IncomingMessageType.Error},
+                { "ERROR=AUXILIARY_VOLTAGE_WRONGLY_ON",IncomingMessageType.Error},
+                { "ERROR=PFC_WRONGLY_ON",IncomingMessageType.Error},
+                { "ERROR=K2_WRONGLY_ON",IncomingMessageType.Error},
+                { "ERROR=LAMP_WRONGLY_ON",IncomingMessageType.Error},
+                { "ERROR=SHUTTER_PROTECTION_TIMEOUT",IncomingMessageType.Error},
+                { "REMOTE_IF_MISSING_PARAMETER",IncomingMessageType.Error},
+                { "REMOTE_IF_UNKOWN_PARAMETER",IncomingMessageType.Error},
+                { "REMOTE_IF_NO_LASER_CONNECTED",IncomingMessageType.Error},
+                { "REMOTE_IF_NO_STEPPER_ADDRESSED",IncomingMessageType.Error},
+                { "REMOTE_IF_SIMMER_IS_ON",IncomingMessageType.Error},
+                { "ERROR=UNKNOWN_ERROR",IncomingMessageType.Error},
+#endregion LASER_ERRORS
+#region LASER_WARNINGS
+                { "WARNING=WATER_FLOW_TOO_LOW",IncomingMessageType.Warning},
+                { "WARNING=WATER_TEMPERATURE_TOO_LOW",IncomingMessageType.Warning},
+                { "WARNING=WATER_TEMPERATURE_TOO_HIGH",IncomingMessageType.Warning},                
+                { "WARNING=WATER_LEVEL_TOO_LOW",IncomingMessageType.Warning },
+                { "WARNING=SAFETY_VALVE_ON",IncomingMessageType.Warning},
+                { "WARNING=SAFETY_VALVE_OFF",IncomingMessageType.Warning},
+                { "WARNING=MAIN_SWITCH_CLOSED",IncomingMessageType.Warning},
+                { "WARNING=EXTERNAL_INTERLOCK_CLOSED",IncomingMessageType.Warning},
+                { "WARNING=HEAD_INTERLOCK_CLOSED",IncomingMessageType.Warning},
+                { "WARNING=OVERLOAD",IncomingMessageType.Warning},
+                { "WARNING=OUT_OF_RANGE",IncomingMessageType.Warning},
+                { "WARNING=OPCODE_NOT_AVAILABLE",IncomingMessageType.Warning},
+                { "WARNING=OPCODE_UNKNOWN",IncomingMessageType.Warning},
+                { "WARNING=VALUE_OUT_OF_RANGE",IncomingMessageType.Warning},
+                { "WARNING=ACCESS_LEVEL_VIOLATION",IncomingMessageType.Warning},
+                { "WARNING=EXTERNAL_INTERLOCK_2_CLOSED",IncomingMessageType.InterlockOpen},
+                { "WARNING=EXTERNAL_INTERLOCK_2_OPEN",IncomingMessageType.InterlockOpen},//Renamed command-deprecated-backwards compatibility
+                { "WARNING=DEVICE_NOT_AVAILABLE",IncomingMessageType.Warning},
+                { "WARNING=INVALID_PASSWORD",IncomingMessageType.Warning},
+                { "WARNING=PARAMETER_INVALID",IncomingMessageType.Warning},
+                { "WARNING=EXTERNAL_TRIGGER_1_WAS_OVERCLOCKED",IncomingMessageType.Warning},
+                { "WARNING=EXTERNAL_TRIGGER_1_WAS_UNDERCLOCKED",IncomingMessageType.Warning},
+                { "WARNING=EXTERNAL_TRIGGER_2_WAS_OVERCLOCKED",IncomingMessageType.Warning},
+                { "WARNING=EXTERNAL_TRIGGER_2_WAS_UNDERCLOCKED",IncomingMessageType.Warning},
+                { "WARNING=DELAY_TO_SHORT_FOR_ENERGY_MEASUREMENT",IncomingMessageType.Warning},
+                { "WARNING=ENERGY_CONTROL_LOWER_LIMIT_REACHED",IncomingMessageType.Warning},
+                { "WARNING=ENERGY_CONTROL_UPPER_LIMIT_REACHED",IncomingMessageType.Warning},
+                { "WARNING=SHUTTER_PROTECTION_TIMEOUT",IncomingMessageType.Warning},
+                { "WARNING=CHANNEL_SWITCH_PROTECTION_TIMEOUT",IncomingMessageType.Warning},
+                { "WARNING=SIGNAL_IDLER_SWITCH_PROTECTION_TIMEOUT",IncomingMessageType.Warning},
+                { "WARNING=UNKNOWN_WARNING",IncomingMessageType.Warning},
+#endregion LASER_WARNINGS
+                { "CLEAR_WARNING=EXTERNAL_INTERLOCK_2_CLOSED",IncomingMessageType.InterlockClose},
+                { "CLEAR_WARNING=EXTERNAL_INTERLOCK_2_OPEN",IncomingMessageType.InterlockClose}//Renamed command-deprecated-backwards compatibility
+            };            
+        }
+    }
+
+}

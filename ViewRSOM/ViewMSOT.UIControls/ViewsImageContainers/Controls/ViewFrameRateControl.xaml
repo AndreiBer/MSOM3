@@ -1,0 +1,124 @@
+﻿<UserControl 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"       
+    xmlns:System="clr-namespace:System;assembly=mscorlib" 
+	xmlns:Xvue_Framework_Views_WPF_Controls="clr-namespace:Xvue.Framework.Views.WPF.Controls;assembly=Xvue.Framework.Views.WPF"
+	xmlns:Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF"
+    xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+	xmlns:Xvue_Framework_Views_WPF_Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF"
+    xmlns:Xvue_Framework_Views_WPF_Behaviors="clr-namespace:Xvue.Framework.Views.WPF.Behaviors;assembly=Xvue.Framework.Views.WPF"
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"    
+	x:Class="ViewMSOT.UIControls.ViewFrameRateControl"
+	x:Name="UserControl"
+	mc:Ignorable="d">
+
+	<UserControl.Resources>       
+		<Converters:DoubleToStringConverter x:Key="DoubleToStringConverter"/>
+		<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+		<Xvue_Framework_Views_WPF_Converters:InvertedBooleanToVisibleConverter x:Key="InvertedBooleanToVisibleConverter"/>        
+		<Xvue_Framework_Views_WPF_Converters:BooleanToVisibleConverter x:Key="BooleanToVisibleConverter"/>
+        <Style x:Key="ToggleButtonPlayStyle" TargetType="{x:Type ToggleButton}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
+            <Setter Property="Background" Value="{StaticResource ButtonNormalBackground}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource ButtonNormalBorder}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Width" Value="{DynamicResource UidButtonWidth}"/>
+            <Setter Property="Height" Value="{DynamicResource UidButtonHeight}"/>
+            <Setter Property="Padding" Value="{DynamicResource UidButtonPadding}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Border x:Name="border" BorderThickness="1" Padding="{TemplateBinding Padding}" Background="#00000000">
+                            <Grid>
+                                <Path x:Name="path" Fill="White" Stretch="Uniform" 
+								Data="F1 M 36.6131,445.24C 33.8316,443.469 31.5537,444.719 31.5537,448.016L 31.5537,477.989C 31.5537,481.283 33.8316,482.533 36.6131,480.764L 59.4675,466.221C 62.249,464.45 62.249,461.552 59.4675,459.783L 36.6131,445.24 Z"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="BorderBrush" TargetName="border" Value="White"/>
+                                <Setter Property="Fill" TargetName="path" Value="{DynamicResource UidIconPressedBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground" Value="#ADADAD"/>
+                                <Setter Property="Fill" TargetName="path" Value="{DynamicResource UidIconInvertedDisabledBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Data" TargetName="path" 
+								Value="F1 M 2209.04,2375.08L 2219.04,2375.08L 2219.04,2405.08L 2209.04,2405.08L 2209.04,2375.08 Z M 2224.29,2375.08L 2234.29,2375.08L 2234.29,2405.08L 2224.29,2405.08L 2224.29,2375.08 Z"/>
+                                <!--	<Setter Property="BorderThickness" TargetName="border" Value="2,2,1,1"/>
+								<Setter Property="BorderBrush" TargetName="border" Value="White"/>
+							-->
+                                <Setter Property="Fill" TargetName="path" Value="{DynamicResource UidIconPressedBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Storyboard x:Key="uncheckSelectFrameRateToggleButtonStoryboard" Storyboard.TargetName="selectFrameRateToggleButton" Storyboard.TargetProperty="IsChecked" Duration="0:0:0.1">
+            <BooleanAnimationUsingKeyFrames>
+                <DiscreteBooleanKeyFrame KeyTime="0:0:0" Value="False" />
+            </BooleanAnimationUsingKeyFrames>
+        </Storyboard>
+    </UserControl.Resources>
+	<Grid>
+		<StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock x:Name="imageDetails" Text="{Binding MainImageProperties.ImageTimestampDetails}" TextWrapping="WrapWithOverflow"  HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="30">
+                    <TextBlock.Style>
+                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                            <Setter Property="Foreground" Value="White"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedVisibleSlice.IsImageTagged}" Value="True">
+                                    <Setter Property="Foreground" Value="Red"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </StackPanel>
+
+            <Slider Width="140" SmallChange="1"	Margin="4" Minimum="1" Maximum="{Binding MaxSliceIndex, Mode=OneWay}" Value="{Binding SelectedPreviewSliceIndex, Mode=TwoWay, UpdateSourceTrigger=Default}" 
+                    Style="{DynamicResource UidSliderArrowsStyle}" VerticalAlignment="Center"/>
+            <ToggleButton x:Name="previewVisibleImagesToggleButton" IsChecked="{Binding PreviewVisibleImages}" ToolTip="Preview images" Style="{DynamicResource ToggleButtonPlayStyle}" Margin="4,0,0,0" Width="40" Height="40" VerticalAlignment="Center"  />		
+            <ToggleButton x:Name="selectFrameRateToggleButton" Content="{Binding SelectedPreviewFrameRateString}" Style="{DynamicResource UidToggleButtonInvertedTextStyle}" Margin="2" Padding="2,1" ToolTip="Select Frame Rate" Width="75" Height="40" VerticalAlignment="Center" />
+            <ToggleButton x:Name="repeatToggleButton" Content="{StaticResource IconRepeat}" Style="{DynamicResource UidToggleButtonInvertedStyle}" Height="40" Width="40" Margin="2,0" IsChecked="{Binding PreviewVisibleImagesRepeatMode}" ToolTip="Loop playback"/>
+            <Button Style="{DynamicResource UidButtonIconEnableStyle}" Content="{DynamicResource IconWarning}" Height="40" ToolTip="Accurate display not possible at this frame rate" x:Name="warningImage"  Visibility="{Binding PreviewHasError, ConverterParameter=Hidden, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Center" />
+
+            <Popup StaysOpen="False" IsOpen="{Binding IsChecked, ElementName=selectFrameRateToggleButton, Mode=TwoWay}" PlacementTarget="{Binding ElementName=selectFrameRateToggleButton, Mode=OneWay}" OpacityMask="Black">
+                <Border BorderBrush="Cyan" BorderThickness="1" Background="White">
+                    <StackPanel Orientation="Vertical" Margin="0">
+                        <StackPanel Orientation="Horizontal" Margin="5">
+                            <Label Content="Play speed:" Margin="4" VerticalAlignment="Center"/>
+                            <TextBox x:Name="frameRateTextBox" Width="60" HorizontalContentAlignment="Left" Background="Black"
+                                     Text="{Binding SelectedPreviewFrameRate, ConverterParameter=F0, Converter={StaticResource DoubleToStringConverter}, Mode=TwoWay, NotifyOnSourceUpdated=True}"
+                                     Margin="40,0,0,0" TextAlignment="Right" PreviewKeyDown="TextBox_KeyEnterUpdate">
+                                <i:Interaction.Behaviors>
+                                    <Xvue_Framework_Views_WPF_Behaviors:TextBoxUnsignedIntegerRangeBehavior Minimum="1" Maximum="100"/>
+                                    <Xvue_Framework_Views_WPF_Behaviors:TextBoxSelectAllBehavior/>
+                                </i:Interaction.Behaviors>
+                                <TextBox.Triggers>
+                                    <EventTrigger RoutedEvent="Binding.SourceUpdated">
+                                        <EventTrigger.Actions>
+                                            <BeginStoryboard Storyboard="{StaticResource uncheckSelectFrameRateToggleButtonStoryboard}"/>
+                                        </EventTrigger.Actions>
+                                    </EventTrigger>
+                                </TextBox.Triggers>
+                            </TextBox>
+                            <Label HorizontalContentAlignment="Left" Content="fps" VerticalAlignment="Center"/>
+					    </StackPanel>
+                        <Xvue_Framework_Views_WPF_Controls:SlowMovingSlider Style="{DynamicResource UidSliderStyle}" Width="230" LargeChange="1" SmallChange="1" Background="{DynamicResource UidIconActiveBrush}"						
+                                Minimum="1" Maximum="100" Value="{Binding SelectedPreviewFrameRate, Mode=TwoWay, UpdateSourceTrigger=Default}" VerticalAlignment="Center" Margin="4" />   						
+                    </StackPanel>
+                </Border>
+            </Popup>					
+		</StackPanel>			
+	</Grid>
+</UserControl>

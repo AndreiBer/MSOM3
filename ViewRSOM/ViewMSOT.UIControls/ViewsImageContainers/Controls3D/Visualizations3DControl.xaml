@@ -1,0 +1,139 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Xvue_MSOT_EnumDescriptions_Imaging="clr-namespace:Xvue.MSOT.EnumDescriptions.Imaging;assembly=Xvue.MSOT"
+    
+	xmlns:local="clr-namespace:ViewMSOT.UIControls"
+	xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+	mc:Ignorable="d"
+	x:Class="ViewMSOT.UIControls.Visualizations3DControl"
+	x:Name="UserControl"
+	d:DesignWidth="297.5" d:DesignHeight="306.62" IsVisibleChanged="UserControl_IsVisibleChanged">
+
+    <UserControl.Resources>
+        <Xvue_MSOT_EnumDescriptions_Imaging:EnumConversionVolumeRendererMethod x:Key="EnumConversionVolumerendererMethod"/>
+        <Xvue_MSOT_EnumDescriptions_Imaging:EnumConversionVolumeRendererMethod x:Key="EnumConversionVolumerendererMethodDataSource" d:IsDataSource="True"/>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <Style x:Key="CheckBoxRightTickStyle" TargetType="{x:Type CheckBox}">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+            <Setter Property="Background" Value="#FFF4F4F4"/>
+            <Setter Property="BorderBrush" Value="#FF8E8F8F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FocusVisualStyle">
+                <Setter.Value>
+                    <Style>
+                        <Setter Property="Control.Template">
+                            <Setter.Value>
+                                <ControlTemplate>
+                                    <Rectangle Margin="1" SnapsToDevicePixels="True" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type CheckBox}">
+                        <StackPanel Orientation="Horizontal">
+                            <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            <BulletDecorator Background="Transparent" SnapsToDevicePixels="True" VerticalAlignment="Center">
+                                <BulletDecorator.Bullet>
+                                    <Themes:BulletChrome BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" IsChecked="{TemplateBinding IsChecked}" RenderMouseOver="{TemplateBinding IsMouseOver}" RenderPressed="{TemplateBinding IsPressed}"/>
+                                </BulletDecorator.Bullet>
+                            </BulletDecorator>
+                        </StackPanel>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="HasContent" Value="True">
+                                <Setter Property="FocusVisualStyle">
+                                    <Setter.Value>
+                                        <Style>
+                                            <Setter Property="Control.Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate>
+                                                        <Rectangle Margin="14,0,0,0" SnapsToDevicePixels="True" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Padding" Value="4,0,0,0"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot">
+        <Grid x:Name="extra3DGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Visibility="Collapsed">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <CheckBox x:Name="show3dVolRendCheckBox" Foreground="White" Content="Volume Rendering" Grid.Row="0"
+					IsChecked="{Binding ImageProperties.Show3DVolumeRender, Mode=TwoWay}" Checked="show3dViewCheckBox_CheckedUnchecked" Unchecked="show3dViewCheckBox_CheckedUnchecked"/>
+                <CheckBox x:Name="show3dTextureCheckBox" Foreground="White" Content="3D Textures" Grid.Row="1"
+					IsEnabled="{Binding ImageProperties.ShowMIP, Converter={StaticResource InverseBoolConverter}}" IsEnabledChanged="show3dTextureCheckBox_IsEnabledChanged"
+					IsChecked="{Binding ImageProperties.Show3DTexture, Mode=TwoWay}" Checked="show3dViewCheckBox_CheckedUnchecked" Unchecked="show3dViewCheckBox_CheckedUnchecked"/>
+                <CheckBox x:Name="linkCamerasCheckBox" IsChecked="{Binding ImageProperties.IsCamera3DLinked}" Foreground="White"  Grid.Row="2" Grid.Column="1" Content="Link Camera Controls" HorizontalAlignment="Right" Visibility="Collapsed" />
+
+                <StackPanel HorizontalAlignment="Right" Grid.Column="1" Orientation="Horizontal">
+                    <ComboBox  x:Name="volumeRendererMethodComboBox"  Width="Auto"  IsEnabled="{Binding IsChecked, ElementName=show3dVolRendCheckBox}"
+						SelectedItem="{Binding ImageProperties.SelectedVolumeRendererMethod, Converter={StaticResource EnumConversionVolumerendererMethod}}" VerticalAlignment="Center"
+						ItemsSource="{Binding DisplayNames, Source={StaticResource EnumConversionVolumerendererMethodDataSource}}"/>
+                    <Border BorderThickness="1" BorderBrush="White" Margin="5,0,0,0">
+                        <CheckBox VerticalAlignment="Center" Foreground="White" Content="WireFrame"  Height="Auto" IsChecked="{Binding ImageProperties.ShowVRWireframe, Mode=TwoWay}" 
+                                  Style="{DynamicResource CheckBoxRightTickStyle}" IsEnabled="{Binding IsChecked, ElementName=show3dVolRendCheckBox}"/>
+                    </Border>
+                </StackPanel>
+            </Grid>
+
+            <GridSplitter x:Name="volume3DSplitter" HorizontalAlignment="Stretch" Background="#FF414141" Height="6" ResizeDirection="Rows" Grid.Row="2"/>
+
+            <local:ViewTexture3D x:Name="text3DControl" Grid.Row="3" Grid.RowSpan="5" Background="{DynamicResource BackgroundLightColor}" 
+				ImageXY="{Binding ReconstructedImageXY, Mode=OneWay}" 
+				ImageXZ="{Binding ReconstructedImageXZ, Mode=OneWay}" 
+				ImageYZ="{Binding ReconstructedImageYZ, Mode=OneWay}"
+				SelectedPlaneY ="{Binding ImageProperties.SelectedPlaneX, Mode=OneWay}" 
+				SelectedPlaneX ="{Binding ImageProperties.SelectedPlaneY, Mode=OneWay}"
+				SelectedPlaneZ ="{Binding ImageProperties.SelectedPlaneZ, Mode=OneWay}"
+				VolumeSizeX="{Binding ImageProperties.VolumeWidth, Mode=OneWay}"
+				VolumeSizeY="{Binding ImageProperties.VolumeHeight, Mode=OneWay}"
+				VolumeSizeZ="{Binding ImageProperties.VolumeDepth, Mode=OneWay}"
+				RegionsShapes="{Binding ImageProperties.RegionsDraw3DPane.Regions.RegionsShapes, Mode=OneWay}"
+				ShowRegions="{Binding ImageProperties.ShowRegions}"
+				CurrentShape="{Binding ImageProperties.RegionsDraw3DPane.CurrentRegionShape}"
+				Margin="2" IsCamera3DControlEnabled="{Binding IsCamera3DControlEnabled, ElementName=UserControl}"/>
+            <!--DataContext="{Binding ImageProperties}"-->
+            <local:ViewVolumeRendering x:Name="volume3DControl" Grid.Row="1" Background="#FFF5F5F5"
+				RenderedVolumeImage ="{Binding VolumeRenderedImage, Mode=OneWay}" 
+				Margin="2" IsCamera3DControlEnabled="{Binding IsCamera3DControlEnabled, ElementName=UserControl}"/>
+
+
+        </Grid>
+    </Grid>
+</UserControl>

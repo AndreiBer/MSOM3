@@ -1,0 +1,494 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+      None
+    </ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{52F52B94-97CE-41F4-90D2-1E6611180EF5}</ProjectGuid>
+    <OutputType>library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ViewMSOT.UIControls</RootNamespace>
+    <AssemblyName>ViewMSOT.UIControls</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <ExpressionBlendVersion>12.0.60617.0</ExpressionBlendVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>..\..\Xvue.MSOT.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>..\..\Xvue.MSOT.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="itheractcl">
+      <HintPath>..\..\..\xvue.msot.environment\GPU\x64\itheractcl.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot">
+      <HintPath>..\..\..\xvue.msot.environment\OxyPlot\Core\lib\portable-net4+sl4+wp71+win8\OxyPlot.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot.Wpf">
+      <HintPath>..\..\..\xvue.msot.environment\OxyPlot\Wpf\lib\net40\OxyPlot.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot.Xps">
+      <HintPath>..\..\..\xvue.msot.environment\OxyPlot\Wpf\lib\net40\OxyPlot.Xps.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework.Aero" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\xvue.msot.environment\Xceed\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Adorners\CubicRoiAdorner.cs" />
+    <Compile Include="Adorners\GridAdorner.cs" />
+    <Compile Include="Adorners\InfoAdorner.cs" />
+    <Compile Include="Adorners\RoiAdorner.cs" />
+    <Compile Include="Adorners\RulerAdrorner.cs" />
+    <Compile Include="CommonDataTemplates\ViewNameItem.xaml.cs">
+      <DependentUpon>ViewNameItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewSaveAs.xaml.cs">
+      <DependentUpon>ViewSaveAs.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageContainers\Controls\ViewRulerControlClinicalExperimentToggleButton.xaml.cs">
+      <DependentUpon>ViewRulerControlClinicalExperimentToggleButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageContainers\Controls\ViewRulerControlImagingSessionToggleButton.xaml.cs">
+      <DependentUpon>ViewRulerControlImagingSessionToggleButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageContainers\Controls\ViewRulerControlImagingSuperSessionToggleButton.xaml.cs">
+      <DependentUpon>ViewRulerControlImagingSuperSessionToggleButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageContainers\Controls\ViewSelectPlane.xaml.cs">
+      <DependentUpon>ViewSelectPlane.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageContainers\Controls\ViewRegionControl.xaml.cs">
+      <DependentUpon>ViewRegionControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageContainers\ViewImageBase.cs" />
+    <Compile Include="ViewsImageManipulation\ViewBgWavelengthMenuItemControl.xaml.cs">
+      <DependentUpon>ViewBgWavelengthMenuItemControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageContainers\Controls3D\ViewControlCamera3D.xaml.cs">
+      <DependentUpon>ViewControlCamera3D.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageContainers\Controls3D\ViewTexture3D.xaml.cs">
+      <DependentUpon>ViewTexture3D.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageContainers\Controls3D\ViewVolumeRendering.xaml.cs">
+      <DependentUpon>ViewVolumeRendering.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageContainers\Controls3D\Visualizations3DControl.xaml.cs">
+      <DependentUpon>Visualizations3DControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageContainers\Controls\CrosshairControl.xaml.cs">
+      <DependentUpon>CrosshairControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageContainers\Controls\ViewFrameRateControl.xaml.cs">
+      <DependentUpon>ViewFrameRateControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageContainers\Controls\ViewMeasurementToolsMenuControl.xaml.cs">
+      <DependentUpon>ViewMeasurementToolsMenuControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageContainers\Controls\ViewMsp3DComponentsSelection.xaml.cs">
+      <DependentUpon>ViewMsp3DComponentsSelection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageContainers\Controls\ViewMspComponentsSelection.xaml.cs">
+      <DependentUpon>ViewMspComponentsSelection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageContainers\Controls\ViewRecon3DBackgroundSelection.xaml.cs">
+      <DependentUpon>ViewRecon3DBackgroundSelection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageContainers\Controls\ViewReconBackgroundSelection.xaml.cs">
+      <DependentUpon>ViewReconBackgroundSelection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageContainers\Controls\ViewRulerControl.xaml.cs">
+      <DependentUpon>ViewRulerControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageContainers\Controls\ViewRulerToolsControl.xaml.cs">
+      <DependentUpon>ViewRulerToolsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageContainers\ExportControls\ViewExportNameSingleImage.xaml.cs">
+      <DependentUpon>ViewExportNameSingleImage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageContainers\ExportControls\ViewExportSelected3DImage.xaml.cs">
+      <DependentUpon>ViewExportSelected3DImage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageContainers\ExportControls\ViewExportSelectedImage.xaml.cs">
+      <DependentUpon>ViewExportSelectedImage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageContainers\ExportControls\ViewLayerColorBar.xaml.cs">
+      <DependentUpon>ViewLayerColorBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageContainers\View2DGrid.xaml.cs">
+      <DependentUpon>View2DGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageContainers\View3DGrid.xaml.cs">
+      <DependentUpon>View3DGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageContainers\ViewImage.xaml.cs">
+      <DependentUpon>ViewImage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageManipulation\CurveControl.xaml.cs">
+      <DependentUpon>CurveControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageManipulation\CurveControlParabolic.xaml.cs">
+      <DependentUpon>CurveControlParabolic.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DllEntryPoint.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ViewsImageManipulation\ViewAlphaControl.xaml.cs">
+      <DependentUpon>ViewAlphaControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageManipulation\ViewImageLayerControls.xaml.cs">
+      <DependentUpon>ViewImageLayerControls.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageManipulation\ViewImageLayers.xaml.cs">
+      <DependentUpon>ViewImageLayers.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageManipulation\ViewBackgroundControlHeader.xaml.cs">
+      <DependentUpon>ViewBackgroundControlHeader.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsFiltering\ViewFFTFilter.xaml.cs">
+      <DependentUpon>ViewFFTFilter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageManipulation\ViewForegroundControlHeader.xaml.cs">
+      <DependentUpon>ViewForegroundControlHeader.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsImageManipulation\ViewScalingGaugeSimple.xaml.cs">
+      <DependentUpon>ViewScalingGaugeSimple.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsMaintenance\ViewInnolasTestStatistics.xaml.cs">
+      <DependentUpon>ViewInnolasTestStatistics.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsMaintenance\ViewIssueReportBase.xaml.cs">
+      <DependentUpon>ViewIssueReportBase.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsOffline\ViewOxyPlotChart.xaml.cs">
+      <DependentUpon>ViewOxyPlotChart.xaml</DependentUpon>
+    </Compile>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="CommonDataTemplates\ViewNameItem.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\OxyPlotStyling.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewSaveAs.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsImageContainers\Controls\ViewRulerControlClinicalExperimentToggleButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewsImageContainers\Controls\ViewRulerControlImagingSessionToggleButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewsImageContainers\Controls\ViewRulerControlImagingSuperSessionToggleButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewsImageContainers\Controls\ViewSelectPlane.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsImageContainers\Controls\ViewRegionControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsImageManipulation\ViewBgWavelengthMenuItemControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\UIControlsiTheraStyling.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewsImageContainers\Controls3D\ViewControlCamera3D.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsImageContainers\Controls3D\ViewTexture3D.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsImageContainers\Controls3D\ViewVolumeRendering.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsImageContainers\Controls3D\Visualizations3DControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsImageContainers\Controls\CrosshairControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsImageContainers\Controls\ViewFrameRateControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsImageContainers\Controls\ViewMeasurementToolsMenuControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsImageContainers\Controls\ViewMsp3DComponentsSelection.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsImageContainers\Controls\ViewMspComponentsSelection.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsImageContainers\Controls\ViewRecon3DBackgroundSelection.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsImageContainers\Controls\ViewReconBackgroundSelection.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsImageContainers\Controls\ViewRulerControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsImageContainers\Controls\ViewRulerToolsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsImageContainers\ExportControls\ViewExportNameSingleImage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsImageContainers\ExportControls\ViewExportSelected3DImage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsImageContainers\ExportControls\ViewExportSelectedImage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsImageContainers\ExportControls\ViewLayerColorBar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsImageContainers\View2DGrid.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsImageContainers\View3DGrid.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsImageContainers\ViewImage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsImageManipulation\CurveControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsImageManipulation\CurveControlParabolic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\SharediTheraStyling.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\Simple Styles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GFX\sharedVectorIcons.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsImageManipulation\ViewAlphaControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsImageManipulation\ViewImageLayerControls.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsImageManipulation\ViewImageLayers.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsImageManipulation\ViewBackgroundControlHeader.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsFiltering\ViewFFTFilter.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsImageManipulation\ViewForegroundControlHeader.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsImageManipulation\ViewScalingGaugeSimple.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsMaintenance\ViewInnolasTestStatistics.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewsMaintenance\ViewIssueReportBase.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewsOffline\ViewOxyPlotChart.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Xvue.MSOT\Xvue.Imaging\Xvue.Imaging.csproj">
+      <Project>{bbb2b16b-a48a-4f60-97bc-44dfb398510d}</Project>
+      <Name>Xvue.Imaging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Xvue.MSOT\Xvue.MSOT.ViewModels\Xvue.MSOT.ViewModels.csproj">
+      <Project>{fe070318-b076-442c-9bb6-c9d99ca69222}</Project>
+      <Name>Xvue.MSOT.ViewModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Xvue.MSOT\Xvue.MSOT\Xvue.MSOT.csproj">
+      <Project>{e8b1b385-3eec-4a3d-ba5b-7c31308461d2}</Project>
+      <Name>Xvue.MSOT</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Xvue.Public\Xvue.Framework\Xvue.Framework.Views.WPF\Xvue.Framework.Views.WPF.csproj">
+      <Project>{7725e813-1964-4d0d-9489-7d9f6e557e32}</Project>
+      <Name>Xvue.Framework.Views.WPF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Xvue.Public\Xvue.Framework\Xvue.Framework\Xvue.Framework.csproj">
+      <Project>{6db457f0-c6b4-4268-8304-4f5b586e50ff}</Project>
+      <Name>Xvue.Framework</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="GFX\Textures\backround texture.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="GFX\Textures\checkers.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="GFX\Bitmap Icons\arrow-up-3.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="GFX\Bitmap Icons\arrow-down-3.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="GFX\ITH_Splashscreen_Images\1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="GFX\ITH_Splashscreen_Images\1_Layer Mask.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="GFX\ITH_Splashscreen_Images\2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="GFX\ITH_Splashscreen_Images\2_Layer Mask.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="GFX\ITH_Splashscreen_Images\BG white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="GFX\ITH_Splashscreen_Images\Ebene 1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="GFX\ITH_Splashscreen_Images\Ebene 2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="GFX\ITH_Startup_OAM.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="GFX\iThera Wave.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="GFX\iThera_Wave_small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="GFX\Bitmap Icons\IconError.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="GFX\Bitmap Icons\IconWarning.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="GFX\Bitmap Icons\laser_safety_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="GFX\Bitmap Icons\laser_safety_icon_disabled.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="GFX\Paint.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="GFX\laser_safety.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="..\..\msotCustomDictionary.xml">
+      <Link>msotCustomDictionary.xml</Link>
+    </CodeAnalysisDictionary>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="GFX\Bitmap Icons\IconInfo.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

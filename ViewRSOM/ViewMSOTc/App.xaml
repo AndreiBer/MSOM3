@@ -1,0 +1,36 @@
+﻿<Application x:Class="ViewMSOTc.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="SplashStartup.xaml">
+    <Application.Resources>
+        <!-- Resources scoped at the Application level should be defined here. -->
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/ViewMSOT.UIControls;component/Styles/Simple Styles.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/ViewMSOT.UIControls;component/Styles/SharediTheraStyling.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/ViewMSOT.UIControls;component/GFX/SharedVectorIcons.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/ViewMSOT.UIControls;component/Styles/OxyPlotStyling.xaml"/>
+                <ResourceDictionary Source="GFX/icons/MSOTcVectorIcons.xaml"/>
+                <ResourceDictionary Source="Styles/ClinicaliTheraStyling.xaml"/>
+                <ResourceDictionary Source="Styles/ExportTemplatesResourceDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <!--<Style TargetType="TextBox" x:Key="TextBoxLoseFocusOnEnter"> -->
+            <Style TargetType="TextBox" BasedOn="{StaticResource UidTextBox}">
+                <EventSetter Event="KeyDown" Handler="TextBox_KeyDown"/>
+                <EventSetter Event="LostFocus" Handler="TextBox_LostFocus"/>
+            </Style>
+            <Style TargetType="ListBoxItem" BasedOn="{StaticResource ListBoxItemStretchStyle2}">
+                <EventSetter Event="UIElement.PreviewGotKeyboardFocus" Handler="SelectCurrentItem"/>
+            </Style>
+            <Style TargetType="TabItem" >
+                <EventSetter Event="UIElement.PreviewGotKeyboardFocus" Handler="SelectCurrentTabItem"/>
+            </Style>
+            <Style x:Key="ListViewDirectSelectStyle" TargetType="ListViewItem" >
+                <EventSetter Event="UIElement.PreviewGotKeyboardFocus" Handler="SelectCurrentListViewItem"/>
+            </Style>
+            <!-- Simple SimpleProgressBar
+	 The template uses two Border controls to show the Track and Progress 
+	 Limitations : It only supports a horizontal orientated ProgressBar -->
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

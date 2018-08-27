@@ -1,0 +1,160 @@
+﻿<Window
+	 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:extToolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+	xmlns:local="clr-namespace:ViewMSOT.UIControls"
+	xmlns:Xvue_MSOT_ViewModels_Imaging="clr-namespace:Xvue.MSOT.ViewModels.Imaging;assembly=Xvue.MSOT"
+    xmlns:Xvue_MSOT_ViewModels_ProjectManager_ImagingSession="clr-namespace:Xvue.MSOT.ViewModels.ProjectManager.ImagingSession;assembly=Xvue.MSOT.ViewModels"
+    xmlns:Xvue_Framework_Views_WPF_Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF"		
+    xmlns:Xvue_MSOT_EnumDescriptions_Imaging="clr-namespace:Xvue.MSOT.EnumDescriptions.Imaging;assembly=Xvue.MSOT"
+	mc:Ignorable="d"    
+    x:Class="ViewMSOT.UIControls.ViewExportSelectedImage"
+    x:Name="Window" Title="Export Image Stack" WindowStartupLocation="CenterScreen" WindowStyle="SingleBorderWindow" Width="600" Loaded="Window_Loaded" Height="500" Style="{DynamicResource WindowPopUpDialogStyle}">
+
+    <Window.Resources>
+        <Xvue_Framework_Views_WPF_Converters:DoubleToStringConverter x:Key="DoubleToStringConverter"/>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <ItemsPanelTemplate x:Key="ColorBarItemsPanelTemplate">
+            <StackPanel IsItemsHost="True" Orientation="Horizontal"/>
+        </ItemsPanelTemplate>
+        <Xvue_MSOT_EnumDescriptions_Imaging:EnumConversionStackExportFormats x:Key="EnumConversionStackExportFormatsDataSource" d:IsDataSource="True"/>
+        <Xvue_MSOT_ViewModels_ProjectManager_ImagingSession:ViewModelMspImagingSession x:Key="ViewModelImagingSessionDataSource" d:IsDataSource="True"/>
+        <DataTemplate x:Key="ExportSingleImageDataTemplateInitial">
+            <Grid x:Name="LayoutRoot" Background="Black">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" MinHeight="150"/>
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Image Grid.Column="0" Source="{Binding ExportInfo.ExportedImage, Mode=OneWay}" Width="{Binding ExportInfo.ExportImageResolution}" Height="{Binding ExportInfo.ExportImageResolution}" LayoutTransform="{Binding ImageProperties.ImageTransform, Mode=OneWay}" Margin="0,10,0,0"/>
+
+                <Border HorizontalAlignment="Right" Margin="0,0,5,0" MinWidth="30" Grid.Row="1" VerticalAlignment="Stretch" Height="60" Visibility="{Binding ExportInfo.ExportShowDetails, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.ColumnSpan="2">
+                    <TextBlock TextWrapping="Wrap" Text="{Binding ExportInfo.ImageExportDetails}" Foreground="White" FontSize="{Binding ExportInfo.ExportImageTextSize}" VerticalAlignment="Center"/>
+                </Border>
+                <Grid Grid.ColumnSpan="1" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Visibility="{Binding ExportInfo.ExportShowDetails, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <StackPanel Orientation="Horizontal" d:LayoutOverrides="Height" HorizontalAlignment="Center" VerticalAlignment="Top">
+                        <TextBlock TextWrapping="Wrap" Text="{Binding ExportInfo.ImageScaleLegendSize, ConverterParameter=F0, Converter={StaticResource DoubleToStringConverter}}" HorizontalAlignment="Center" Foreground="White" VerticalAlignment="Top" FontSize="{Binding ExportInfo.ExportImageTextSize}"/>
+                        <TextBlock TextWrapping="Wrap" Text="mm" HorizontalAlignment="Center" Foreground="White" VerticalAlignment="Top" Margin="4,0,0,0" FontSize="{Binding ExportInfo.ExportImageTextSize}"/>
+                    </StackPanel>
+                    <Grid Width="{Binding ExportInfo.ImageScaleLegendSizeInPixels, Mode=OneWay}">
+                        <Path Data="M1,1 L1,5 L49,5 L49,1   " Height="10" Stretch="Fill" Stroke="White" Grid.Row="1" VerticalAlignment="Top" d:LayoutOverrides="Height" Margin="0,10,0,0"/>
+                    </Grid>
+                </Grid>
+                <ItemsControl x:Name="colorBarsList" Grid.RowSpan="1" Grid.Column="1" Margin="0,10,0,0" ItemsSource="{Binding ImageLayers}" Visibility="{Binding ExportInfo.ExportShowColorBars, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <local:ViewLayerColorBar DataContext="{Binding}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <!--<ItemsControl x:Name="colorBarsList" Grid.RowSpan="2" 			
+			ItemsPanel="{DynamicResource ColorBarItemsPanelTemplate}" 
+			ItemsSource="{Binding ImageLayers}" Background="Black" ItemTemplate="{DynamicResource ColorBarDataTemplate}" >
+                    <ItemsControl.Resources>
+                    	<DataTemplate  DataType="{x:Type Xvue_MSOT_ViewModels_Imaging:ViewModelImagingBackground}">
+                            <local:ViewLayerColorBar Height="{Binding ActualHeight, ElementName=colorBarsList}">
+                                <local:ViewLayerColorBar.Visibility >
+                                    <Binding ConverterParameter="Collapsed" Converter="{StaticResource BooleanToVisibilityConverter}" Path="Parent.ExportInfo.ExportShowBackgroundColorBar"/>
+                                </local:ViewLayerColorBar.Visibility>
+                            </local:ViewLayerColorBar>
+                        </DataTemplate>
+                        <DataTemplate  DataType="{x:Type Xvue_MSOT_ViewModels_Imaging:ViewModelImagingForeground}">                        	
+                            <local:ViewLayerColorBar Height="{Binding ActualHeight, ElementName=colorBarsList}">
+                            	<local:ViewLayerColorBar.Visibility >
+                                    <Binding ConverterParameter="Collapsed" Converter="{StaticResource BooleanToVisibilityConverter}" Path="Parent.ExportInfo.ExportShowBackgroundColorBar"/>
+                                </local:ViewLayerColorBar.Visibility>
+                            </local:ViewLayerColorBar>
+                        </DataTemplate>
+                    </ItemsControl.Resources>
+                </ItemsControl>-->
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="ColorBarDataTemplate">
+        	 <local:ViewLayerColorBar/><!-- Height="{Binding ActualHeight, ElementName=colorBarsList}"/>			 -->
+        </DataTemplate>
+    </Window.Resources>
+
+    <Grid x:Name="LayoutRoot" d:DataContext="{Binding Source={StaticResource ViewModelImagingSessionDataSource}}">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="0*"/>
+            <RowDefinition Height="42"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="178"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Border d:LayoutOverrides="Height" Background="Black" Grid.Column="1">
+                <Viewbox x:Name="viewbox">
+                    <ContentControl Content="{Binding ExportImage, Mode=OneWay}" ContentTemplate="{DynamicResource ExportSingleImageDataTemplateInitial}" Name="viewboxContentControl">
+                    </ContentControl>
+                    <!--<local:ViewExportSingleImage x:Name="viewExportSingleImage" DataContext="{Binding ExportImage, Mode=OneWay}" />-->
+
+                </Viewbox>
+            </Border>
+            <Grid HorizontalAlignment="Left" Width="155" Margin="5,0,0,0" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="37.107"/>
+                    <RowDefinition/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+					<RowDefinition Height="26"/>
+					<RowDefinition Height="26"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="69*"/>
+                    <ColumnDefinition Width="86*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock TextWrapping="Wrap" Text="Reference:" Grid.Row="2" VerticalAlignment="Center" Height="15.96" Margin="0,5.02"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Grid.Row="2">
+                    <extToolkit:IntegerUpDown Value="{Binding ExportImage.ExportInfo.ImageScaleLegendSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Width="58" Minimum="1" Maximum="20" />
+                    <TextBlock TextWrapping="Wrap" Text="mm" VerticalAlignment="Center" Margin="4,0,0,0"/>
+                </StackPanel>
+                <TextBlock TextWrapping="Wrap" Text="Resolution:" Grid.Row="3" VerticalAlignment="Center" Height="15.96" Margin="0,5.02"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Grid.Row="4">
+                    <extToolkit:DoubleUpDown Value="{Binding ExportImage.ExportInfo.ExportImageTextSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Width="58" Minimum="7" Maximum="20" Increment="0.5" />
+                    <TextBlock TextWrapping="Wrap" Text="pt" VerticalAlignment="Center" Margin="4,0,0,0"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Grid.Row="3">
+                    <extToolkit:IntegerUpDown Value="{Binding ExportImage.ExportInfo.ExportImageResolution, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Width="58" Minimum="300" Maximum="1000" />
+                    <TextBlock TextWrapping="Wrap" Text="px" VerticalAlignment="Center" Margin="4,0,0,0"/>
+                </StackPanel>
+                <CheckBox x:Name="colorBarsCheckBox_Copy" Content=" Scale and Details" VerticalAlignment="Center" Grid.Row="5" Style="{DynamicResource SimpleCheckBox}" ToolTip="Show Scale Reference and Frame Details" IsChecked="{Binding ExportImage.ExportInfo.ExportShowDetails}" HorizontalAlignment="Left" Height="15.96" Margin="0,5.02" Width="105.8" Grid.ColumnSpan="2"/>
+                <CheckBox x:Name="colorBarsCheckBox" Content=" Color Bars" VerticalAlignment="Center" Grid.Row="6" Style="{DynamicResource SimpleCheckBox}" ToolTip="Show Color Bars" IsChecked="{Binding ExportImage.ExportInfo.ExportShowColorBars}" HorizontalAlignment="Left" Height="15.96" Margin="0,5.02" Width="70.397" Grid.ColumnSpan="2"/>
+                <CheckBox x:Name="backColorBarCheckBox" Content=" Background Color Bar" VerticalAlignment="Center" Grid.Row="7" Style="{DynamicResource SimpleCheckBox}" Grid.ColumnSpan="2" ToolTip="Show Background Color Bar" IsChecked="{Binding ExportImage.ExportInfo.ExportShowBackgroundColorBar}" HorizontalAlignment="Left" IsEnabled="{Binding IsChecked, ElementName=colorBarsCheckBox}" Margin="15,5.02,0,5.02" Height="15.96" Width="132"/>
+                <TextBlock TextWrapping="Wrap" Text="Text Size:" Grid.Row="4" VerticalAlignment="Center" Height="15.96" Margin="0,5.02"/>
+
+            </Grid>
+        </Grid>
+
+
+        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Row="2" d:LayoutOverrides="Height" VerticalAlignment="Center" Margin="0,0,16,0">
+            <Button x:Name="exportBtn" Content="Export" VerticalAlignment="Center" IsDefault="True"  Width="55" Height="26" Click="exportBtn_Click" Command="{Binding CommandExportSelectedImage, Mode=OneWay}" />
+            <Button x:Name="cancel" Content="Cancel" VerticalAlignment="Center" IsDefault="True" Click="closeBtn_Click" Width="55" Margin="10,0,0,0" IsCancel="True" Height="26" />
+        </StackPanel>
+        <StackPanel HorizontalAlignment="Left" Orientation="Vertical" VerticalAlignment="Center" Grid.Row="5" Margin="15,0,0,0"/>
+        <StackPanel Orientation="Horizontal" Grid.Row="2" d:LayoutOverrides="Height" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,0,0">
+            <Label Content="Export Format"/>
+            <ComboBox VerticalAlignment="Center" 
+				SelectedItem="{Binding ImageStackExportFormat, Converter={StaticResource EnumConversionStackExportFormatsDataSource}}" 
+				ItemsSource="{Binding DisplayNames, Source={StaticResource EnumConversionStackExportFormatsDataSource}}"/>
+        </StackPanel>
+        <!--	<CheckBox Content="Auto Scale Per frame" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Margin="11,0,0,0" Style="{DynamicResource CheckBoxMirrorStyle}" IsChecked="{Binding AutoScalePerFrame}" MinWidth="140"/>-->
+    </Grid>
+</Window>

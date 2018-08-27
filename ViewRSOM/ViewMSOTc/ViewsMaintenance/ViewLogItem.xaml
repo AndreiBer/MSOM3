@@ -1,0 +1,34 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	x:Class="ViewMSOTc.ViewLogItem"
+	x:Name="UserControl"
+	d:DesignWidth="24" d:DesignHeight="20">
+		<UserControl.Style>
+			<Style TargetType="UserControl">
+				<Style.Triggers>
+					<DataTrigger Binding="{Binding LogType}" Value="0">
+						<Setter Property="Foreground" Value="#FFC42B2B">											
+						</Setter>		
+					</DataTrigger>
+					<DataTrigger Binding="{Binding LogType}" Value="1">
+						<Setter Property="Foreground" Value="#FFB5B600">					
+						</Setter>		
+					</DataTrigger>
+			</Style.Triggers>
+			</Style>
+		</UserControl.Style>
+
+	<StackPanel Orientation="Horizontal" d:LayoutOverrides="Width, Height" >	
+			
+		
+		<TextBlock Text="{Binding TimestampString, Mode=OneWay}" FontSize="12"/>
+        <TextBlock Text="{Binding DisplayName, Mode=OneWay}" FontSize="12" Margin="6,0,0,0"/>
+        <TextBlock Text="{Binding LogType, Mode=OneWay}" FontSize="12" Margin="6,0,0,0"/>
+        <TextBlock Text="{Binding Message, Mode=OneWay}" FontSize="12" Margin="6,0,0,0"/>
+        <TextBlock Text="{Binding SenderDescription, Mode=OneWay}" FontSize="12" Margin="6,0,0,0"/>
+	</StackPanel>
+</UserControl>

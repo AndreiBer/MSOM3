@@ -1,0 +1,35 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF"
+	xmlns:local="clr-namespace:ViewMSOT.UIControls"
+	xmlns:System="clr-namespace:System;assembly=mscorlib"
+	mc:Ignorable="d"
+	x:Class="ViewMSOT.UIControls.ViewBgWavelengthMenuItemControl"
+	x:Name="UserControl"
+	d:DesignWidth="138.547" d:DesignHeight="42.6">
+
+    <UserControl.Resources>
+    	<System:Int32 x:Key="Int32DataSource" d:IsDataSource="True"/>
+        <Converters:IntToBooleanConverter x:Key="IntToBooleanConverterLocal"/>
+        <Style TargetType="local:ViewBgWavelengthMenuItemControl">
+            <Setter Property="IsParentChecked">
+                <Setter.Value>
+                    <MultiBinding Converter="{StaticResource IntToBooleanConverterLocal}" Mode="TwoWay">
+                        <Binding Path="DataContext.ImagingComponent.ImageProperties.ParentPropertiesService.SelectedBackgroundWavelength" RelativeSource="{RelativeSource AncestorType={x:Type local:ViewImageLayerControls}, Mode=FindAncestor}" Mode="TwoWay"/>
+                        <Binding Path="." Mode="OneWay"/>
+                    </MultiBinding>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid d:DataContext="{Binding Source={StaticResource Int32DataSource}}">
+        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+            <Label Content="{Binding Mode=OneWay}" VerticalAlignment="Center" Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type MenuItem}}}"/>
+            <Label x:Name="nmLabel" Content="nm" VerticalAlignment="Center" Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type MenuItem}}}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -1,0 +1,54 @@
+﻿<UserControl
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+			 xmlns:Xvue_Framework_Views_WPF_Controls="clr-namespace:Xvue.Framework.Views.WPF.Controls;assembly=Xvue.Framework.Views.WPF"
+			 xmlns:Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF" x:Class="ViewMSOTc.ViewDepthCorrection"
+			 mc:Ignorable="d" Width="400">
+	<UserControl.Resources>
+		<Converters:DoubleToStringConverter x:Key="DoubleToStringConverter"/>
+		<Style x:Key="TextBoxOxygenationStyle" TargetType="{x:Type TextBox}" BasedOn="{StaticResource UidTextBoxWithTrailTextStyle}">
+			<EventSetter Event="UIElement.KeyDown" Handler="TextBox_KeyDown"/>
+			<EventSetter Event="UIElement.LostFocus" Handler="TextBox_LostFocus"/>
+		</Style>
+	</UserControl.Resources>
+	<Grid IsEnabled="{Binding DepthCorrection, Mode=TwoWay}">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="80"/>
+			<ColumnDefinition Width="Auto"/>
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition/>
+			<RowDefinition/>
+			<RowDefinition/>
+			<RowDefinition/>
+			<RowDefinition/>
+		</Grid.RowDefinitions>
+
+		<Label Content="Absorption coefficient:" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,5"/>
+
+		<TextBox x:Name="absorptionCoeffTextBox" TextWrapping="NoWrap" Grid.Column="1" VerticalAlignment="Center"
+				 Text="{Binding Value, ConverterParameter=F2, Converter={StaticResource DoubleToStringConverter}, NotifyOnSourceUpdated=True, ElementName=BackgroundAbsorption}" SourceUpdated="absorptionCoeffTextBox_SourceUpdated" GotFocus="textBox_GotFocus" TextAlignment="Right" MinWidth="80"/>
+		<Label Content="1/cm" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="2"/>
+
+		<Xvue_Framework_Views_WPF_Controls:SlowMovingSlider x:Name="BackgroundAbsorption" Margin="10,5" Grid.Row="1" Grid.ColumnSpan="3" Minimum="{Binding MinBackgroundAbsorptionSlider}" Maximum="{Binding MaxBackgroundAbsorptionSlider}" Value="{Binding BackgroundAbsorptionSlider, Mode=TwoWay, UpdateSourceTrigger=Default}" VerticalAlignment="Center"
+			ToolTipService.InitialShowDelay="0" ToolTipService.BetweenShowDelay="0" ToolTipService.ShowDuration="20000" Style="{DynamicResource UidSliderStyle}" Background="{DynamicResource UidIconActiveBrush}" ToolTip="Background Absorption" SmallChange="0.01" LargeChange="0.01"/>
+
+		<Label Content="Oxygenation:" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,5"/>
+
+		<TextBox x:Name="oxygenationTextBox" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" TextWrapping="NoWrap" 
+				 Text="{Binding Value, ConverterParameter=F1, Converter={StaticResource DoubleToStringConverter}, NotifyOnSourceUpdated=True, ElementName=BackgroundOxygenation}" SourceUpdated="oxygenationTextBox_SourceUpdated" GotFocus="textBox_GotFocus" TextAlignment="Right" MinWidth="80"/>
+		<Label Content="%" Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+
+
+		<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,5">
+		</StackPanel>
+
+		<Xvue_Framework_Views_WPF_Controls:SlowMovingSlider x:Name="BackgroundOxygenation" Margin="10,5" Grid.Row="3" Grid.ColumnSpan="3" Minimum="{Binding MinBackgroundOxygenationSlider}" Maximum="{Binding MaxBackgroundOxygenationSlider}" Value="{Binding BackgroundOxygenationSlider, Mode=TwoWay, UpdateSourceTrigger=Default}" VerticalAlignment="Center" 
+			ToolTipService.InitialShowDelay="0" ToolTipService.BetweenShowDelay="0" ToolTipService.ShowDuration="20000" Style="{DynamicResource UidSliderStyle}" Background="{DynamicResource UidIconActiveBrush}" ToolTip="Background Oxygenation"/>
+
+		<CheckBox x:Name="DepthCorrection" Content="Depth Correction" IsChecked="{Binding DepthCorrection, Mode=TwoWay}" FontWeight="Bold" Grid.ColumnSpan="2" Margin="0,30,0,0" Grid.Row="4" HorizontalAlignment="Left" VerticalAlignment="Center" Visibility="Collapsed"/>
+	</Grid>
+</UserControl>

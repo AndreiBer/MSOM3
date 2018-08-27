@@ -1,0 +1,48 @@
+﻿<Window
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:exceedToolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+	xmlns:MsotApp="clr-namespace:ViewRSOM"
+	x:Class="ViewRSOM.SplashStartup"
+	x:Name="Window"
+	Title="MSOT" Loaded="Window_Loaded" mc:Ignorable="d"
+	WindowStyle="None" AllowsTransparency="True"
+	WindowStartupLocation="CenterScreen" 
+	Foreground="#FF1C1C16" Background="#FF1C1C16" WindowState="Maximized">
+    <Grid x:Name="SplashStartupLayoutGrid">
+        <!--<exceedToolkit:WindowContainer x:Name="childWindowContainer" Panel.ZIndex="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ModalBackgroundBrush="#80ffffff"/>-->
+        <Canvas x:Name="ITH_SplashscreenV3" ClipToBounds="True" Height="850" UseLayoutRounding="False" Width="1584" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Canvas x:Name="BackgroundCanvas" Height="850" Canvas.Left="0" Canvas.Top="0" Width="1584">
+                <Image x:Name="BG_white" Height="550" Canvas.Left="0" Source="ViewMSOT.UIControls/gfx/ITH_Splashscreen_images/BG white.png" Canvas.Top="158" Width="1584"/>
+                <Image x:Name="_1" Height="362" Canvas.Left="0" Opacity="0.302" Source="ViewMSOT.UIControls/gfx/ITH_Splashscreen_images/1.png" Canvas.Top="244" Width="291">
+                    <Image.OpacityMask>
+                        <ImageBrush ImageSource="/ViewMSOT.UIControls/gfx/ITH_Splashscreen_images/1_Layer Mask.png"/>
+                    </Image.OpacityMask>
+                </Image>
+                <Image x:Name="_2" Height="392" Canvas.Left="938" Opacity="0.302" Source="/ViewMSOT.UIControls/gfx/ITH_Splashscreen_images/2.png" Canvas.Top="181" Width="646">
+                    <Image.OpacityMask>
+                        <ImageBrush ImageSource="/ViewMSOT.UIControls/gfx/ITH_Splashscreen_images/2_Layer Mask.png"/>
+                    </Image.OpacityMask>
+                </Image>
+            </Canvas>
+            <Image x:Name="Ebene_1" Height="74" Canvas.Left="391" Source="/ViewMSOT.UIControls/gfx/ITH_Splashscreen_images/Ebene 1.png" Canvas.Top="223" Width="402"/>
+            <TextBlock x:Name="Release_n_Copyright_iThera_Medical_GmbH" 
+		        Foreground="#FF6F6F6F" 
+		        FontFamily="Calibri" 
+		        Height="184" 
+		        Width="394"
+		        IsHyphenationEnabled="True"
+		        LineStackingStrategy="BlockLineHeight"
+		        Canvas.Top="477"
+		        Canvas.Left="410" 
+		        LineHeight="30" 
+		        TextAlignment="Left" 
+		        TextWrapping="Wrap"><Run FontSize="30" Text="Release 2.2.2 - OPO&#xA;"/><Run Text=" "/><Run FontSize="18" Text="&#xA;Copyright © 2010 - 2016 iThera Medical GmbH&#xA;Visit our website: www.ithera-medical.com&#xA;Contact us at: info@ithera-medical.com"/></TextBlock>
+            <StackPanel Canvas.Left="422" Orientation="Horizontal" Canvas.Top="383">
+                <Image x:Name="Ebene_2" Source="/ViewMSOT.UIControls/gfx/ITH_Splashscreen_images/ViewRSOM_logo.png"/>
+                <!--<TextBlock x:Name="clinicalNameModifierLabel" TextWrapping="Wrap" Text=" - Preclinical Version" VerticalAlignment="Center" FontSize="36" FontFamily="Segoe UI Semibold" Foreground="#FF636362" />-->
+            </StackPanel>
+        </Canvas>
+    </Grid>
+</Window>

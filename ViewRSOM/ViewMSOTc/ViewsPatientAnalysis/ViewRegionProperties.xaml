@@ -1,0 +1,103 @@
+﻿<UserControl x:Name="userControl" x:Class="ViewMSOTc.ViewRegionProperties"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Imaging="clr-namespace:Xvue.MSOT.ViewModels.Imaging;assembly=Xvue.MSOT.ViewModels"
+             xmlns:Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF" 
+             xmlns:ServicesImaging="clr-namespace:Xvue.MSOT.Services.Imaging;assembly=Xvue.MSOT" 
+             xmlns:Controls="clr-namespace:Xvue.Framework.Views.WPF.Controls;assembly=Xvue.Framework.Views.WPF" 
+             xmlns:oxy="http://oxyplot.org/wpf"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" 
+             mc:Ignorable="d" Width="1100">
+
+    <UserControl.Resources>
+        <Imaging:ViewModelRegion2DAllLayersDrawing x:Key="ViewModelRegion2DAllLayersDrawingDataSource" d:IsDataSource="True"/>
+        <xctk:ColorToSolidColorBrushConverter x:Key="ColorToSolidColorBrushConverter"/>
+    </UserControl.Resources>
+    <Grid Background="Black" d:DataContext="{Binding Source={StaticResource ViewModelRegion2DAllLayersDrawingDataSource}}">
+        <Border Background="White" BorderBrush="Cyan" BorderThickness="1" Width="Auto" >
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                
+                <Grid Grid.Column="1">
+                    <oxy:PlotView x:Name="wlPlotView" PlotType="XY" Background="White" PlotAreaBackground="White" Padding="10" PlotAreaBorderThickness="1,0,0,1" PlotMargins="Auto,30,30,Auto">
+                        <oxy:PlotView.Axes>
+                            <oxy:LinearAxis MinorTickSize="0" IsZoomEnabled="False" IsPanEnabled="False" TickStyle="Crossing" Title="{Binding AxisYLabel}" UseSuperExponentialFormat="{Binding GraphBigNumbers}" Minimum="0" Maximum="{Binding GraphMaxYValue}"/>
+                            <oxy:LinearAxis x:Name="xLinearAxis" TickStyle="Crossing" Minimum="{Binding GraphMinWavelength}" Maximum="{Binding GraphMaxWavelength}"
+                                Position="Bottom" MinorTickSize="0" FontSize="10" IsZoomEnabled="False" IsPanEnabled="False" Title="{Binding AxisXLabel}"/>
+                        </oxy:PlotView.Axes>
+                        <oxy:PlotView.Series>
+                            <oxy:LineSeries ItemsSource="{Binding GraphPoints}" StrokeThickness="2" MarkerSize="3" Color="Black" MarkerType="Circle" MarkerFill="Black"/>
+                        </oxy:PlotView.Series>
+                    </oxy:PlotView>
+                </Grid>
+                
+                <Grid Width="320">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Name:" VerticalAlignment="Center"/>
+                        <TextBox Grid.Column="1" Text="{Binding RoiName}" Margin="20,0" Style="{DynamicResource UidTextBox}"/>
+                    </Grid>
+                    <Separator Grid.Row="1" Margin="10"/>
+                    <ListBox x:Name="colorsListBox" Grid.Row="2" Height="400" Margin="10" 
+                         ItemsSource="{Binding RoiColorsAvailable}" SelectedItem="{Binding RoiColor, Mode=TwoWay}">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel IsItemsHost="True" Orientation="Vertical"/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.Style>
+                            <Style TargetType="{x:Type ListBox}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type ListBox}">
+                                            <ScrollViewer IsDeferredScrollingEnabled="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                            </ScrollViewer>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.Style>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListBoxItem}">
+                                <Setter Property="Background" Value="{Binding ColorProperty, Converter={StaticResource ColorToSolidColorBrushConverter}}"/>
+                                <Setter Property="IsSelected" Value="false"></Setter>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                            <Grid Margin="5" Background="Transparent">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid Height="30" Width="30">
+                                                    <Ellipse Stretch="Uniform" Height="15" Width="15" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                                         Visibility="{Binding IsSelected, ConverterParameter=Hidden, Converter={StaticResource BooleanToVisibleConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}}" x:Name="selectedEllipse" Fill="{TemplateBinding Background}"/>
+                                                </Grid>
+                                                <Label Grid.Column="1" Content="{Binding Name}" Margin="5,0"/>
+                                            </Grid>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
+                </Grid>
+
+            </Grid>            
+        </Border>
+    </Grid>
+</UserControl>

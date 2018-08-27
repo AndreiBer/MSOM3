@@ -1,0 +1,63 @@
+﻿<UserControl x:Name="userControl" x:Class="ViewMSOTc.XvueMessageBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" 
+             xmlns:Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF" 
+             xmlns:local="clr-namespace:ViewMSOTc"
+             xmlns:Xvue_MSOT_Core="clr-namespace:Xvue.MSOT.Services.Core;assembly=Xvue.MSOT"
+             mc:Ignorable="d" Loaded="Window_Loaded" GotFocus="Window_Loaded" IsVisibleChanged="userControl_IsVisibleChanged">
+
+    <UserControl.Resources>
+        <Converters:InvertedBooleanToVisibleConverter x:Key="InvertedBooleanToVisibleConverter"/>
+        <Converters:BooleanToVisibleConverter x:Key="BooleanToVisibleConverter"/>
+        <Converters:WpfToolkitWindowStateToBoolean x:Key="WpfToolkitWindowStateToBoolean"/>
+        <Style TargetType="local:XvueMessageBox">
+            <Setter Property="CloseControl" Value="{Binding WindowState, Converter={StaticResource WpfToolkitWindowStateToBoolean}, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type xctk:ChildWindow}}}"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot">
+        <Grid.RowDefinitions>
+            <RowDefinition MinHeight="100"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Visibility="{Binding IsVerify, ConverterParameter=Collapsed, Converter={StaticResource InvertedBooleanToVisibleConverter}, ElementName=userControl}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.5*"/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TextBlock MinWidth="150" MaxWidth="400" Grid.Column="1" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Center"  Margin="10" Text="{Binding Message, ElementName=userControl}"/>
+            <Grid Height="47" VerticalAlignment="Center" HorizontalAlignment="Right" Width="47" Margin="23,0,0,0">
+                <Image x:Name="imageSign" Height="32" VerticalAlignment="Center" HorizontalAlignment="Right" Width="32" Margin="0,0,10,0">
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Setter Property="Source" Value="/ViewMSOT.UIControls;component/GFX/Bitmap icons/IconWarning.png"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding MessageType, ElementName=userControl}" Value="{x:Static Xvue_MSOT_Core:UserNotificationType.Error}">
+                                    <Setter Property="Source" Value="/ViewMSOT.UIControls;component/GFX/Bitmap icons/IconError.png"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding MessageType, ElementName=userControl}" Value="{x:Static Xvue_MSOT_Core:UserNotificationType.Info}">
+                                    <Setter Property="Source" Value="/ViewMSOT.UIControls;component/GFX/Bitmap icons/IconInfo.png"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+            </Grid>
+        </Grid>
+
+        <Grid Visibility="{Binding IsVerify, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}, ElementName=userControl}">
+            <TextBlock MinWidth="150" MaxWidth="400" Grid.Column="1" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10" Text="{Binding Message, ElementName=userControl}"/>
+        </Grid>
+        <Button x:Name="okBtn" Grid.Row="1" Content="OK" HorizontalAlignment="Right" Margin="10" Width="100" Panel.ZIndex="2"
+                      Visibility="{Binding IsVerify, ConverterParameter=Collapsed, Converter={StaticResource InvertedBooleanToVisibleConverter}, ElementName=userControl}" Style="{DynamicResource UidButtonTextStyle2}" Click="okBtn_Click" SnapsToDevicePixels="True"/>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Visibility="{Binding IsVerify, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}, ElementName=userControl}" Margin="70,0,0,0">
+            <Button x:Name="cancelBtn" Grid.Row="1" Content="Cancel" Width="100" Margin="10" Panel.ZIndex="2" Click="cancelBtn_Click" Style="{DynamicResource UidButtonTextStyle2}" SnapsToDevicePixels="True"/>
+            <Button x:Name="noBtn" Grid.Row="1" Content="No" MinWidth="100" Width="Auto" Margin="10" Panel.ZIndex="2" Click="noBtn_Click" Style="{DynamicResource UidButtonTextStyle2}" SnapsToDevicePixels="True"/>
+            <Button x:Name="yesBtn" Grid.Row="1" Content="Yes" MinWidth="100" Width="Auto" Margin="10" Panel.ZIndex="2" Click="yesBtn_Click" Style="{DynamicResource UidButtonTextStyle2}" SnapsToDevicePixels="True"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

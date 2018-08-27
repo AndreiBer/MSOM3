@@ -1,0 +1,188 @@
+﻿<UserControl 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"    
+    xmlns:System="clr-namespace:System;assembly=mscorlib" 
+    xmlns:Xvue_MSOT_ViewModels_Imaging="clr-namespace:Xvue.MSOT.ViewModels.Imaging;assembly=Xvue.MSOT.ViewModels"
+    xmlns:ServicesImaging="clr-namespace:Xvue.MSOT.Services.Imaging;assembly=Xvue.MSOT" 
+	x:Class="ViewMSOTc.ViewReportROIsTable"
+	x:Name="UserControl"	
+	mc:Ignorable="d" DataContextChanged="UserControl_DataContextChanged" Background="White">
+
+    <UserControl.Resources>
+        <Xvue_MSOT_ViewModels_Imaging:ViewModelRegion2DAllLayersDrawing x:Key="ViewModelRegion2DAllLayersDrawingDataSource" d:IsDataSource="True"/>
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <TextBlock x:Name="textBlock" Text="Measurements:" TextWrapping="Wrap" FontSize="11"/>
+
+        <TextBlock x:Name="measurementNameTextBlock" Grid.Column="1" TextWrapping="Wrap" FontSize="11"/>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="70"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Column="0" Text="Name" TextWrapping="Wrap" FontSize="11"/>
+
+            <TextBlock Grid.Column="1" Text="Area" TextWrapping="Wrap" FontSize="11"/>
+
+            <ItemsControl x:Name="regionsItemsControl" Grid.Row="1" Grid.ColumnSpan="2" Background="Transparent"
+                                  ItemsSource="{Binding Regions, ElementName=UserControl}"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel IsItemsHost="True" Orientation="Vertical"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.Template>
+                    <ControlTemplate TargetType="{x:Type ItemsControl}">
+                        <Grid>
+                            <ItemsPresenter />
+                        </Grid>
+                    </ControlTemplate>
+                </ItemsControl.Template>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid d:DataContext="{Binding Mode=OneWay, Source={StaticResource ViewModelRegion2DAllLayersDrawingDataSource}}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="70"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Orientation="Horizontal">
+                                <Border BorderThickness="1" VerticalAlignment="Center" HorizontalAlignment="Center" Width="10" Height="10" CornerRadius="{DynamicResource UidButtonCornerRadius}">
+                                    <Border.Background>
+                                        <SolidColorBrush Color="{Binding RoiColor.ColorProperty, Mode=OneWay}"/>
+                                    </Border.Background>
+                                    <Border.BorderBrush>
+                                        <SolidColorBrush Color="{Binding RoiColor.ColorProperty, Mode=OneWay}"/>
+                                    </Border.BorderBrush>
+                                </Border>
+                                <TextBlock HorizontalAlignment="Left" Text="{Binding RoiName}" TextWrapping="Wrap" FontSize="11" Margin="3,0,0,0"/>
+                            </StackPanel>
+                            <TextBlock x:Name="areaTextBlock" Grid.Column="1" HorizontalAlignment="Left" Text="{Binding RoiLayers[0].RoiAreaMM2AsString}" TextWrapping="Wrap" FontSize="11"/>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+        
+        <Grid Grid.Column="1" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <ItemsControl x:Name="layersNamesItemsControl" Background="Transparent"
+                                  ItemsSource="{Binding Regions[0].RoiLayers, ElementName=UserControl}"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel IsItemsHost="True" Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.Template>
+                    <ControlTemplate TargetType="{x:Type ItemsControl}">
+                        <Grid>
+                            <ItemsPresenter />
+                        </Grid>
+                    </ControlTemplate>
+                </ItemsControl.Template>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <TextBlock HorizontalAlignment="Center" Text="{Binding RoiLayerName}" TextWrapping="Wrap" FontSize="11" Width="70"/>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <ItemsControl x:Name="regionsLayersItemsControl" Grid.Row="1" Background="Transparent"
+                                  ItemsSource="{Binding Regions, ElementName=UserControl}"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel IsItemsHost="True" Orientation="Vertical"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.Template>
+                    <ControlTemplate TargetType="{x:Type ItemsControl}">
+                        <Grid>
+                            <ItemsPresenter />
+                        </Grid>
+                    </ControlTemplate>
+                </ItemsControl.Template>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid d:DataContext="{Binding Mode=OneWay, Source={StaticResource ViewModelRegion2DAllLayersDrawingDataSource}}">
+                            <ItemsControl x:Name="layersNamesItemsControl" Background="Transparent"
+                                  ItemsSource="{Binding RoiLayers}"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel IsItemsHost="True" Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.Template>
+                                    <ControlTemplate TargetType="{x:Type ItemsControl}">
+                                        <Grid>
+                                            <ItemsPresenter />
+                                        </Grid>
+                                    </ControlTemplate>
+                                </ItemsControl.Template>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="11" Width="70">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding RoiLayerViewingStatistic, ElementName=UserControl}" Value="{x:Static ServicesImaging:RegionStatisticType.Mean}">
+                                                                <Setter Property="Text" Value="{Binding RoiMeanAsString}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding RoiLayerViewingStatistic, ElementName=UserControl}" Value="{x:Static ServicesImaging:RegionStatisticType.Median}">
+                                                                <Setter Property="Text" Value="{Binding RoiMedianAsString}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding RoiLayerViewingStatistic, ElementName=UserControl}" Value="{x:Static ServicesImaging:RegionStatisticType.Sum}">
+                                                                <Setter Property="Text" Value="{Binding RoiSumAsString}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding RoiLayerViewingStatistic, ElementName=UserControl}" Value="{x:Static ServicesImaging:RegionStatisticType.Max}">
+                                                                <Setter Property="Text" Value="{Binding RoiMaxAsString}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding RoiLayerViewingStatistic, ElementName=UserControl}" Value="{x:Static ServicesImaging:RegionStatisticType.StdDeviation}">
+                                                                <Setter Property="Text" Value="{Binding RoiStdDeviationAsString}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding RoiLayerViewingStatistic, ElementName=UserControl}" Value="{x:Static ServicesImaging:RegionStatisticType.AreaAboveZero}">
+                                                                <Setter Property="Text" Value="{Binding RoiAreaAboveZeroAsString}"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+        </Grid>
+        
+    </Grid>
+</UserControl>

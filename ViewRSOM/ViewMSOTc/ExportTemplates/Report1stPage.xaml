@@ -1,0 +1,85 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:Imaging="clr-namespace:Xvue.MSOT.ViewModels.Imaging;assembly=Xvue.MSOT.ViewModels" 
+	mc:Ignorable="d"
+	x:Class="ViewMSOTc.Report1stPage"
+	x:Name="UserControl" d:DesignWidth="796.8" d:DesignHeight="1123.2" Margin="1" Foreground="{DynamicResource ReportForegroundColor}">	
+	<UserControl.Resources>
+        <Imaging:ViewModelImagingSuperSessionReport x:Key="ViewModelImagingSuperSessionReportDataSource" d:IsDataSource="True"/>
+	</UserControl.Resources>
+    <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="Red" BorderThickness="0" Margin="0" d:DataContext="{Binding Source={StaticResource ViewModelImagingSuperSessionReportDataSource}}">
+		<!--Letter 8.5 x 11, A4 8.3 x 11.7-->
+        <Grid Width="6.8in" Height="11.2in" Margin="0.75in,0.25in" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">		
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+                <RowDefinition>
+                    <RowDefinition.Style>
+                        <Style TargetType="{x:Type RowDefinition}">
+                            <Setter Property="Height" Value="0"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Page}" Value="1">
+                                    <Setter Property="Height" Value="72"/>                                    
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </RowDefinition.Style>
+                </RowDefinition>
+                <RowDefinition>
+                    <RowDefinition.Style>
+                        <Style TargetType="{x:Type RowDefinition}">
+                            <Setter Property="Height" Value="0"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Page}" Value="1">
+                                    <Setter Property="Height" Value="Auto"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </RowDefinition.Style>
+                </RowDefinition>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+			<UserControl x:Name="header" DataContext="{Binding Session, Mode=OneWay}" Style="{DynamicResource ReportHeaderTemplate}" VerticalAlignment="Stretch"/>
+			<Grid Grid.Row="2">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+				<TextBlock FontSize="28" TextDecorations="Underline">
+					 <Run Text="MSOT Report:"/>
+				</TextBlock>
+                <TextBlock Grid.Row="1" FontSize="28" TextDecorations="Underline">
+					 <Run Text="{Binding Session.ParentStudy.Patient.FullName, Mode=OneWay}"/>
+					 <Run Text="- ID:"/>
+					 <Run Text="{Binding Session.ParentStudy.Patient.Id, Mode=OneWay}"/>
+                </TextBlock>
+            </Grid>
+			<Grid Grid.Row="3" Margin="0,32,0,0">				
+				<Grid.RowDefinitions>
+                    <RowDefinition>
+                        <RowDefinition.Style>
+                            <Style TargetType="{x:Type RowDefinition}">
+                                <Setter Property="Height" Value="0"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Page}" Value="1">
+                                        <Setter Property="Height" Value="Auto"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </RowDefinition.Style>
+                    </RowDefinition>
+                    <RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+				<TextBlock FontSize="11" Foreground="{DynamicResource ReportFieldForegroundColor}">
+					<Run Text="Patient Comment:"/>
+				</TextBlock>
+                <TextBlock TextWrapping="Wrap" FontSize="11" Text="{Binding PatientComment}" Grid.Row="1"/>
+            </Grid>
+            <TextBlock FontSize="11" Text="{Binding PagesString}" Grid.Row="4" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
+		</Grid>
+	</Border>
+</UserControl>

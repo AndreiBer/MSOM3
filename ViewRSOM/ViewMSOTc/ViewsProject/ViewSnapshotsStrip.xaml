@@ -1,0 +1,252 @@
+﻿<UserControl
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+			 xmlns:Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF"			
+			 xmlns:ImagingSession="clr-namespace:Xvue.MSOT.ViewModels.ProjectManager.ImagingSession;assembly=Xvue.MSOT.ViewModels" 
+			 xmlns:dm="clr-namespace:Xvue.MSOT.DataModels.Plugins.ProjectManager;assembly=Xvue.MSOT" 
+			 xmlns:Controls="clr-namespace:Xvue.Framework.Views.WPF.Controls;assembly=Xvue.Framework.Views.WPF"
+			 xmlns:ProjectManager="clr-namespace:Xvue.MSOT.ViewModels.ProjectManager;assembly=Xvue.MSOT.ViewModels" 
+			 xmlns:local="clr-namespace:ViewMSOTc"
+			 x:Name="UserControl" x:Class="ViewMSOTc.ViewSnapshotsStrip"
+			 mc:Ignorable="d"
+			 d:DesignWidth="500" IsVisibleChanged="UserControl_IsVisibleChanged" Loaded="UserControl_Loaded" DataContextChanged="UserControl_DataContextChanged">
+	
+	<UserControl.Resources>
+		<ProjectManager:ViewModelStudyNode x:Key="ViewModelStudyNodeDataSource" d:IsDataSource="True"/>
+		<ImagingSession:ViewModelImagingSuperSession x:Key="ViewModelImagingSuperSessionDataSource" d:IsDataSource="True"/>
+		<Converters:BooleanToVisibleConverter x:Key="BooleanToVisibleConverter"/>
+		<Converters:InvertedBooleanToVisibleConverter x:Key="InvertedBooleanToVisibleConverter"/>
+		<CollectionViewSource x:Key='groupableSuperSessionSource' Source="{Binding ImagingSuperSessions}"/>
+		<CollectionViewSource x:Key='groupableComparisonSource' Source="{Binding OpenedSelectedSuperSession.ImagingSessions}"/>
+	</UserControl.Resources>
+	
+	<Grid Background="Black" x:Name="snapshotsGrid" d:DataContext="{Binding Source={StaticResource ViewModelStudyNodeDataSource}}">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto"/>
+			<ColumnDefinition Width="Auto"/>
+			<ColumnDefinition Width="1*"/>
+		</Grid.ColumnDefinitions>
+		<ListBox x:Name="comparisonListBox" ScrollViewer.VerticalScrollBarVisibility="Disabled" Background="Transparent"
+			BorderThickness="0" ItemsSource="{Binding OpenedSelectedSuperSession.ImagingSessions}" Margin="1" ManipulationBoundaryFeedback="mainListBox_ManipulationBoundaryFeedback" Visibility="{Binding IsAnalysis, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}, ElementName=UserControl}">
+			<ListBox.ItemContainerStyle>
+				<Style TargetType="{x:Type ListBoxItem}">
+					<EventSetter Event="UIElement.MouseLeftButtonUp" Handler="previewComparisonImage_MouseLeftButtonUp"/>
+					<EventSetter Event="UIElement.PreviewMouseDown" Handler="previewComparisonImage_PreviewMouseDown"/>
+					<!--  <EventSetter Event="UIElement.LostFocus" Handler="previewComparisonImage_LostFocus"/>					-->
+					<Setter Property="Visibility" Value="Visible"/>
+					<Style.Triggers>
+						<DataTrigger Binding="{Binding IsVisible}" Value="true">
+							<Setter Property="Background"  Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+						</DataTrigger>
+						<DataTrigger Binding="{Binding IsEmptyImagingSession}" Value="true">
+							<Setter Property="Visibility"  Value="Collapsed"/>
+						</DataTrigger>
+					</Style.Triggers>
+				</Style>
+			</ListBox.ItemContainerStyle>
+			<ListBox.ItemsPanel>
+				<ItemsPanelTemplate>
+					<WrapPanel Orientation="Horizontal" IsItemsHost="True"/>
+				</ItemsPanelTemplate>
+			</ListBox.ItemsPanel>
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<Border BorderBrush="White" BorderThickness="1" Margin="2">                        
+						<Grid>							
+						<Grid Background="Black"  Visibility="{Binding IsEmptyImagingSession, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}}" Height="115" Width="113">							
+							<Viewbox Margin="2" Stretch="Uniform">
+								<TextBlock Foreground="White" Text="Nothing is loaded." VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="Black" Margin="2,0"></TextBlock>						
+							</Viewbox>
+						</Grid>
+						<Grid Background="Black" Visibility="{Binding IsEmptyImagingSession, ConverterParameter=Collapsed, Converter={StaticResource InvertedBooleanToVisibleConverter}}">							
+							<Grid Margin="2">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="0.556*"/>
+									<ColumnDefinition Width="0.444*"/>
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="0.8*"/>
+									<RowDefinition Height="0.2*"/>
+								</Grid.RowDefinitions>
+									<Image x:Name="previewImage" Source="{Binding Snapshot, Mode=OneWay}" Grid.ColumnSpan="2" Grid.RowSpan="2">
+										<Image.Style>
+											<Style TargetType="Image">
+												<Style.Triggers>
+													<MultiDataTrigger>
+														<MultiDataTrigger.Conditions>
+															<Condition Binding="{Binding IsCopyImageSessionSettingsAllowed}" Value="True"/>
+															<Condition Binding="{Binding IsCopyPasteToAllSelected}" Value="True"/>
+														</MultiDataTrigger.Conditions>
+														<Setter Property="Cursor" Value="Arrow"/>
+													</MultiDataTrigger>
+													<MultiDataTrigger>
+														<MultiDataTrigger.Conditions>
+															<Condition Binding="{Binding IsCopyImageSessionSettingsAllowed}" Value="True"/>
+															<Condition Binding="{Binding IsCopyPasteToAllSelected}" Value="False"/>
+														</MultiDataTrigger.Conditions>
+														<Setter Property="Cursor" Value="{Binding ImageCursor, Mode=OneWay, IsAsync=True}"/>
+													</MultiDataTrigger>
+												</Style.Triggers>
+											</Style>
+										</Image.Style>                                        
+									</Image>
+
+									<Grid Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="1" Background="Black">
+                                        <Button Style="{DynamicResource UidButtonInvertedStyle}" Content="{StaticResource IconDelete}" ToolTip="Remove scan from comparison" Command="{Binding CommandRemoveClinicalImagingSession, Mode=OneWay}" Height="35" Width="35"/>
+									<Grid.Style>
+										<Style TargetType="Grid">
+											<Style.Triggers>
+												<DataTrigger Binding="{Binding Path=DataContext.OpenedSelectedSuperSession.ViewingLayout, ElementName=UserControl}" Value="{x:Static dm:SuperSessionViewingLayout.Layout1}">
+													<Setter Property="Visibility" Value="Collapsed"/>
+												</DataTrigger>
+											</Style.Triggers>
+										</Style>
+									</Grid.Style>
+								</Grid>
+								<Grid Grid.Row="1" Grid.Column="1" Background="Transparent">
+									<Viewbox Stretch="Uniform" HorizontalAlignment="Right">
+										<local:ViewThumbnailLength Seconds="{Binding ScanSeconds, Mode=OneWay}" />
+									</Viewbox>
+								</Grid>
+							</Grid>
+						</Grid>
+						</Grid>
+					</Border>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+		<Rectangle Margin="2" Grid.Column="1" Height="Auto" Width="1" Fill="White" Visibility="{Binding IsAnalysis, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}, ElementName=UserControl}"/>
+
+		<!--<ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto" Height="120" >-->
+		<ListBox x:Name="snapshotsListBox" ScrollViewer.VerticalScrollBarVisibility="Disabled" Background="Transparent" Grid.Column="2"
+					 BorderThickness="0" ItemsSource="{Binding Source={StaticResource groupableSuperSessionSource}}" SelectionMode="Single" Margin="1" SelectedItem="{Binding SelectedSuperSession, ElementName=UserControl, Mode=TwoWay}" ManipulationBoundaryFeedback="mainListBox_ManipulationBoundaryFeedback">
+			<ListBox.ItemContainerStyle>
+				<Style TargetType="{x:Type ListBoxItem}">
+					<Setter Property="Visibility" Value="Collapsed"/>
+					<EventSetter Event="UIElement.MouseLeftButtonUp" Handler="previewImage_MouseLeftButtonUp"/>
+					<EventSetter Event="UIElement.MouseMove" Handler="previewImage_MouseMove"/>
+					<EventSetter Event="UIElement.GiveFeedback" Handler="previewImage_GiveFeedback"/>
+					<EventSetter Event="UIElement.PreviewMouseDown" Handler="ListBoxItem_PreviewMouseDown"/>
+					<EventSetter Event="UIElement.TouchDown" Handler="ListBoxItem_TouchDown"/>
+					<!--	<EventSetter Event="UIElement.LostFocus" Handler="previewImage_LostFocus"/>-->
+					<Style.Triggers>
+                        <DataTrigger Binding="{Binding VisualizationAndAnalysisType}" Value="{x:Static dm:VisualizationAndAnalysis.Snapshot}">
+							<Setter Property="Visibility" Value="Visible"/>
+						</DataTrigger>
+						<MultiDataTrigger>
+							<MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding VisualizationAndAnalysisType}" Value="{x:Static dm:VisualizationAndAnalysis.Snapshot}" />
+								<Condition Binding="{Binding IsAnalysis, ElementName=UserControl}" Value="True" />
+							</MultiDataTrigger.Conditions>
+							<Setter Property="Visibility" Value="Visible"/>
+						</MultiDataTrigger>
+						<MultiDataTrigger>
+							<MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding VisualizationAndAnalysisType}" Value="{x:Static dm:VisualizationAndAnalysis.Snapshot}" />
+								<Condition Binding="{Binding IsAnalysis, ElementName=UserControl}" Value="False" />
+                                <Condition Binding="{Binding WasCreatedAfterLastStudyLoad}" Value="False" />
+							</MultiDataTrigger.Conditions>
+							<Setter Property="Visibility" Value="Collapsed"/>
+						</MultiDataTrigger>
+					</Style.Triggers>
+				</Style>
+			</ListBox.ItemContainerStyle>
+			<ListBox.ItemsPanel>
+				<ItemsPanelTemplate>
+					<WrapPanel Orientation="Horizontal" IsItemsHost="True"/>
+				</ItemsPanelTemplate>
+			</ListBox.ItemsPanel>
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<Border BorderBrush="White" BorderThickness="1" Margin="2">
+						<Border.ToolTip>
+							<StackPanel Orientation="Vertical">
+								<Label HorizontalAlignment="Center" Content="{Binding Name}" Grid.Row="1"/>
+							</StackPanel>
+						</Border.ToolTip>
+						<Viewbox>
+							<ItemsControl ItemsSource="{Binding ImagingSessions}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="115" Width="115">
+								<ItemsControl.ItemsPanel>
+									<ItemsPanelTemplate>
+										<UniformGrid IsItemsHost="True">
+											<UniformGrid.Style>
+												<Style TargetType="{x:Type UniformGrid}">
+													<Style.Triggers>
+                                                        <DataTrigger Binding="{Binding VisualizationAndAnalysisType}" Value="{x:Static dm:VisualizationAndAnalysis.Visualization}">
+															<Setter Property="Background">
+																<Setter.Value>
+																	<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+																		<GradientStop Color="#FF404040" Offset="0"/>
+																		<GradientStop Color="#FF686868" Offset="1"/>
+																	</LinearGradientBrush>
+																</Setter.Value>
+															</Setter>
+														</DataTrigger>
+														<DataTrigger Binding="{Binding ImagingSessions.Count}" Value="1">
+															<Setter Property="Rows" Value="1"/>
+															<Setter Property="Columns" Value="1"/>
+														</DataTrigger>
+														<DataTrigger Binding="{Binding ImagingSessions.Count}" Value="2">
+															<Setter Property="Rows" Value="1"/>
+															<Setter Property="Columns" Value="2"/>
+														</DataTrigger>
+														<DataTrigger Binding="{Binding ImagingSessions.Count}" Value="3">
+															<Setter Property="Rows" Value="2"/>
+															<Setter Property="Columns" Value="2"/>
+														</DataTrigger>
+														<DataTrigger Binding="{Binding ImagingSessions.Count}" Value="4">
+															<Setter Property="Rows" Value="2"/>
+															<Setter Property="Columns" Value="2"/>
+														</DataTrigger>
+														<DataTrigger Binding="{Binding ImagingSessions.Count}" Value="5">
+															<Setter Property="Rows" Value="2"/>
+															<Setter Property="Columns" Value="3"/>
+														</DataTrigger>
+														<DataTrigger Binding="{Binding ImagingSessions.Count}" Value="6">
+															<Setter Property="Rows" Value="2"/>
+															<Setter Property="Columns" Value="3"/>
+														</DataTrigger>
+													</Style.Triggers>
+												</Style>
+											</UniformGrid.Style>
+										</UniformGrid>
+									</ItemsPanelTemplate>
+								</ItemsControl.ItemsPanel>
+								<ItemsControl.ItemTemplate>
+									<DataTemplate>
+										<Grid Background="Black" >
+											<Grid Margin="2">
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="0.556*"/>
+													<ColumnDefinition Width="0.444*"/>
+												</Grid.ColumnDefinitions>
+												<Grid.RowDefinitions>
+													<RowDefinition Height="0.8*"/>
+													<RowDefinition Height="0.2*"/>
+												</Grid.RowDefinitions>
+												<Image x:Name="previewImage" Source="{Binding Snapshot, Mode=OneWay}" Grid.ColumnSpan="2" Grid.RowSpan="2"/>
+												<Grid Grid.Row="1" Grid.Column="1" Background="Transparent">
+													<Viewbox Stretch="Uniform" HorizontalAlignment="Right">
+														<local:ViewThumbnailLength Seconds="{Binding ScanSeconds, Mode=OneWay}" />
+													</Viewbox>
+												</Grid>
+											</Grid>
+										</Grid>
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+							</ItemsControl>
+						</Viewbox>
+					</Border>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+		<!--</ScrollViewer>-->
+		<Controls:ClosingPopup x:Name="OAMScanInformationClosingPopup" Placement="Top" HorizontalOffset="-20" VerticalOffset="4" StaysOpen="False" OpacityMask="Black" Grid.ColumnSpan="2" Closed="OAMScanInformationClosingPopup_Closed" DataContext="{x:Null}">
+			<Border Background="White" BorderBrush="Cyan" BorderThickness="1" Width="Auto">
+				<local:ViewScanInformation x:Name="oamScanInformation"/>
+			</Border>
+		</Controls:ClosingPopup>
+	</Grid>
+</UserControl>

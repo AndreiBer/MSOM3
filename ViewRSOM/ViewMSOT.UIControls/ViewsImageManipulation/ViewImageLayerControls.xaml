@@ -1,0 +1,350 @@
+﻿<UserControl 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:Xvue_MSOT_ViewModels_Imaging="clr-namespace:Xvue.MSOT.ViewModels.Imaging;assembly=Xvue.MSOT.ViewModels" 
+    xmlns:local="clr-namespace:ViewMSOT.UIControls"
+    xmlns:Controls="clr-namespace:Xvue.Framework.Views.WPF.Controls;assembly=Xvue.Framework.Views.WPF" 
+	xmlns:Xceed_Wpf_Toolkit_Core_Converters="clr-namespace:Xceed.Wpf.Toolkit.Core.Converters;assembly=Xceed.Wpf.Toolkit"
+	xmlns:Xvue_MSOT_Services_Imaging="clr-namespace:Xvue.MSOT.Services.Imaging;assembly=Xvue.MSOT"
+    xmlns:Xvue_MSOT_EnumDescriptions_Imaging="clr-namespace:Xvue.MSOT.EnumDescriptions.Imaging;assembly=Xvue.MSOT"
+    xmlns:Xvue_Framework_Views_WPF_Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF"
+	xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" DataContextChanged="UserControl_DataContextChanged"
+	x:Class="ViewMSOT.UIControls.ViewImageLayerControls"
+	mc:Ignorable="d"
+	x:Name="UserControl"
+	 Width="780">
+    <UserControl.Resources>
+        <Style TargetType="{x:Type local:ViewImageLayerControls}">
+            <Setter Property="ImageMax" Value="{Binding LayerMaximumValue, Mode=OneWay}"/>
+            <Setter Property="ImageMin" Value="{Binding LayerMinimumValue, Mode=OneWay}"/>
+            <Setter Property="ScaleMax" Value="{Binding ImagingComponent.GainMax, Mode=TwoWay}"/>
+            <Setter Property="ScaleMin" Value="{Binding ImagingComponent.GainMin, Mode=TwoWay}"/>
+        </Style>
+        <Xvue_Framework_Views_WPF_Converters:DoubleToStringConverter x:Key="DoubleToStringConverter"/>
+        <Xvue_MSOT_ViewModels_Imaging:ViewModelImagingBackground x:Key="ViewModelImagingBackgroundDataSource" d:IsDataSource="True"/>
+        <Xvue_MSOT_EnumDescriptions_Imaging:EnumConversionPaletteType x:Key="EnumConversionPaletteTypeDataSource" d:IsDataSource="True"/>
+        <Xvue_MSOT_EnumDescriptions_Imaging:EnumConversionPaletteType x:Key="EnumConversionPaletteType"/>
+        <Xvue_MSOT_EnumDescriptions_Imaging:EnumConversionAlphaCurveMap x:Key="EnumConversionAlphaCurveMapDataSource" d:IsDataSource="True"/>
+        <Xvue_MSOT_EnumDescriptions_Imaging:EnumConversionAlphaCurveMap x:Key="EnumConversionAlphaCurveMap"/>
+        <Xvue_Framework_Views_WPF_Converters:InvertedBooleanToVisibleConverter x:Key="InvertedBooleanToVisibleConverter"/>
+        <Style x:Key="ListBoxItemWavelengthStyle" TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource ListBoxItemStretchStyle2}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="true" Padding="2">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="{DynamicResource UidComboBoxItemContentMargin}">
+                                <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                <Label x:Name="nmLabel" Content="nm" VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}"/>
+                            </StackPanel>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="true">
+                                <Setter Property="Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="true"/>
+                                    <Condition Property="Selector.IsSelectionActive" Value="false"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+                            </MultiTrigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="MenuItemContainerStyle" TargetType="{x:Type MenuItem}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type MenuItem}">
+                        <ContentPresenter Grid.Column="1" Margin="{TemplateBinding Padding}" x:Name="HeaderHost" VerticalAlignment="{DynamicResource UidMenuItemContentVerticalAlignment}" RecognizesAccessKey="True" ContentSource="Header"/>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="true">
+                                <Setter Property="Foreground" Value="{DynamicResource UidIconMouseOverBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                    
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="UidMenuItemBgWavelengthRadioStyle" TargetType="{x:Type MenuItem}">
+            <Setter Property="IsEnabled" Value="{Binding DataContext.ImagingComponent.ImageProperties.ParentPropertiesService.ParentVisualization.IsVisualizationRefreshing,  RelativeSource={RelativeSource AncestorType={x:Type MenuItem}, Mode=FindAncestor}, Converter={StaticResource InverseBoolConverter}}"  />
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.MenuTextBrushKey}}"/>
+            <Setter Property="Height" Value="{DynamicResource UidMenuItemHeight}"/>
+            <Setter Property="FontSize" Value="{DynamicResource UidMenuItemFontSize}"/>
+            <Setter Property="IsCheckable" Value="True"/>
+                
+            <Setter Property="StaysOpenOnClick" Value="True"/>
+            <EventSetter Event="PreviewKeyDown" Handler="MenuItem_PreviewKeyDown"/>
+            <Setter Property="Template">
+                <Setter.Value>                    
+                    <ControlTemplate TargetType="{x:Type MenuItem}" >
+                        <Border x:Name="Border" Height="{TemplateBinding Height}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                            <Grid >
+
+                                <!-- ContentPresenter to show an Icon if needed -->
+                                <!-- The Grid is used to hold together columns for an Icon, Content, Glyph checkmark and Arrow to show the next level
+							 Size sharing is used in Grid so that the Icon, Content, Arrow for each MenuItem align together -->
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="{DynamicResource UidMenuItemFirstColumnWidth}" SharedSizeGroup="MenuItemIconColumnGroup"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="MenuItemIGTColumnGroup"/>
+                                    <ColumnDefinition Width="{DynamicResource UidMenuItemLastColumnWidth}"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Path x:Name="Icon" Data="{Binding Icon, RelativeSource={RelativeSource Mode=TemplatedParent}}" Fill="{DynamicResource UidIconActiveBrush}" Stretch="Uniform" Width="{DynamicResource UidMenuItemIconWidthHeight}" Height="{DynamicResource UidMenuItemIconWidthHeight}" Margin="4,0,8,0"/>
+
+
+                                <!-- Glyph is a checkmark if needed for a checkable menu -->
+                                <Grid Visibility="Hidden" Margin="4,0,6,0" x:Name="GlyphPanel" VerticalAlignment="Center">
+                                    <Path x:Name="GlyphPanelpath" VerticalAlignment="Center" Fill="{TemplateBinding Foreground}" Data="F1 M 16.4167,0.500023C 25.2072,0.500023 32.3333,7.55151 32.3333,16.25C 32.3333,24.9485 25.2072,32 16.4167,32C 7.62616,32 0.500031,24.9485 0.500031,16.25C 0.500031,7.55151 7.62614,0.500023 16.4167,0.500023 Z" FlowDirection="LeftToRight" Width="{DynamicResource UidMenuItemIconWidthHeight}" Height="{DynamicResource UidMenuItemIconWidthHeight}" Stretch="{DynamicResource UidMenuItemPathStretch}"/>
+                                </Grid>
+
+                                <!-- Content for the menu text etc -->
+                                <ContentPresenter Grid.Column="1" Margin="{TemplateBinding Padding}" x:Name="HeaderHost" VerticalAlignment="{DynamicResource UidMenuItemContentVerticalAlignment}" RecognizesAccessKey="True" ContentSource="Header" Visibility="Collapsed"/>
+                                <local:ViewBgWavelengthMenuItemControl x:Name="menuListTemplate" VerticalAlignment="{DynamicResource UidMenuItemContentVerticalAlignment}" Grid.Column="1" Margin="{TemplateBinding Padding}" IsMenuItemChecked="{Binding IsChecked, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" />
+
+                                <!-- Arrow drawn path which points to the next level of the menu -->
+                                <Grid Grid.Column="3" Margin="4,0,6,0" x:Name="ArrowPanel" VerticalAlignment="Center" Width="{DynamicResource UidMenuItemArrowPanelWidthHeight}" Height="{DynamicResource UidMenuItemArrowPanelWidthHeight}">
+                                    <Path x:Name="ArrowPanelPath" VerticalAlignment="Center" Fill="{TemplateBinding Foreground}" Data="M0,0 L0,8 L4,4 z" Stretch="{DynamicResource UidMenuItemPathStretch}"/>
+                                </Grid>
+
+                                <!-- The Popup is the body of the menu which expands down or across depending on the level of the item -->
+                                <Popup IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" Placement="Right" x:Name="SubMenuPopup" Focusable="false" AllowsTransparency="true" PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}" VerticalOffset="2">
+                                    <Grid x:Name="SubMenu">
+                                        <Border x:Name="SubMenuBorder" Background="{DynamicResource WindowBackgroundBrush}" BorderBrush="{DynamicResource SolidBorderBrush}" BorderThickness="1"/>
+
+                                        <!-- StackPanel holds children of the menu. This is set bu IsItemsHost=True -->
+                                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle"/>
+                                    </Grid>
+                                </Popup>
+
+                            </Grid>
+                        </Border>
+
+                        <!-- These triggers re-configure the four arrangements of MenuItem to show different levels of menu via Role -->
+                        <ControlTemplate.Triggers>                          
+                            <!-- Role = TopLevelHeader : this is the root menu item in a menu; the Popup expands down -->
+                            <Trigger Property="Role" Value="TopLevelHeader">
+                                <Setter Property="Margin" Value="0,1,0,1"/>
+                                <Setter Property="Padding" Value="6,3,6,3"/>
+                                <Setter Property="Grid.IsSharedSizeScope" Value="true"/>
+                                <Setter Property="Placement" Value="Bottom" TargetName="SubMenuPopup"/>
+                                <Setter Property="Visibility" Value="Collapsed" TargetName="ArrowPanel"/>
+                            </Trigger>
+
+                            <!-- Role = TopLevelItem :  this is a child menu item from the top level without any child items-->
+                            <Trigger Property="Role" Value="TopLevelItem">
+                                <Setter Property="Margin" Value="0,1,0,1"/>
+                                <Setter Property="Padding" Value="6,3,6,3"/>
+                                <Setter Property="Visibility" Value="Collapsed" TargetName="ArrowPanel"/>
+                            </Trigger>
+
+                            <!-- Role = SubMenuHeader : this is a child menu item which does not have children -->
+                            <Trigger Property="Role" Value="SubmenuHeader">
+                                <Setter Property="DockPanel.Dock" Value="Top"/>
+                                <Setter Property="Padding" Value="0,2,0,2"/>
+                                <Setter Property="Grid.IsSharedSizeScope" Value="true"/>
+                            </Trigger>
+
+                            <!-- Role = SubMenuItem : this is a child menu item which has children-->
+                            <Trigger Property="Role" Value="SubmenuItem">
+                                <Setter Property="DockPanel.Dock" Value="Top"/>
+                                <Setter Property="Padding" Value="0,2,0,2"/>
+                                <Setter Property="Visibility" Value="Collapsed" TargetName="ArrowPanel"/>
+                            </Trigger>
+                            <Trigger Property="IsSuspendingPopupAnimation" Value="true">
+                                <Setter Property="PopupAnimation" Value="None" TargetName="SubMenuPopup"/>
+                            </Trigger>
+
+                            <!-- If no Icon is present the we collapse the Icon Content -->
+                            <Trigger Property="Icon" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Collapsed" TargetName="Icon"/>
+                            </Trigger>
+
+                            <!-- The GlyphPanel contains the CheckMark -->
+                            <Trigger Property="IsChecked" Value="true">
+                                <Setter Property="Visibility" Value="Visible" TargetName="GlyphPanel"/>
+                                <Setter Property="IsHitTestVisible" Value="False" TargetName="Border"/>
+                                <Setter Property="Visibility" Value="Collapsed" TargetName="Icon"/>
+                            </Trigger>
+
+                            <Trigger Property="AllowsTransparency" SourceName="SubMenuPopup" Value="true">
+                                <Setter Property="Margin" Value="0,0,3,3" TargetName="SubMenu"/>
+                                <Setter Property="SnapsToDevicePixels" Value="true" TargetName="SubMenu"/>
+                                <Setter Property="BitmapEffect" Value="{DynamicResource PopupDropShadow}" TargetName="SubMenuBorder"/>
+                            </Trigger>
+
+                            <Trigger Property="IsHighlighted" Value="true">
+                                <Setter Property="Foreground" Value="{DynamicResource UidIconMouseOverBrush}"/>
+                                <Setter Property="Fill" TargetName="Icon" Value="{DynamicResource UidIconMouseOverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground" Value="{DynamicResource UidDisabledLabelForegroundBrush}"/>
+                                <Setter Property="Fill" TargetName="Icon" Value="{DynamicResource UidIconDisabledBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot" d:DataContext="{Binding Mode=OneWay, Source={StaticResource ViewModelImagingBackgroundDataSource}}" IsEnabled="{Binding ImagingComponent.Visible}">
+        <Border Background="Black" Height="60" Width="{Binding ActualWidth, ElementName=UserControl, Mode=OneWay}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <Menu x:Name="scalingMenu" Background="{x:Null}">
+                    <MenuItem x:Name="moreOptionsMenuItem" MinWidth="60" Header="{DynamicResource IconMoreOptions}" ToolTip="Auto/Manual Scaling Menu" Template="{DynamicResource MenuItemInvertedVectorIconTopControlTemplate}">
+
+                        <MenuItem x:Name="alpha3DWeightItem" Header="Set 3D component weight" Style="{DynamicResource UidMenuItemStyle}" Icon="{DynamicResource IconWeightingA}" Visibility="{Binding ImagingComponent.ImageProperties.Is3DImageProperties, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}, Mode=OneWay}">
+                            <MenuItem Style="{DynamicResource MenuItemCustomContentStyle}">
+                                <MenuItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <Label Content="Component weight:" VerticalAlignment="Center" Margin="10,5"/>
+
+                                        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,5">
+                                            <TextBox HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Value, ConverterParameter=F1, Converter={StaticResource DoubleToStringConverter}, ElementName=renderingWeightSlider}" TextAlignment="Right" MinWidth="70"/>
+                                            <Label Content="%" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        </StackPanel>
+
+                                        <Slider x:Name="renderingWeightSlider" Grid.Row="1" Grid.ColumnSpan="3" Width="275" Maximum="100" Minimum="0.001" LargeChange="0.1" Value="{Binding ImagingComponent.RenderingWeight}"
+                                                TickPlacement="None" IsSnapToTickEnabled="True" Margin="10,5" Style="{DynamicResource UidSliderStyle}" Background="{DynamicResource UidIconActiveBrush}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+                                    </Grid>
+                                </MenuItem.Header>
+                            </MenuItem>
+                        </MenuItem>
+
+                        <MenuItem x:Name="alphaToolMenuItem" Header="Advanced transparency tool" Style="{DynamicResource UidMenuItemStyle}" Icon="{DynamicResource IconHistogram}" IsEnabled="{Binding ImagingComponent.ImageProperties.AutoScaling, Converter={StaticResource InverseBoolConverter}}">
+                            <MenuItem Style="{DynamicResource MenuItemCustomContentStyle}">
+                                <MenuItem.Header>
+                                    <Border BorderThickness="1" BorderBrush="White" Background="Black">
+                                        <local:ViewAlphaControl x:Name="alphaControl"/>
+                                    </Border>
+                                </MenuItem.Header>
+                            </MenuItem>
+                        </MenuItem>
+
+                        <MenuItem x:Name="scaleMinAndMaxMenuItem" Header="Set limits" Style="{DynamicResource UidMenuItemStyle}" Icon="{DynamicResource IconSetLimits}" IsEnabled="{Binding ImagingComponent.ImageProperties.AutoScaling, Converter={StaticResource InverseBoolConverter}}">
+                            <MenuItem Style="{DynamicResource MenuItemCustomContentStyle}">
+                                <MenuItem.Header>
+                                    <Grid Background="White" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBox Text="{Binding ScaleMax, ConverterParameter=0.###e+000, Converter={StaticResource DoubleToStringConverter}, ElementName=UserControl, Mode=TwoWay}" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" Width="170" ToolTip="Scaling Maximum" Margin="4,2" HorizontalContentAlignment="Right" GotFocus="textBox_GotFocus"/>
+                                        <TextBox Text="{Binding ScaleMin, ConverterParameter=0.###e+000, Converter={StaticResource DoubleToStringConverter}, ElementName=UserControl, Mode=TwoWay}" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" Width="170" ToolTip="Scaling Minimum" Grid.Row="1" Margin="4,2" HorizontalContentAlignment="Right" GotFocus="textBox_GotFocus"/>
+                                    </Grid>
+                                </MenuItem.Header>
+                            </MenuItem>
+                        </MenuItem>
+
+                        <MenuItem x:Name="logToggleButton" Header="Apply log scaling" VerticalAlignment="Center" Style="{DynamicResource UidMenuItemStyle}" IsCheckable="True" IsChecked="{Binding ImagingComponent.LogarithmicScaling}" IsEnabled="{Binding ImagingComponent.IsLogarithmicScalingAllowed}"/>
+
+                        <MenuItem x:Name="selectBgWavelength" 
+                                  Header="Select background" 
+                                  StaysOpenOnClick="True"
+                                  ItemsSource="{Binding ImagingComponent.ImageProperties.ParentPropertiesService.BackgroundWavelengths}"
+                                  ItemContainerStyle="{DynamicResource UidMenuItemBgWavelengthRadioStyle}">
+                            <MenuItem.Style>
+                                <Style TargetType="MenuItem" BasedOn="{StaticResource UidMenuItemStyle}">
+                                    
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.MenuTextBrushKey}}"/>
+                                    <Setter Property="Height" Value="{DynamicResource UidMenuItemHeight}"/>
+                                    <Setter Property="FontSize" Value="{DynamicResource UidMenuItemFontSize}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=Items.Count, RelativeSource={RelativeSource Self}}" Value="0">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                        <!--<DataTrigger Binding="{Binding Path=Items, RelativeSource={RelativeSource Self}}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                        <Trigger Property="HasItems" Value="False">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </Trigger>-->
+                                    </Style.Triggers>                                    
+                                </Style>
+                            </MenuItem.Style>
+                        </MenuItem>
+                    </MenuItem>
+                </Menu>
+
+                <ToggleButton x:Name="autoScalingMenuItem" Grid.Column="1" Content="{DynamicResource IconAutoScale}" ToolTip="Apply autoscaling" Style="{DynamicResource UidToggleButtonInvertedStyle}" IsChecked="{Binding ImagingComponent.ImageProperties.AutoScaling}" IsEnabled="{Binding AllowAutoScaling, ElementName=UserControl}"/>
+
+                <Button x:Name="scaleMinEqBtn" Grid.Column="2" Click="scaleMinEqBtn_Click" ToolTip="Set lower limit to minimum" Style="{DynamicResource UidButtonInvertedStyle}" Content="{DynamicResource IconLeftThreshold}" IsEnabled="{Binding ImagingComponent.ImageProperties.AutoScaling, Converter={StaticResource InverseBoolConverter}}"/>
+
+                <Button x:Name="scaleMinToZeroMenuItem" Grid.Column="3" Content="{DynamicResource IconSetToPositive}" ToolTip="Set lower limit to 0" Style="{DynamicResource UidButtonInvertedStyle}" Click="scaleMinToZeroBtn_Click" IsEnabled="{Binding ImagingComponent.ImageProperties.AutoScaling, Converter={StaticResource InverseBoolConverter}}"/>
+
+                <RepeatButton x:Name="scaleMinDecBtn"  Grid.Column="4" Click="scaleMinDecBtn_Click" ToolTip="Decrease lower limit" Style="{DynamicResource UidRepeatButtonInvertedStyle}" Content="{DynamicResource IconDecreaseMin}" IsEnabled="{Binding ImagingComponent.ImageProperties.AutoScaling, Converter={StaticResource InverseBoolConverter}}"/>
+
+                <RepeatButton x:Name="scaleMinIncBtn" Grid.Column="5" Click="scaleMinIncBtn_Click" ToolTip="Increase lower limit" Style="{DynamicResource UidRepeatButtonInvertedStyle}" Content="{DynamicResource IconIncreaseMin}" IsEnabled="{Binding ImagingComponent.ImageProperties.AutoScaling, Converter={StaticResource InverseBoolConverter}}"/>
+
+                <GridSplitter Grid.Column="6" Width="2" IsHitTestVisible="False" Margin="3"/>
+
+                <ToggleButton x:Name="paletteToggleButton" Grid.Column="7" Content="{DynamicResource IconPalette}" Style="{DynamicResource UidToggleButtonInvertedStyle}" ToolTip="Select color map"/>
+                <Controls:ClosingPopup x:Name="usedPalettePopup" Placement="Top" StaysOpen="False" PlacementTarget="{Binding ElementName=paletteToggleButton, Mode=OneWay}" IsOpen="{Binding IsChecked, ElementName=paletteToggleButton, Mode=TwoWay}" HorizontalOffset="26" Opened="palettesPopup_Opened" ControlToggleButton="{Binding ElementName=paletteToggleButton, Mode=OneWay}">
+                    <Border BorderThickness="1" BorderBrush="Cyan">
+                        <ListBox x:Name="palletesListBox" SelectionMode="Single" Style="{DynamicResource SimpleListBox}"
+                            ItemsSource="{Binding ImagingComponent.UsedPalette.PaletteNames}" 
+                            SelectedItem="{Binding ImagingComponent.UsedPalette.SelectedPaletteName, Mode=TwoWay}"
+                            VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </Controls:ClosingPopup>
+
+                <ToggleButton x:Name="transparentToggleButton" Grid.Column="8" ToolTip="Apply transparency" Content="{DynamicResource IconTransparent}" Style="{DynamicResource UidToggleButtonInvertedStyle}" IsChecked="{Binding ImagingComponent.Semitransparent, Mode=TwoWay}"/>
+
+                <ToggleButton x:Name="filterLayer" Grid.Column="9" ToolTip="Apply bandpass filter" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource UidToggleButtonInvertedStyle}" Content="{DynamicResource IconFilter}"/>
+                <Controls:ClosingPopup x:Name="filterLayerPopup" StaysOpen="False" IsOpen="{Binding IsChecked, ElementName=filterLayer, Mode=TwoWay}" PlacementTarget="{Binding ElementName=filterLayer, Mode=OneWay}" OpacityMask="Black" Placement="Top" Opened="filterLayerPopup_Opened" ControlToggleButton="{Binding ElementName=filterLayer, Mode=OneWay}">
+                    <Border BorderBrush="Cyan" BorderThickness="1" Background="White">
+                        <local:ViewFFTFilter x:Name="filterLayerControl" DataContext="{Binding ImagingComponent.DefaultFilter}"/>
+                    </Border>
+                </Controls:ClosingPopup>
+
+                <GridSplitter Grid.Column="10" Width="2" IsHitTestVisible="False" Margin="3"/>
+
+                <RepeatButton x:Name="scaleMaxDecBtn" Grid.Column="11" Click="scaleMaxDecBtn_Click" ToolTip="Decrease upper limit" Style="{DynamicResource UidRepeatButtonInvertedStyle}" Content="{DynamicResource IconDecreaseMax}" IsEnabled="{Binding ImagingComponent.ImageProperties.AutoScaling, Converter={StaticResource InverseBoolConverter}}"/>
+
+                <RepeatButton x:Name="scaleMaxIncBtn" Click="scaleMaxIncBtn_Click" ToolTip="Increase upper limit" d:LayoutOverrides="GridBox" Grid.Column="12" Style="{DynamicResource UidRepeatButtonInvertedStyle}" Content="{DynamicResource IconIncreaseMax}" Margin="0" IsEnabled="{Binding ImagingComponent.ImageProperties.AutoScaling, Converter={StaticResource InverseBoolConverter}}"/>
+
+                <Button x:Name="scaleMaxEqBtn" Click="scaleMaxEqBtn_Click" ToolTip="Set upper limit to maximum" Grid.Column="13" d:LayoutOverrides="GridBox" Style="{DynamicResource UidButtonInvertedStyle}" Content="{DynamicResource IconRightThreshold}" IsEnabled="{Binding ImagingComponent.ImageProperties.AutoScaling, Converter={StaticResource InverseBoolConverter}}"/>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

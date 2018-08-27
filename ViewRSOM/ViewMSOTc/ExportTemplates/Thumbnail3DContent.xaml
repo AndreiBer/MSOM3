@@ -1,0 +1,33 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	x:Class="ViewMSOTc.Thumbnail3DContent"
+	x:Name="UserControl"
+	d:DesignWidth="115" d:DesignHeight="25">
+
+	<Grid x:Name="templateLayoutRoot" Background="Black">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+		<Grid  Background="Black" Margin="0,10,0,0">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="5" />
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="5" />
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="Auto" />
+			</Grid.ColumnDefinitions>
+			<Image x:Name="xyImage"  Grid.Column="0" Source="{Binding ExportedImageXY}" Width="{Binding ExportImageResolution}" Height="{Binding ExportImageResolution}"  />
+			<Image x:Name="yzImage" Grid.Column="2" Source="{Binding ExportedImageYZ}" Height="{Binding ExportImageResolution}"  />
+			<Image x:Name="xzImage" Grid.Column="0" Source="{Binding ExportedImageXZ, Mode=OneWay}" Width="{Binding ExportImageResolution}" Grid.Row="2"/>
+		</Grid>
+	</Grid>
+</UserControl>

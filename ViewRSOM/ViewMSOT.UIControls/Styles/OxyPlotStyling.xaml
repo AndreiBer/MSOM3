@@ -1,0 +1,254 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:oxy="http://oxyplot.org/wpf"
+                    xmlns:UIControls="clr-namespace:ViewMSOT.UIControls"                    
+                    >
+    <Style x:Key="UidOxyPlotQuestionMarkStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource UidButtonIconStyle}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="border" BorderThickness="1" CornerRadius="2" Padding="{DynamicResource UidIconPadding}" Background="#FFFFFFFF">
+                        <Grid>
+                            <Path x:Name="path" Data="{Binding Content, RelativeSource={RelativeSource Mode=TemplatedParent}}" Fill="{DynamicResource UidIconActiveBrush}" Stretch="Uniform"/>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!-- Some default Styling definitions -->
+    <Style x:Key="OxyPlotDefaultAxisStyle" TargetType="{x:Type oxy:Axis}" >
+    </Style>
+    <Style x:Key="OxyPlotDefaultChartStyle" TargetType="{x:Type UIControls:ViewOxyPlotChart}" >
+        <Setter Property="LineSeriesStyle" Value="{DynamicResource OxyPlotDefaultLineSeriesStyle}"/>
+        <Setter Property="PlotViewStyle" Value="{DynamicResource OxyPlotDefaultPlotViewStyle}"/>
+        <Setter Property="ShowHelpButton" Value="False"/>
+    </Style>
+    <Style x:Key="OxyPlotDefaultLineSeriesStyle" TargetType="{x:Type oxy:LineSeries}" >
+        <Setter Property="StrokeThickness" Value="1"/>
+        <Setter Property="MarkerSize" Value="2"/>
+        <Setter Property="MarkerType" Value="None"/>
+    </Style>
+    <Style x:Key="OxyPlotDefaultPlotViewStyle" TargetType="{x:Type oxy:PlotView}" >
+        <Setter Property="IsLegendVisible" Value="True"/>
+        <Setter Property="LegendOrientation" Value="Horizontal"/>
+        <Setter Property="LegendPosition" Value="BottomCenter"/>
+        <Setter Property="LegendPlacement" Value="Outside"/>
+    </Style>
+    <!-- *** END  default Styling definitions *** -->
+    <!-- SpectrumViewOxyPlotChartStyle definitions -->
+    <Style x:Key="SpectrumViewOxyPlotChartStyle" BasedOn="{StaticResource OxyPlotDefaultChartStyle}" TargetType="{x:Type UIControls:ViewOxyPlotChart}" >
+        <Setter Property="GridWidth" Value="150"/>
+        <Setter Property="GridHeight" Value="90"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Top"/>
+        <Setter Property="VerticalAlignment" Value="Bottom"/>
+        <Setter Property="Grid.Row" Value="2"/>
+        <Setter Property="PlotViewStyle" Value="{DynamicResource SpectrumPlotViewStyle}"/>
+        <Setter Property="LineSeriesStyle" Value="{DynamicResource SpectrumOxyLineSeriesStyle}"/>
+    </Style>
+    <Style x:Key="SpectrumPlotViewStyle" BasedOn="{StaticResource OxyPlotDefaultPlotViewStyle}" TargetType="{x:Type oxy:PlotView}" >
+        <Setter Property="PlotAreaBackground" Value="WhiteSmoke"/>
+        <Setter Property="Background" Value="LightGray"/>
+        <Setter Property="Padding" Value="7,3,3,3"/>
+        <Setter Property="IsLegendVisible" Value="False"/>
+    </Style>
+    <Style x:Key="SpectrumOxyAxisXStyle" BasedOn="{StaticResource OxyPlotDefaultAxisStyle}" TargetType="{x:Type oxy:Axis}" >
+        <Setter Property="MaximumPadding" Value="0.05"/>
+        <Setter Property="MinimumPadding" Value="0"/>
+        <Setter Property="AxisTickToLabelDistance" Value="0"/>
+        <Setter Property="Position" Value="Bottom"/>
+        <Setter Property="FontSize" Value="10"/>
+        <Setter Property="IsZoomEnabled" Value="False"/>
+        <Setter Property="IsPanEnabled" Value="False"/>
+        <Setter Property="MajorStep" Value="100"/>
+        <!-- A value of 0 turns off the feature -->
+        <Setter Property="MinorTickSize" Value="0"/>
+    </Style>
+    <Style x:Key="SpectrumOxyAxisYStyle" BasedOn="{StaticResource OxyPlotDefaultAxisStyle}" TargetType="{x:Type oxy:Axis}" >
+        <Setter Property="MaximumPadding" Value="0.05"/>
+        <Setter Property="MinimumPadding" Value="0.01"/>
+        <Setter Property="IsAxisVisible" Value="False"/>
+        <Setter Property="IsPanEnabled" Value="False"/>
+        <Setter Property="IsZoomEnabled" Value="False"/>
+        <Setter Property="Position" Value="Left"/>
+    </Style>
+    <Style x:Key="SpectrumOxyLineSeriesStyle" BasedOn="{StaticResource OxyPlotDefaultLineSeriesStyle}" TargetType="{x:Type oxy:LineSeries}" >
+        <Setter Property="StrokeThickness" Value="2"/>
+        <Setter Property="MarkerSize" Value="3"/>
+        <Setter Property="Color" Value="Orange"/>
+    </Style>
+    <!-- *** END SpectrumViewOxyPlotChartStyle definitions *** -->
+
+    <!-- ViewMsp3DComponentsSelectionOxyAxisXStyle definitions -->
+    <Style x:Key="ViewMsp3DComponentsSelectionOxyAxisXStyle" BasedOn="{StaticResource SpectrumOxyAxisXStyle}" TargetType="{x:Type oxy:Axis}" >
+        <Setter Property="MajorStep" Value="20"/>
+    </Style>
+    <!-- *** END *** -->
+
+    <!-- ViewMspComponentsSelectionOxyAxisXStyle definitions -->
+    <Style x:Key="ViewMspComponentsSelectionOxyAxisXStyle" BasedOn="{StaticResource SpectrumOxyAxisXStyle}" TargetType="{x:Type oxy:Axis}" >
+        <Setter Property="MajorStep" Value="20"/>
+    </Style>
+    <!-- *** END *** -->
+
+    <!-- TooltipSpectrumViewOxyPlotChartStyle definitions -->
+    <Style x:Key="TooltipSpectrumViewOxyPlotChartStyle" BasedOn="{StaticResource SpectrumViewOxyPlotChartStyle}" TargetType="{x:Type UIControls:ViewOxyPlotChart}" >
+        <Setter Property="ToolTipService.ShowDuration" Value="20000"/>
+        <Setter Property="PlotViewStyle" Value="{DynamicResource TooltipSpectrumPlotViewStyle}"/>
+    </Style>
+    <Style x:Key="TooltipSpectrumPlotViewStyle" BasedOn="{StaticResource SpectrumPlotViewStyle}" TargetType="{x:Type oxy:PlotView}" >
+        <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ToolTip}, Path=Background}"/>
+        <Setter Property="PlotAreaBackground" Value="WhiteSmoke"/>
+    </Style>
+    <!-- *** END TooltipSpectrumViewOxyPlotChartStyle definitions *** -->
+
+    <!-- ViewSpectrumAddRemoveOxyPlotChartStyle definitions -->
+    <Style x:Key="ViewSpectrumAddRemoveOxyPlotChartStyle" BasedOn="{StaticResource OxyPlotDefaultChartStyle}" TargetType="{x:Type UIControls:ViewOxyPlotChart}" >
+        <Setter Property="Grid.Row" Value="1"/>
+        <Setter Property="Grid.Column" Value="2"/>
+        <Setter Property="ShowGridLines" Value="True"/>
+        <Setter Property="PlotViewStyle" Value="{DynamicResource ViewSpectrumAddRemovePlotViewStyle}"/>
+    </Style>
+    <Style x:Key="ViewSpectrumAddRemovePlotViewStyle" BasedOn="{StaticResource OxyPlotDefaultPlotViewStyle}" TargetType="{x:Type oxy:PlotView}" >
+        <Setter Property="IsLegendVisible" Value="False"/>
+    </Style>
+    <!-- *** END ViewSpectrumAddRemoveOxyPlotChartStyle definitions *** -->
+
+    <!-- ViewSpectrumManipulationOxyPlotChartStyle definitions -->
+    <Style x:Key="ViewSpectrumManipulationOxyPlotChartStyle" BasedOn="{StaticResource ViewSpectrumAddRemoveOxyPlotChartStyle}" TargetType="{x:Type UIControls:ViewOxyPlotChart}" >
+        <Setter Property="PlotViewStyle" Value="{DynamicResource ViewSpectrumManipulationPlotViewStyle}"/>
+    </Style>
+    <Style x:Key="ViewSpectrumManipulationPlotViewStyle" BasedOn="{StaticResource ViewSpectrumAddRemovePlotViewStyle}" TargetType="{x:Type oxy:PlotView}" >
+    </Style> 
+    <!-- *** END ViewSpectrumManipulationOxyPlotChartStyle definitions *** -->
+
+    <!-- ViewMspPresetRegressionMethodOxyPlotChartStyle definitions -->
+    <Style x:Key="ViewMspPresetRegressionMethodOxyPlotChartStyle" BasedOn="{StaticResource ViewSpectrumAddRemoveOxyPlotChartStyle}" TargetType="{x:Type UIControls:ViewOxyPlotChart}" >
+        <Setter Property="LineSeriesStyle" Value="{DynamicResource ViewMspPresetRegressionMethodOxyLineSeriesStyle}"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="Margin" Value="10,0"/>
+        <Setter Property="PlotViewStyle" Value="{DynamicResource ViewMspPresetRegressionMethodPlotViewStyle}"/>
+    </Style>
+    <Style x:Key="ViewMspPresetRegressionMethodPlotViewStyle" BasedOn="{StaticResource ViewSpectrumAddRemovePlotViewStyle}" TargetType="{x:Type oxy:PlotView}" >
+    </Style>
+    <Style x:Key="ViewMspPresetRegressionMethodOxyLineSeriesStyle" BasedOn="{StaticResource OxyPlotDefaultLineSeriesStyle}" TargetType="{x:Type oxy:LineSeries}" >
+        <Setter Property="StrokeThickness" Value="2"/>
+        <Setter Property="MarkerSize" Value="3"/>
+        <Setter Property="Color" Value="Red"/>
+    </Style>
+    <!-- *** END ViewMspPresetRegressionMethodOxyPlotChartStyle definitions *** -->
+
+    <!-- ViewComponentSpectraOxyPlotChartStyle definitions -->
+    <Style x:Key="ViewComponentSpectraOxyPlotChartStyle" BasedOn="{StaticResource OxyPlotDefaultChartStyle}" TargetType="{x:Type UIControls:ViewOxyPlotChart}">
+        <Setter Property="PlotViewStyle" Value="{DynamicResource ViewComponentSpectraPlotViewStyle}"/>
+        <Setter Property="XAxisStyle" Value="{DynamicResource ViewComponentSpectraChartOxyAxisXStyle}"/>
+        <Setter Property="YAxisStyle" Value="{DynamicResource ViewComponentSpectraChartOxyAxisYStyleMajorStep}"/>
+        <Setter Property="LineSeriesStyle" Value="{DynamicResource ViewComponentSpectraChartLineSeriesStyle}"/>
+    </Style>
+    <Style x:Key="ViewComponentSpectraPlotViewStyle" BasedOn="{StaticResource OxyPlotDefaultPlotViewStyle}" TargetType="{x:Type oxy:PlotView}">
+        <Setter Property="Padding" Value="7,3,3,3"/>
+        <Setter Property="Title" Value="Component Spectra"/>
+        <Setter Property="TitleFontWeight" Value="Normal"/>
+    </Style>
+    <Style x:Key="ViewComponentSpectraChartOxyAxisXStyle" BasedOn="{StaticResource OxyPlotDefaultAxisStyle}" TargetType="{x:Type oxy:Axis}" >
+        <Setter Property="IsZoomEnabled" Value="False"/>
+        <Setter Property="IsPanEnabled" Value="False"/>
+        <Setter Property="Position" Value="Bottom"/>
+        <Setter Property="MajorGridlineStyle" Value="Solid"/>
+        <Setter Property="MinorGridlineStyle" Value="None"/>
+        <!-- A value of 0 turns off the feature -->
+        <Setter Property="MinorTickSize" Value="0"/>
+    </Style>
+    <Style x:Key="ViewComponentSpectraChartOxyAxisYStyle" BasedOn="{StaticResource OxyPlotDefaultAxisStyle}" TargetType="{x:Type oxy:Axis}" >
+        <Setter Property="IsPanEnabled" Value="False"/>
+        <Setter Property="IsZoomEnabled" Value="False"/>
+        <Setter Property="Position" Value="Left"/>
+        <Setter Property="MajorGridlineStyle" Value="Solid"/>
+        <Setter Property="MinorGridlineStyle" Value="None"/>
+        <!-- A value of 0 turns off the feature -->
+        <Setter Property="MinorTickSize" Value="0"/>
+    </Style>
+    <Style x:Key="ViewComponentSpectraChartOxyAxisYStyleMajorStep" BasedOn="{StaticResource ViewComponentSpectraChartOxyAxisYStyle}" TargetType="{x:Type oxy:Axis}" >
+        <Setter Property="MajorStep" Value="0.1"/>
+    </Style>
+    <Style x:Key="ViewComponentSpectraChartLineSeriesStyle" BasedOn="{StaticResource OxyPlotDefaultLineSeriesStyle}" TargetType="{x:Type oxy:LineSeries}" >
+        <Setter Property="StrokeThickness" Value="2"/>
+        <Setter Property="MarkerSize" Value="3"/>
+        <Setter Property="MarkerType" Value="Circle"/>
+    </Style>
+    <!-- *** END ViewComponentSpectraOxyPlotChartStyle definitions *** -->
+
+    <!-- ViewExportSpectraOxyPlotChartStyle definitions -->
+    <Style x:Key="ViewExportSpectraOxyPlotChartStyle" BasedOn="{StaticResource ViewComponentSpectraOxyPlotChartStyle}" TargetType="{x:Type UIControls:ViewOxyPlotChart}" >
+        <Setter Property="GridWidth" Value="900"/>
+        <Setter Property="GridHeight" Value="700"/>
+        <Setter Property="PlotViewStyle" Value="{DynamicResource ViewExportSpectraPlotViewStyle}"/>
+    </Style>
+    <Style x:Key="ViewExportSpectraPlotViewStyle" BasedOn="{StaticResource ViewComponentSpectraPlotViewStyle}" TargetType="{x:Type oxy:PlotView}">
+    </Style>    
+    <!-- *** END ViewExportSpectraOxyPlotChartStyle definitions *** -->
+
+    <!-- ROI chart definitions -->
+    <Style x:Key="ROIChartLineSeriesStyle" BasedOn="{StaticResource OxyPlotDefaultLineSeriesStyle}" TargetType="{x:Type oxy:LineSeries}" >
+        <Setter Property="StrokeThickness" Value="2"/>
+        <Setter Property="MarkerSize" Value="3"/>
+        <Setter Property="MarkerType" Value="Circle"/>
+    </Style>
+    <Style x:Key="ROIChartStyle" BasedOn="{StaticResource OxyPlotDefaultChartStyle}" TargetType="{x:Type UIControls:ViewOxyPlotChart}" >
+        <Setter Property="PlotViewStyle" Value="{DynamicResource ROIChartPlotViewStyle}"/>
+        <Setter Property="XAxisStyle" Value="{DynamicResource ROIChartOxyAxisXStyle}"/>
+        <Setter Property="YAxisStyle" Value="{DynamicResource ROIChartOxyAxisYStyle}"/>
+        <Setter Property="LineSeriesStyle" Value="{DynamicResource ROIChartLineSeriesStyle}"/>
+    </Style>
+    <Style x:Key="ROIChartPlotViewStyle" BasedOn="{StaticResource OxyPlotDefaultPlotViewStyle}" TargetType="{x:Type oxy:PlotView}" >
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="PlotAreaBackground" Value="White"/>
+        <Setter Property="Padding" Value="5"/>
+        <Setter Property="PlotAreaBorderThickness" Value="1,0,0,1"/>
+        <Setter Property="PlotMargins" Value="Auto,30,30,Auto"/>
+    </Style>
+    <Style x:Key="ROIChartOxyAxisXStyle" BasedOn="{StaticResource OxyPlotDefaultAxisStyle}" TargetType="{x:Type oxy:Axis}" >
+        <Setter Property="TickStyle" Value="Crossing"/>
+        <Setter Property="Position" Value="Bottom"/>
+        <Setter Property="MinorTickSize" Value="0"/>
+        <Setter Property="FontSize" Value="10"/>
+        <Setter Property="IsZoomEnabled" Value="False"/>
+        <Setter Property="IsPanEnabled" Value="False"/>
+    </Style>
+    <Style x:Key="ROIChartOxyAxisYStyle" BasedOn="{StaticResource OxyPlotDefaultAxisStyle}" TargetType="{x:Type oxy:Axis}" >
+        <Setter Property="TickStyle" Value="Crossing"/>
+        <Setter Property="Position" Value="Left"/>
+        <Setter Property="MinorTickSize" Value="0"/>
+        <Setter Property="IsZoomEnabled" Value="False"/>
+        <Setter Property="IsPanEnabled" Value="False"/>
+    </Style>
+    <!-- *** END ROI chart definitions *** -->
+
+    <!-- InnolasTestStatisticsChart definitions -->
+    <Style x:Key="InnolasTestStatisticsChartStyle" BasedOn="{StaticResource OxyPlotDefaultChartStyle}" TargetType="{x:Type UIControls:ViewOxyPlotChart}" >
+        <Setter Property="PlotViewStyle" Value="{DynamicResource InnolasTestStatisticsChartPlotViewStyle}"/>
+    </Style>
+    <Style x:Key="InnolasTestStatisticsChartPlotViewStyle" BasedOn="{StaticResource OxyPlotDefaultPlotViewStyle}" TargetType="{x:Type oxy:PlotView}" >
+        <Setter Property="Padding" Value="10,5"/>
+    </Style>
+    <!-- *** END InnolasTestStatisticsChart chart definitions *** -->
+
+    <!-- LaserPowerMonitorChartStyle -->
+    <Style x:Key="LaserPowerMonitorChartStyle" BasedOn="{StaticResource OxyPlotDefaultChartStyle}" TargetType="{x:Type UIControls:ViewOxyPlotChart}" >
+        <Setter Property="ShowGridLines" Value="True"/>
+        <Setter Property="XAxisStyle" Value="{DynamicResource LaserPowerMonitorOxyAxisXStyle}"/>
+        <Setter Property="YAxisStyle" Value="{DynamicResource LaserPowerMonitorOxyAxisYStyle}"/>
+    </Style>
+    <Style x:Key="LaserPowerMonitorOxyAxisXStyle" BasedOn="{StaticResource OxyPlotDefaultAxisStyle}" TargetType="{x:Type oxy:Axis}" >
+        <Setter Property="Position" Value="Bottom"/>
+        <Setter Property="IsZoomEnabled" Value="True"/>
+        <Setter Property="IsPanEnabled" Value="True"/>
+    </Style>
+    <Style x:Key="LaserPowerMonitorOxyAxisYStyle" BasedOn="{StaticResource OxyPlotDefaultAxisStyle}" TargetType="{x:Type oxy:Axis}" >
+        <Setter Property="Position" Value="Left"/>
+        <Setter Property="IsZoomEnabled" Value="False"/>
+        <Setter Property="IsPanEnabled" Value="False"/>
+    </Style>    
+    <!-- *** END LaserPowerMonitorChartStyle definitions *** -->
+</ResourceDictionary>

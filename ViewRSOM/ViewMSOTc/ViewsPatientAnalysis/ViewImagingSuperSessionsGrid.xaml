@@ -1,0 +1,152 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:Controls="clr-namespace:Xvue.Framework.Views.WPF.Controls;assembly=Xvue.Framework.Views.WPF" 
+	xmlns:local="clr-namespace:ViewMSOTc"
+	xmlns:exceedToolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+	xmlns:ImagingSession="clr-namespace:Xvue.MSOT.ViewModels.ProjectManager.ImagingSession;assembly=Xvue.MSOT.ViewModels"
+	xmlns:Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF"
+    xmlns:dm="clr-namespace:Xvue.MSOT.DataModels.Plugins.ProjectManager;assembly=Xvue.MSOT"
+	mc:Ignorable="d"
+	x:Class="ViewMSOTc.ViewImagingSuperSessionsGrid"
+	x:Name="UserControl" DataContextChanged="UserControl_DataContextChanged">
+
+    <UserControl.Resources>
+        <Converters:BooleanToWpfToolkitWindowStateConverter x:Key="BooleanToWpfToolkitWindowStateConverter"/>
+        <Converters:BooleanToVisibleConverter x:Key="BooleanToVisibleConverter"/>
+        <Converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter"/>
+        <ImagingSession:ViewModelImagingSuperSession x:Key="ViewModelImagingSuperSessionDataSource" d:IsDataSource="True"/>
+        <Style TargetType="{x:Type local:ViewImagingSuperSessionsGrid}">
+            <Setter Property="ComparisonViewingLayout" Value="{Binding ViewingLayout, Mode=OneWay}"/>
+        </Style>
+        <ItemsPanelTemplate x:Key="imagingSessionsItemsControlTemplate">
+            <Controls:WrapGridSimple IsItemsHost="True" Dimensions="{Binding WrapGridDimensions, ElementName=UserControl}"/>
+        </ItemsPanelTemplate>
+        <ItemsPanelTemplate x:Key="imagingSessionItemControlTemplate">
+            <Grid IsItemsHost="True"/>
+        </ItemsPanelTemplate>
+        <DataTemplate x:Key="ComparisonImagingSessionDataTemplate">
+            <Grid x:Name="comparisonSessionGrid" Cursor="{Binding DataContext.SessionCursor, ElementName=UserControl, Mode=OneWay}"
+                  MouseLeftButtonDown="comparisonSessionGrid_MouseLeftButtonDown" MouseEnter="comparisonSessionGrid_MouseEnter" MouseLeave="comparisonSessionGrid_MouseLeave" MouseMove="comparisonSessionGrid_MouseMove">
+                <local:ViewImagingSessionGeneric AllowDrop="True" Drop="AddReplaceSession_Drop" DragEnter="SessionGeneric_DragEnter" DragLeave="SessionGeneric_DragLeave"/>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="SingleImagingSessionDataTemplate">
+            <Grid>
+                <local:ViewImagingSessionGenericFull Grid.Column="1"/>
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot" d:DataContext="{Binding Source={StaticResource ViewModelImagingSuperSessionDataSource}}" Background="Black">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel x:Name="comparisonMenuStackPanel" Orientation="Vertical" Margin="0,10,0,0" Background="Black">
+                <local:SessionMenusContentControl Content="{Binding}" x:Name="imagePropertiesMenus">
+                    <local:SessionMenusContentControl.Style>
+                        <Style TargetType="local:SessionMenusContentControl">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="local:SessionMenusContentControl">
+                                        <local:ViewImagePropertiesGridComparisonMenus x:Name="menus"/>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=ViewingLayout}" Value="{x:Static dm:SuperSessionViewingLayout.Layout1}">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="local:SessionMenusContentControl">
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition/>
+                                                        <RowDefinition/>
+                                                    </Grid.RowDefinitions>
+                                                    <local:ViewImagePropertiesGridMenus x:Name="menus" DataContext="{Binding SingleViewedSession}"/>
+                                                    <ContentControl Grid.Row="1">
+                                                        <ContentControl.Style>
+                                                            <Style TargetType="ContentControl">
+                                                                <Setter Property="Template">
+                                                                    <Setter.Value>
+                                                                        <ControlTemplate TargetType="ContentControl">
+                                                                            <Grid/>
+                                                                        </ControlTemplate>
+                                                                    </Setter.Value>
+                                                                </Setter>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding SingleViewedSession.MainImageProperties.Is3DImageProperties, Mode=OneWay}" Value="true">
+                                                                        <Setter Property="Template">
+                                                                            <Setter.Value>
+                                                                                <ControlTemplate TargetType="ContentControl">
+                                                                                    <local:ViewImageProperties3DMenu DataContext="{Binding SingleViewedSession}" Grid.Row="1"/>
+                                                                                </ControlTemplate>
+                                                                            </Setter.Value>
+                                                                        </Setter>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </ContentControl.Style>
+                                                    </ContentControl>
+                                                </Grid>                                                
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </local:SessionMenusContentControl.Style>
+                </local:SessionMenusContentControl>                
+                <local:ViewSuperSessionsMenu DataContext="{Binding DataContext, ElementName=UserControl}"/>
+                <ToggleButton ToolTip="Tag image" Content="{DynamicResource IconTagImage}" Style="{DynamicResource UidToggleButtonInvertedStyle}" Command="{Binding SingleViewedSession.CommandToggleIsImageTagged, Mode=OneWay}" Margin="4" IsChecked="{Binding SingleViewedSession.SelectedVisibleSlice.IsImageTagged, Mode=OneWay}"
+                        IsEnabled="{Binding DataContext.ViewingLayout, ConverterParameter={x:Static dm:SuperSessionViewingLayout.Layout1}, Converter={StaticResource EnumToBooleanConverter}, ElementName=UserControl}"/>
+            </StackPanel>
+
+            <Grid x:Name="imagingSessionsGrid" Grid.Column="1">
+                <ItemsControl x:Name="imagingSessionsItemsControl" 
+                            SizeChanged="imagingSessionsItemsControl_SizeChanged"
+				            TargetUpdated="imagingSessionsItemsControl_TargetUpdated" 
+				            ItemsSource="{Binding ImagingSessions, NotifyOnTargetUpdated=True}" 
+                            ItemsPanel="{DynamicResource imagingSessionsItemsControlTemplate}"
+				            ScrollViewer.CanContentScroll="True">
+                    <ItemsControl.Template>
+                        <ControlTemplate TargetType="{x:Type ItemsControl}">
+                            <Controls:DisabledContentWheelScrollViewer IsDeferredScrollingEnabled="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" ScrollChanged="ScrollViewer_ScrollChanged" AllowDrop="True" Drop="AddNewSession_Drop">
+                                <ItemsPresenter />
+                            </Controls:DisabledContentWheelScrollViewer>
+                        </ControlTemplate>
+                    </ItemsControl.Template>
+                    <ItemsControl.Style>
+                        <Style TargetType="{x:Type ItemsControl}">
+                            <Setter Property="ItemTemplate" Value="{StaticResource ComparisonImagingSessionDataTemplate}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=ViewingLayout}" Value="{x:Static dm:SuperSessionViewingLayout.Layout1}">
+                                    <Setter Property="ItemTemplate" Value="{StaticResource SingleImagingSessionDataTemplate}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=IsComparisonSuperSession}" Value="false">
+                                    <Setter Property="ItemsPanel" Value="{StaticResource imagingSessionItemControlTemplate}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ItemsControl.Style>
+                </ItemsControl>
+            </Grid>
+        </Grid>
+
+        <local:ViewPatientAnalysisMeasurements Margin="10,0,0,0" Grid.Column="1" Visibility="{Binding IsMeasurementTableVisible, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}}"/>
+
+        <Popup x:Name="floatingToolTip" AllowsTransparency="True" Placement="Relative">
+            <TextBlock Background="White" Text="{Binding CopyPropertiesMouseToolTip}"/>
+        </Popup>
+    </Grid>
+</UserControl>

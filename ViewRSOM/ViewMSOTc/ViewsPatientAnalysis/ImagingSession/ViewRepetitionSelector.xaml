@@ -1,0 +1,78 @@
+﻿<UserControl 
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"    
+	xmlns:Xvue_MSOT_ViewModels_ProjectManager_ImagingSession="clr-namespace:Xvue.MSOT.ViewModels.ProjectManager.ImagingSession;assembly=Xvue.MSOT.ViewModels"     	      
+	xmlns:System="clr-namespace:System;assembly=mscorlib" 
+	xmlns:exceedToolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+	xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+	xmlns:Xvue_Framework_Views_WPF_Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF"
+	xmlns:Controls="clr-namespace:Xvue.Framework.Views.WPF.Controls;assembly=Xvue.Framework.Views.WPF" 
+	x:Class="ViewMSOTc.ViewRepetitionSelector"
+	x:Name="UserControl"
+	d:DesignWidth="300" d:DesignHeight="300" mc:Ignorable="d" IsVisibleChanged="UserControl_IsVisibleChanged">	
+
+	<UserControl.Resources>
+		<Xvue_Framework_Views_WPF_Converters:BooleanToVisibleConverter x:Key="BooleanToVisibleConverter"/>  
+		<DataTemplate x:Key="RepetitionTaskDataTemplate">
+			<StackPanel x:Name="stackPanel" Orientation="Horizontal" Margin="1,2" VerticalAlignment="Center">
+				<CheckBox IsChecked="{Binding IsScheduled}" Style="{DynamicResource UidCheckBoxStyle}" VerticalAlignment="Center"/>
+				<TextBlock Text="{Binding Item.ShortDetails, Mode=OneWay}" Margin="2,0,0,0" VerticalAlignment="Center"/>
+			</StackPanel>			
+		</DataTemplate>
+		
+		<Style x:Key="ListViewItemStyle1" TargetType="{x:Type ListViewItem}">
+			<Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+		</Style>				
+	</UserControl.Resources>
+
+	<Grid IsEnabled="{Binding EnableRepetitions, Mode=OneWay}">
+		<Grid.RowDefinitions>			
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
+
+		<ListView x:Name="RepetitionsList" Margin="15,0"
+			VirtualizingStackPanel.IsVirtualizing="True" ItemsSource="{Binding RepetitionTasks}" 
+			ItemTemplate="{DynamicResource RepetitionTaskDataTemplate}" ItemContainerStyle="{DynamicResource ListViewItemStyle1}"/>
+
+		<StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right" Margin="15,0">
+			<Button Style="{DynamicResource UidButtonStyle}" Content="{DynamicResource IconPatternSelectAll}" Command="{Binding CommandSelectUnselectRepetitions, Mode=OneWay}" CommandParameter="{Binding SelectedItems, ElementName=RepetitionsList}" ToolTip="Check/uncheck selection" Width="40" Height="40" Margin="2"/>
+			<Button Style="{DynamicResource UidButtonStyle}" Content="{DynamicResource IconPatternGenerator}" ToolTip="Select pattern" Width="40" Height="40" Margin="2" Click="Button_Click"/>
+			<!--<Button Style="{DynamicResource UidButtonStyle}" Content="{DynamicResource IconPatternUnselect}" Command="{Binding CommandUncheckMultipleRepetitions, Mode=OneWay}" ToolTip="Uncheck all selected items" Width="40" Height="40" CommandParameter="{Binding SelectedItems, ElementName=RepetitionsList}" Margin="2"/>-->
+		</StackPanel>
+
+		<exceedToolkit:ChildWindow  x:Name="patternSelectWindow" IsModal="True" Caption="Select pattern" WindowStartupLocation="Center" Grid.RowSpan="2" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{DynamicResource ChildWindowWiderCaptionStyle}" CloseButtonVisibility="Collapsed">
+			<Grid Margin="8">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="135"/>
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+
+				<Label Content="First item:" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2"/>
+				<ComboBox Grid.Column="1" HorizontalAlignment="Stretch" Width="Auto" Margin="4"
+						ItemsSource="{Binding AvailableRepetitionPatternStartValues}"
+						SelectedIndex="{Binding SelectRepetitionPatternStartIndex, Mode=TwoWay}" VerticalAlignment="Center"
+						Style="{DynamicResource UidComboBoxStyle}"/>
+
+
+				<Label Content="Check every:" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Center" Margin="2"/>
+				<ComboBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" Width="Auto" Margin="4"
+						ItemsSource="{Binding AvailableRepetitionPatternPeriodValues}"
+						SelectedIndex="{Binding SelectRepetitionPatternPeriodIndex, Mode=TwoWay, NotifyOnSourceUpdated=True}" VerticalAlignment="Center"
+						Style="{DynamicResource UidComboBoxStyle}"/>
+
+				<StackPanel Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Center" Margin="0,8,0,0">
+					<Button x:Name="paternCancelButton" Margin="0,0,3,0" Content="Cancel" Width="100" Click="patternButton_Click" Style="{DynamicResource UidButtonTextStyle2}"/>
+					<Button x:Name="paternSelectButton" Margin="3,0,0,0" Content="Select" Width="100" Click="patternButton_Click" Style="{DynamicResource UidButtonTextStyle2}" Command="{Binding CommandSelectRepetitionPatternIndexed, Mode=OneWay}"/>
+				</StackPanel>
+			</Grid>
+		</exceedToolkit:ChildWindow>
+	</Grid>
+</UserControl>

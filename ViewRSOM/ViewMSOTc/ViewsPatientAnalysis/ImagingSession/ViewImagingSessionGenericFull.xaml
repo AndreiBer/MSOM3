@@ -1,0 +1,382 @@
+﻿<UserControl x:Name="userControl" x:Class="ViewMSOTc.ViewImagingSessionGenericFull"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+			 xmlns:exceedToolkit="http://schemas.xceed.com/wpf/xaml/toolkit" 
+			 xmlns:System="clr-namespace:System;assembly=mscorlib"
+             xmlns:local="clr-namespace:ViewMSOTc"
+             xmlns:Xvue_MSOT_ViewModels_ProjectManager_ImagingSession="clr-namespace:Xvue.MSOT.ViewModels.ProjectManager.ImagingSession;assembly=Xvue.MSOT.ViewModels"
+             xmlns:Controls="clr-namespace:Xvue.Framework.Views.WPF.Controls;assembly=Xvue.Framework.Views.WPF" 
+             xmlns:ServicesImaging="clr-namespace:Xvue.MSOT.Services.Imaging;assembly=Xvue.MSOT" 
+             xmlns:UIControls="clr-namespace:ViewMSOT.UIControls;assembly=ViewMSOT.UIControls"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:Behaviors="clr-namespace:Xvue.Framework.Views.WPF.Behaviors;assembly=Xvue.Framework.Views.WPF"
+             xmlns:Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF" 
+             mc:Ignorable="d"
+             d:DesignWidth="1280" d:DesignHeight="400" DataContextChanged="userControl_DataContextChanged">
+    <UserControl.Resources>
+        <Converters:GridLengthToDoubleConverter x:Key="GridLengthToDoubleConverter"/>
+        <Style x:Key="BusyIndicatorNoRadiusStyle" TargetType="{x:Type exceedToolkit:BusyIndicator}">
+            <Setter Property="BusyContent" Value="Please wait..."/>
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="OverlayStyle">
+                <Setter.Value>
+                    <Style TargetType="{x:Type Rectangle}">
+                        <Setter Property="Fill" Value="White"/>
+                        <Setter Property="Opacity" Value="0.5"/>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="ProgressBarStyle">
+                <Setter.Value>
+                    <Style TargetType="{x:Type ProgressBar}">
+                        <Setter Property="IsIndeterminate" Value="True"/>
+                        <Setter Property="Height" Value="15"/>
+                        <Setter Property="Margin" Value="8,0,8,8"/>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="DisplayAfter" Value="0:0:0.1"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type exceedToolkit:BusyIndicator}">
+                        <Grid>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="VisibilityStates">
+                                    <VisualState x:Name="Hidden">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames BeginTime="0" Duration="0:0:0.001" Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="busycontent">
+                                                <DiscreteObjectKeyFrame KeyTime="0">
+                                                    <DiscreteObjectKeyFrame.Value>
+                                                        <Visibility>Collapsed</Visibility>
+                                                    </DiscreteObjectKeyFrame.Value>
+                                                </DiscreteObjectKeyFrame>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames BeginTime="0" Duration="0:0:0.001" Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="overlay">
+                                                <DiscreteObjectKeyFrame KeyTime="0">
+                                                    <DiscreteObjectKeyFrame.Value>
+                                                        <Visibility>Collapsed</Visibility>
+                                                    </DiscreteObjectKeyFrame.Value>
+                                                </DiscreteObjectKeyFrame>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Visible">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames BeginTime="0" Duration="0:0:0.001" Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="busycontent">
+                                                <DiscreteObjectKeyFrame KeyTime="0">
+                                                    <DiscreteObjectKeyFrame.Value>
+                                                        <Visibility>Visible</Visibility>
+                                                    </DiscreteObjectKeyFrame.Value>
+                                                </DiscreteObjectKeyFrame>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames BeginTime="0" Duration="0:0:0.001" Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="overlay">
+                                                <DiscreteObjectKeyFrame KeyTime="0">
+                                                    <DiscreteObjectKeyFrame.Value>
+                                                        <Visibility>Visible</Visibility>
+                                                    </DiscreteObjectKeyFrame.Value>
+                                                </DiscreteObjectKeyFrame>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                                <VisualStateGroup x:Name="BusyStatusStates">
+                                    <VisualState x:Name="Idle">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames BeginTime="0" Duration="0:0:0.001" Storyboard.TargetProperty="(UIElement.IsEnabled)" Storyboard.TargetName="content">
+                                                <DiscreteObjectKeyFrame KeyTime="0">
+                                                    <DiscreteObjectKeyFrame.Value>
+                                                        <System:Boolean>True</System:Boolean>
+                                                    </DiscreteObjectKeyFrame.Value>
+                                                </DiscreteObjectKeyFrame>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Busy">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames BeginTime="0" Duration="0:0:0.001" Storyboard.TargetProperty="(UIElement.IsEnabled)" Storyboard.TargetName="content">
+                                                <DiscreteObjectKeyFrame KeyTime="0">
+                                                    <DiscreteObjectKeyFrame.Value>
+                                                        <System:Boolean>False</System:Boolean>
+                                                    </DiscreteObjectKeyFrame.Value>
+                                                </DiscreteObjectKeyFrame>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <ContentControl x:Name="content" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Focusable="False" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" IsTabStop="False" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            <Rectangle x:Name="overlay" Style="{TemplateBinding OverlayStyle}"/>
+                            <ContentPresenter x:Name="busycontent">
+                                <ContentPresenter.Content>
+                                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Border BorderThickness="1" Background="White" CornerRadius="0">
+                                            <Border.BorderBrush>
+                                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                                    <GradientStop Color="#FFA3AEB9" Offset="0"/>
+                                                    <GradientStop Color="#FF8399A9" Offset="0.375"/>
+                                                    <GradientStop Color="#FF718597" Offset="0.375"/>
+                                                    <GradientStop Color="#FF617584" Offset="1"/>
+                                                </LinearGradientBrush>
+                                            </Border.BorderBrush>
+                                            <Border CornerRadius="1.5" Margin="1">
+                                                <Border.Background>
+                                                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                                        <GradientStop Color="#FFF6F8F9" Offset="0.02"/>
+                                                        <GradientStop Color="#FFB8B8B8" Offset="0.996"/>
+                                                    </LinearGradientBrush>
+                                                </Border.Background>
+                                                <Grid MinWidth="150">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+                                                    <ContentPresenter ContentTemplate="{TemplateBinding BusyContentTemplate}" Content="{TemplateBinding BusyContent}" Margin="8"/>
+                                                    <ProgressBar Grid.Row="1" Height="20" Style="{TemplateBinding ProgressBarStyle}" Margin="8"/>
+                                                </Grid>
+                                            </Border>
+                                        </Border>
+                                    </Grid>
+                                </ContentPresenter.Content>
+                            </ContentPresenter>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <DataTemplate x:Key="MspImageThumbDataTemplate">
+            <Border Background="Black" Margin="4" Width="{Binding Value, ElementName=imageSizeSlider}" Height="{Binding Value, ElementName=imageSizeSlider}">
+                <Grid>
+                    <Image Source="{Binding ImagePreview.ReconstructedImage, Mode=OneWay}" LayoutTransform="{Binding ImagePreview.ImageProperties.ImageTransform, Mode=OneWay}"/>
+                    <Border Background="Transparent" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,4,4,0" Height="30" Width="30">
+                        <Path Data="{Binding Mode=OneWay, Source={StaticResource IconTagImage}}" Fill="Red" Stretch="Uniform" Visibility="{Binding IsImageTagged, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}, Mode=OneWay}"/>
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="PreviewMouseDown">
+                                <i:InvokeCommandAction Command="{Binding CommandToggleIsImageTagged}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Border>
+                    <Border Background="Red" Opacity="0.5" Visibility="{Binding ImagePreview.InvalidatedData, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}, Mode=OneWay}"></Border>
+                </Grid>
+            </Border>
+        </DataTemplate>
+        <DataTemplate x:Key="2DThumbDataContentTemplate">
+            <Image>
+                <Image.Style>
+                    <Style TargetType="Image">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=DataContext.MainImageProperties.Visible3DGridPlanes, ElementName=userControl}" Value="{x:Static ServicesImaging:Visible3DGridPlanesType.XY}">
+                                <Setter Property="Source" Value="{Binding ImagePreview.ReconstructedImageXY, Mode=OneWay}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=DataContext.MainImageProperties.Visible3DGridPlanes, ElementName=userControl}" Value="{x:Static ServicesImaging:Visible3DGridPlanesType.YZ}">
+                                <Setter Property="Source" Value="{Binding ImagePreview.ReconstructedImageYZ, Mode=OneWay}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=DataContext.MainImageProperties.Visible3DGridPlanes, ElementName=userControl}" Value="{x:Static ServicesImaging:Visible3DGridPlanesType.XZ}">
+                                <Setter Property="Source" Value="{Binding ImagePreview.ReconstructedImageXZ, Mode=OneWay}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=DataContext.MainImageProperties.Visible3DGridPlanes, ElementName=userControl}" Value="{x:Static ServicesImaging:Visible3DGridPlanesType.All}">
+                                <Setter Property="Source" Value="{Binding ImagePreview.ReconstructedImageXY, Mode=OneWay}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=DataContext.MainImageProperties.Visible3DGridPlanes, ElementName=userControl}" Value="{x:Static ServicesImaging:Visible3DGridPlanesType.View3D}">
+                                <Setter Property="Source" Value="{Binding ImagePreview.ReconstructedImageXY, Mode=OneWay}"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Image.Style>
+            </Image>
+        </DataTemplate>
+        <DataTemplate x:Key="3DThumbDataContentTemplate">
+            <UIControls:Visualizations3DControl x:Name="Thumb3DTextureControl" IsCamera3DControlEnabled="False" DataContext="{Binding ImagePreview, Mode=OneWay}"/>
+        </DataTemplate>
+        <DataTemplate x:Key="3DImageThumbDataTemplate">
+            <ContentControl Name="ThumbContent" Content="{Binding}">
+                <ContentControl.Style>
+                    <Style TargetType="ContentControl">
+                        <!-- Default ContentTemplate -->
+                        <Setter Property="ContentTemplate" Value="{StaticResource 2DThumbDataContentTemplate}" />
+                        <Style.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding Path=DataContext.MSOTService.IProcessing.Synchronize3DViews, ElementName=userControl}" Value="True"/>
+                                    <Condition Binding="{Binding Path=DataContext.MainImageProperties.Visible3DGridPlanes, ElementName=userControl}" Value="{x:Static ServicesImaging:Visible3DGridPlanesType.View3D}"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="ContentTemplate" Value="{StaticResource 3DThumbDataContentTemplate}" />
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ContentControl.Style>
+            </ContentControl>
+        </DataTemplate>
+        <DataTemplate x:Key="Msp3DImageThumbDataTemplate">
+            <Border Background="Black" Margin="4" Width="{Binding Value, ElementName=imageSizeSlider}" Height="{Binding Value, ElementName=imageSizeSlider}">
+                <Grid>
+                    <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource 3DImageThumbDataTemplate}"/>
+                    <Border Background="Transparent" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,4,4,0" Height="30" Width="30">
+                        <Path Data="{Binding Mode=OneWay, Source={StaticResource IconTagImage}}" Fill="Red" Stretch="Uniform" Visibility="{Binding IsImageTagged, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}, Mode=OneWay}"/>
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="PreviewMouseDown">
+                                <i:InvokeCommandAction Command="{Binding CommandToggleIsImageTagged}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Border>
+                    <Border Background="Red" Opacity="0.5" Visibility="{Binding ImagePreview.InvalidatedData, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}, Mode=OneWay}"></Border>
+                </Grid>
+            </Border>
+        </DataTemplate>
+        <Style x:Key="ListBoxItemStyle1" TargetType="{x:Type ListBoxItem}">
+            <EventSetter Event="Selected" Handler="ListBoxItem_Selected"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="Padding" Value="0,0,0,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="true" Padding="2">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="true">
+                                <Setter Property="Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="true"/>
+                                    <Condition Property="Selector.IsSelectionActive" Value="false"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+                            </MultiTrigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            </Trigger>
+
+                            <DataTrigger Binding="{Binding DataContext.PreviewVisibleImages, ElementName=userControl}" Value="True">
+                                <Setter Property="Background" TargetName="Bd" Value="{x:Null}"/>
+                                <Setter Property="Foreground" Value="{x:Null}"/>
+                            </DataTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="GridSplitterDotsVerticalStyle" TargetType="{x:Type GridSplitter}">
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+            <Setter Property="PreviewStyle">
+                <Setter.Value>
+                    <Style>
+                        <Setter Property="Control.Template">
+                            <Setter.Value>
+                                <ControlTemplate>
+                                    <Rectangle Fill="#80000000"/>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type GridSplitter}">
+                        <Grid Margin="-10,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="10"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Grid Grid.Column="0" Background="Transparent"/>
+                            <Grid Grid.Column="2" Background="Transparent"/>
+
+                            <Grid Background="{TemplateBinding Background}" Width="{TemplateBinding Width}" Grid.Column="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <Grid Height="{TemplateBinding Width}" Width="{TemplateBinding Width}" Grid.Row="1" Margin="0,3">
+                                    <Ellipse x:Name="topEllipse" Fill="{TemplateBinding Foreground}" Stretch="Uniform"/>
+                                </Grid>
+                                <Grid Height="{TemplateBinding Width}" Width="{TemplateBinding Width}" Grid.Row="2" Margin="0,3">
+                                    <Ellipse x:Name="midEllipse" Fill="{TemplateBinding Foreground}" Stretch="Uniform"/>
+                                </Grid>
+                                <Grid Height="{TemplateBinding Width}" Width="{TemplateBinding Width}" Grid.Row="3" Margin="0,3">
+                                    <Ellipse x:Name="botEllipse" Fill="{TemplateBinding Foreground}" Stretch="Uniform"/>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <!--<Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}"/>-->
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <UserControl.ContextMenu>
+        <ContextMenu Visibility="{Binding IsCreateComparisonAllowed, ConverterParameter=Hidden, Converter={StaticResource BooleanToVisibleConverter}}" Opened="ContextMenu_Opened">
+            <MenuItem Header="Create comparison" Style="{DynamicResource UidMenuItemStyle}" Click="MenuItem_Click"/>
+        </ContextMenu>
+    </UserControl.ContextMenu>
+
+    <Border BorderBrush="White" BorderThickness="5" AllowDrop="True" DragEnter="Border_DragEnter" DragLeave="Border_DragLeave" Drop="EmptySuperSessionOrReplaceSession_Drop">
+        <Grid x:Name="mainGrid" Background="Black" SizeChanged="mainGrid_SizeChanged">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{Binding MainImageAreaWidth, Converter={StaticResource GridLengthToDoubleConverter}, Mode=TwoWay}" MinWidth="800" MaxWidth="{Binding MainImageAreaMaxWidth, Mode=OneWay, ElementName=userControl}"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <exceedToolkit:BusyIndicator DisplayAfter="0" IsBusy="{Binding IsVisualizationRefreshing}" Panel.ZIndex="10" Style="{DynamicResource BusyIndicatorNoRadiusStyle}" d:IsHidden="True"  ProgressBarStyle="{DynamicResource ProgressBarNoCornerRadiusStyle}" Grid.Column="2" />
+
+            <Grid x:Name="imagingSessionItemsControls" Margin="5" IsEnabled="{Binding IsVisualizationRefreshing, Converter={StaticResource InverseBoolConverter}}">
+                <Grid.Resources>
+                    <DataTemplate DataType="{x:Type Xvue_MSOT_ViewModels_ProjectManager_ImagingSession:ViewModelEmptyImagingSession}">
+                        <Grid Background="Black">
+                            <TextBlock Foreground="White" Text="Drag and drop scan here" VerticalAlignment="Center" HorizontalAlignment="Center" Background="Black"></TextBlock>
+                        </Grid>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type Xvue_MSOT_ViewModels_ProjectManager_ImagingSession:ViewModelMspImagingSession}">
+                        <local:ViewImagingSession2D/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type Xvue_MSOT_ViewModels_ProjectManager_ImagingSession:ViewModelMsp3DImagingSession}">
+                        <local:ViewImagingSession3D/>
+                    </DataTemplate>
+                </Grid.Resources>
+                <ContentPresenter Content="{Binding}"/>
+            </Grid>
+            <GridSplitter Width="10" Grid.Column="1" VerticalAlignment="Stretch" Background="Transparent" Foreground="White" ResizeBehavior="PreviousAndNext" Style="{DynamicResource GridSplitterDotsVerticalStyle}"/>
+            <Grid Grid.Column="2" Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Slider Margin="5" Width="275" Maximum="550" SmallChange="1" IsSnapToTickEnabled="True" x:Name="imageSizeSlider" Minimum="200" TickFrequency="50" ToolTip="Zoom dashboard images" VerticalAlignment="Center" HorizontalAlignment="Left" Value="{Binding DashboardImageSize, Mode=TwoWay}" Style="{DynamicResource UidSliderStyle}"/>
+
+                <ScrollViewer x:Name="slicesScrollViewer" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Margin="4" Grid.Row="1" ScrollChanged="ScrollViewer_ScrollChanged" >
+                    <ListBox x:Name="slicesGridArrangement" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding VisibleSlices, Mode=OneWay}"
+                             SelectedItem="{Binding SelectedVisibleSlice}" SelectionMode="Single" ItemTemplate="{Binding ImageThumbDataTemplate, ElementName=userControl}" 
+                             ItemContainerStyle="{DynamicResource ListBoxItemStyle1}" BorderThickness="0" BorderBrush="Black" Background="Black" IsSynchronizedWithCurrentItem="True">
+                        <i:Interaction.Behaviors>
+                            <Behaviors:ListBoxKeyboardNavigationBehavior />
+                        </i:Interaction.Behaviors>
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal" IsItemsHost="True"/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                    </ListBox>
+                </ScrollViewer>
+                <!--<Ellipse x:Name="ellipse" Margin="16" Fill="#FFD6320F" HorizontalAlignment="Right" Height="Auto" Stroke="Black" Width="{Binding ActualHeight, ElementName=ellipse, Mode=OneWay}" Visibility="{Binding BackgroundProcessingBusy, Converter={StaticResource BooleanToVisibleConverter}}"/>-->
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

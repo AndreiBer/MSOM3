@@ -1,0 +1,58 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:ViewMSOT.UIControls"
+    xmlns:MSOTApp_WPF_Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF"
+	mc:Ignorable="d"
+	x:Class="ViewMSOT.UIControls.ViewTexture3D"
+	x:Name="UserControl"
+    d:DesignWidth="256" d:DesignHeight="256" IsVisibleChanged="UserControl_IsVisibleChanged"
+	>
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <MSOTApp_WPF_Converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter"/>
+        <MSOTApp_WPF_Converters:InvertedBooleanToVisibleConverter x:Key="InvertedBooleanToVisibleConverter"/>
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot" Background="Black">
+        <!--<StackPanel HorizontalAlignment="Left" VerticalAlignment="Top"  Orientation="Vertical" Panel.ZIndex="3">
+            <RadioButton x:Name="orthoRadioButton" GroupName="selectedCameraType" Content=" Orthographic" IsChecked="{Binding ImageProperties.Texture3DCameraType, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static Imaging:Camera3DType.Orthographic}}" Margin="5" Foreground="White" Style="{DynamicResource SimpleRadioButton}" Checked="radioButton_Checked"/>
+            <RadioButton x:Name="perspectiveRadioButton" GroupName="selectedCameraType" Content=" Perspective" IsChecked="{Binding ImageProperties.Texture3DCameraType, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static Imaging:Camera3DType.Perspective}}" Margin="5" Foreground="White" Style="{DynamicResource SimpleRadioButton}" Checked="radioButton_Checked"/>
+        </StackPanel>-->
+
+        <Viewport3D x:Name="slicedViewport">
+            <Viewport3D.Camera>
+                <PerspectiveCamera x:Name="perspectiveCamera" Transform="{Binding ImageProperties.Texture3DCameraTransform}" Position="0,0,40"/>
+                <!--
+                 FieldOfView="{Binding ImageProperties.Texture3DCamera.CameraFieldOfView}"                
+                -->
+            </Viewport3D.Camera>
+        </Viewport3D>
+
+        <!--<Viewport3D x:Name="slicedViewportOrtho" Visibility="{Binding IsChecked, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=orthoRadioButton}">
+            <Viewport3D.Camera>
+                <OrthographicCamera x:Name="orthographicCamera" Transform="{Binding ImageProperties.Texture3DCameraTransform}" NearPlaneDistance="0.125" Position="0,0,40"/>
+                -->
+        <!--                
+                Width="{Binding ImageProperties.Texture3DCamera.OrthoWidth}"
+                NearPlaneDistance="{Binding ImageProperties.Texture3DCamera.OrthoNearPlaneDistance}"
+                -->
+        <!--
+            </Viewport3D.Camera>
+        </Viewport3D>-->
+
+        <local:ViewControlCamera3D x:Name="volume3DControl" Panel.ZIndex="2" Background="Transparent"
+                                   TrackballTransform="{Binding ImageProperties.Texture3DCameraTransform, Mode=TwoWay}"
+                                   CameraType="{Binding ImageProperties.Texture3DCameraType}" IsEnabled="{Binding IsCamera3DControlEnabled, ElementName=UserControl}"
+                                   />
+        <!--
+                                   CameraFieldOfView="{Binding ImageProperties.Texture3DCamera.CameraFieldOfView, Mode=TwoWay}" 
+                                   CameraLookDirection="{Binding ImageProperties.Texture3DCamera.CameraLookDirection}"
+                                   CameraPosition="{Binding ImageProperties.Texture3DCamera.CameraPosition, Mode=TwoWay}"
+        -->
+
+    </Grid>
+</UserControl>

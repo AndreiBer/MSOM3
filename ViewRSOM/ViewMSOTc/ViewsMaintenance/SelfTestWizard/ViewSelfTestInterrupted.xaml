@@ -1,0 +1,32 @@
+﻿<UserControl
+            x:Class="ViewMSOTc.ViewSelfTestInterrupted"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ViewMSOTc"    
+             xmlns:ViewModels="clr-namespace:Xvue.MSOT.ViewModels;assembly=MSOTSystem" 
+             xmlns:Xvue_MSOT_Hardware_ViewModels="clr-namespace:Xvue.MSOT.Hardware.ViewModels;assembly=Xvue.MSOT.Hardware.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="300">
+    <UserControl.Resources>
+        <Xvue_MSOT_Hardware_ViewModels:ViewModelHardwareSelfTest x:Key="ViewModelHardwareSelfTestDataSource" d:IsDataSource="True"/>
+    </UserControl.Resources>
+    <Grid d:DataContext="{Binding Source={StaticResource ViewModelHardwareSelfTestDataSource}}">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="80"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Vertical" Margin="10" VerticalAlignment="Center">
+            <Label Content="Self-test was interrupted and needs" HorizontalAlignment="Left"/>
+            <Label Content="to be repeated before Examination." HorizontalAlignment="Left"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right" Margin="10" >
+            <Button x:Name="cancelButton" Width="120" Style="{DynamicResource UidButtonTextStyle2}"
+				Command="{Binding CommandAcceptInput}"                                        
+				CommandParameter="{x:Static Xvue_MSOT_Hardware_ViewModels:SelfTestInput.AcceptButton}"
+				Content="OK"
+				Margin="20,0,0,0"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

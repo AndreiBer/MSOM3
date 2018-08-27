@@ -1,0 +1,138 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:Xvue_MSOT_ViewModels_Imaging="clr-namespace:Xvue.MSOT.ViewModels.Imaging;assembly=Xvue.MSOT.ViewModels" xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+	mc:Ignorable="d"
+	x:Class="ViewMSOT.UIControls.ViewBackgroundControlHeader"
+	x:Name="UserControl">
+
+    <UserControl.Resources>
+        <Xvue_MSOT_ViewModels_Imaging:ViewModelImagingBackground x:Key="ViewModelImagingBackgroundDataSource" d:IsDataSource="True"/>
+        <Style x:Key="UidComboBoxInvertedStyle" TargetType="{x:Type ComboBox}">
+            <Setter Property="SnapsToDevicePixels" Value="true"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="FontFamily" Value="Segoe UI Semibold"/>
+            <Setter Property="FontSize" Value="{DynamicResource UidComboBoxFontSize}"/>
+            <Setter Property="Height" Value="{DynamicResource UidComboBoxHeight}"/>
+            <Setter Property="BorderBrush" Value="Black"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ComboBox}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <!-- The ToggleButton is databound to the ComboBox itself to toggle IsDropDownOpen -->
+                            <ToggleButton Template="{DynamicResource ComboBoxToggleButtonInvertedControlTemplate}" x:Name="ToggleButton" Focusable="false" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press" Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}" BorderBrush="{TemplateBinding BorderBrush}" Click="ToggleButton_Click"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="5,3,10,3" IsHitTestVisible="False" Grid.Column="1">
+                                <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center" Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"/>
+                                <Label x:Name="nmLabel" Content="nm" VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}"/>
+                            </StackPanel>
+
+                            <!-- The TextBox must be named PART_EditableTextBox or ComboBox will not recognize it -->
+                            <TextBox Visibility="Hidden" Template="{DynamicResource UidComboBoxTextBox}" HorizontalAlignment="Left" Margin="3,3,23,3" x:Name="PART_EditableTextBox" Style="{x:Null}" VerticalAlignment="Center" Focusable="True" Background="Transparent" IsReadOnly="{TemplateBinding IsReadOnly}"/>
+
+                            <!-- The Popup shows the list of items in the ComboBox. IsOpen is databound to IsDropDownOpen which is toggled via the ComboBoxToggleButton -->
+                            <Popup IsOpen="{TemplateBinding IsDropDownOpen}" Placement="Bottom" x:Name="Popup" Focusable="False" AllowsTransparency="True" PopupAnimation="Slide">
+                                <Grid MaxHeight="{TemplateBinding MaxDropDownHeight}" MinWidth="{TemplateBinding ActualWidth}" x:Name="DropDown" SnapsToDevicePixels="True">
+                                    <Border x:Name="DropDownBorder" Background="{DynamicResource UidActiveControlBackgroundBrush}" BorderBrush="Cyan" BorderThickness="1"/>
+                                    <ScrollViewer Margin="0" Style="{DynamicResource SimpleScrollViewer}" SnapsToDevicePixels="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" CanContentScroll="True">
+
+                                        <!-- The StackPanel is used to display the children by setting IsItemsHost to be True -->
+                                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained"/>
+
+                                    </ScrollViewer>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <!-- This forces the DropDown to have a minimum size if it is empty -->
+                            <DataTrigger Binding="{Binding Path=Items.Count, ElementName=wavelengthSelectionComboBox}" Value="1">
+                                <Setter Property="IsEnabled" Value="False"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=Items.Count, ElementName=wavelengthSelectionComboBox}" Value="0">
+                                <Setter Property="IsEnabled" Value="False"/>
+                                <Setter Property="Content" TargetName="nmLabel" Value=""/>
+                            </DataTrigger>
+                            <Trigger Property="HasItems" Value="false">
+                                <Setter Property="MinHeight" Value="95" TargetName="DropDownBorder"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground" Value="{DynamicResource UidIconInvertedDisabledBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsGrouping" Value="true">
+                                <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
+                            </Trigger>
+                            <Trigger Property="AllowsTransparency" SourceName="Popup" Value="true">
+                                <Setter Property="CornerRadius" Value="0" TargetName="DropDownBorder"/>
+                                <Setter Property="Margin" Value="0,2,0,0" TargetName="DropDownBorder"/>
+                            </Trigger>
+                            <Trigger Property="IsEditable" Value="true">
+                                <Setter Property="IsTabStop" Value="false"/>
+                                <Setter Property="Visibility" Value="Visible" TargetName="PART_EditableTextBox"/>
+                                <Setter Property="Visibility" Value="Hidden" TargetName="ContentSite"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="WavelengthComboBoxItemStyle"  TargetType="{x:Type ComboBoxItem}">
+            <Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="Padding" Value="0,0,0,0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource UidComboBoxForegroundBrush}"/>
+            <Setter Property="FontSize" Value="{DynamicResource UidComboBoxFontSize}"/>
+            <Setter Property="Height" Value="{DynamicResource UidComboBoxItemHeight}"/>
+            <Setter Property="VerticalContentAlignment" Value="{DynamicResource UidComboBoxItemContentVerticalAlignment}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ComboBoxItem}">
+                        <!--<Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
+    					<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+    				</Border>-->
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}" SnapsToDevicePixels="true" BorderBrush="{DynamicResource UidBorderBrush}" BorderThickness="0,0,0,1" Padding="0,5" Margin="1,0">
+                            <StackPanel Orientation="Horizontal" Margin="{DynamicResource UidComboBoxItemContentMargin}">
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                <Label x:Name="nmLabel" Content="nm" VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}"/>
+                            </StackPanel>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Selector.IsSelected" Value="True">
+                                <Setter Property="Foreground" Value="{DynamicResource UidComboBoxSelectedForegroundBrush}"/>
+                                <Setter Property="FontFamily" Value="Segoe UI SemiBold"/>
+                            </Trigger>
+                            <Trigger Property="IsHighlighted" Value="true">
+                                <Setter Property="Foreground" Value="{DynamicResource UidComboBoxMouseOverForegroundBrush}"/>
+                                <Setter Property="FontFamily" Value="Segoe UI SemiBold"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground" Value="{DynamicResource UidDisabledLabelForegroundBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Border x:Name="LayoutRoot" BorderThickness="2,2,2,0" BorderBrush="Black">
+        <StackPanel Orientation="Horizontal" d:DataContext="{Binding Source={StaticResource ViewModelImagingBackgroundDataSource}}">
+            <TextBlock Text="{Binding ImagingComponent.LayerName}" VerticalAlignment="Center" Foreground="White" Margin="5,0" MinWidth="106"/>
+            <!--<ComboBox x:Name="wavelengthSelectionComboBox" Width="144" Margin="5,0" HorizontalAlignment="Stretch"  VerticalAlignment="Center" Height="40" Style="{DynamicResource UidComboBoxInvertedStyle}" 
+                      ItemsSource="{Binding ImagingComponent.ImageProperties.ParentPropertiesService.BackgroundWavelengths}" SelectedValue="{Binding ImagingComponent.ImageProperties.ParentPropertiesService.SelectedBackgroundWavelength}" ItemContainerStyle="{DynamicResource WavelengthComboBoxItemStyle}"/>-->
+            <!--<StackPanel Orientation="Horizontal">
+                <Label Content="{Binding ImagingComponent.ImageProperties.ParentPropertiesService.SelectedBackgroundWavelength}" VerticalAlignment="Center" Foreground="White"/>
+                <Label Content="nm" VerticalAlignment="Center" Foreground="White"/>
+            </StackPanel>-->
+            <ToggleButton x:Name="visibilityToggleButton" Height="40" IsChecked="{Binding ImagingComponent.Visible}" Style="{DynamicResource ToggleButtonEyeVisibleStyle}"
+			    ToolTip="Toggle Visibility" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,5,0" Click="visibilityToggleButton_Click"/>
+        </StackPanel>
+    </Border>
+</UserControl>

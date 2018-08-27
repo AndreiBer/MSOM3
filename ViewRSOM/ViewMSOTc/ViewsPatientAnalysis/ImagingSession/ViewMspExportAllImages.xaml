@@ -1,0 +1,116 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ViewModels="clr-namespace:Xvue.MSOT.ViewModels.ProjectManager.ImagingSession;assembly=Xvue.MSOT.ViewModels"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" 
+             xmlns:Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF"
+             xmlns:local="clr-namespace:ViewMSOTc" x:Name="userControl"         
+             xmlns:Xvue_MSOT_EnumDescriptions_Imaging="clr-namespace:Xvue.MSOT.EnumDescriptions.Imaging;assembly=Xvue.MSOT"
+             xmlns:Xvue_Framework_Views_WPF_Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF"
+             x:Class="ViewMSOTc.ViewMspExportAllImages" 
+             mc:Ignorable="d"     
+             Width="830" Height="630" Loaded="userControl_Loaded" >
+    <UserControl.Resources>
+        <ViewModels:ViewModelMspImagingSession x:Key="ImagingSessionDataSource" d:IsDataSource="True"/>
+        <Converters:BooleanToVisibleConverter x:Key="BooleanToVisibleConverter"/>
+        <Converters:InvertedBooleanToVisibleConverter x:Key="InvertedBooleanToVisibleConverter"/>
+        <Converters:DoubleToStringConverter x:Key="DoubleToStringConverter"/>
+        <Xvue_MSOT_EnumDescriptions_Imaging:EnumConversionStackExportFormats x:Key="EnumConversionStackExportFormatsDataSource" d:IsDataSource="True"/>
+        <Converters:WpfToolkitWindowStateToBoolean x:Key="BooleanToWpfToolkitWindowState"/>
+        <Xvue_Framework_Views_WPF_Converters:BooleanToBitmapScalingModeConverter x:Key="BooleanToBitmapScalingModeConverter"/>
+        <Style TargetType="local:ViewMspExportAllImages">
+            <Setter Property="CloseControl" Value="{Binding WindowState, Converter={StaticResource BooleanToWpfToolkitWindowState}, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type xctk:ChildWindow}}}"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot" d:DataContext="{Binding Source={StaticResource ImagingSessionDataSource}}"
+          RenderOptions.BitmapScalingMode="{Binding IsExportTestImages, Converter={StaticResource BooleanToBitmapScalingModeConverter}}">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="0*"/>
+            <RowDefinition Height="70"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="280"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Border d:LayoutOverrides="Height" Background="Black" Grid.Column="1">
+                <Viewbox x:Name="viewbox">
+                    <StackPanel>
+                        <StackPanel Visibility="{Binding Is3DImagingSession, ConverterParameter=Collapsed, Converter={StaticResource InvertedBooleanToVisibleConverter}}">
+                            <ContentControl Content="{Binding ExportImage, Mode=OneWay}" ContentTemplate="{DynamicResource ExportImageDataTemplateInitial}" Name="viewboxContentControl"/>
+                        </StackPanel>
+                        <StackPanel Visibility="{Binding Is3DImagingSession, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}}">
+                            <ContentControl Content="{Binding ExportImage, Mode=OneWay}" ContentTemplate="{DynamicResource Export3DImageDataTemplateInitial}" Name="viewbox3DContentControl"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <!--<local:ViewExportSingleImage x:Name="viewExportSingleImage" DataContext="{Binding ExportImage, Mode=OneWay}" />-->
+
+                </Viewbox>
+            </Border>
+            <Grid HorizontalAlignment="Left" Width="265" Margin="5,0,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="37.107"/>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="145"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="20*"/>
+                    <ColumnDefinition Width="33*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock TextWrapping="Wrap" Text="Reference:" Grid.Row="5" VerticalAlignment="Center" Margin="0,11.7" Height="26.6" Visibility="{Binding IsExportTestImages, ConverterParameter=Collapsed, Converter={StaticResource InvertedBooleanToVisibleConverter}}"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Grid.Row="5" VerticalAlignment="Center" Height="45" Margin="0,2.5" Visibility="{Binding IsExportTestImages, ConverterParameter=Collapsed, Converter={StaticResource InvertedBooleanToVisibleConverter}}">
+                    <ComboBox SelectedItem="{Binding ExportImage.ImageScaleLegendSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ExportImage.ImageScaleLegendList}" VerticalAlignment="Center" Width="125" Style="{DynamicResource UidComboBoxStyle}"/>
+                    <TextBlock TextWrapping="Wrap" Text="mm" VerticalAlignment="Center" Margin="4,0,0,0" HorizontalAlignment="Right"/>
+                </StackPanel>
+                <!--   <TextBlock TextWrapping="Wrap" Text="Resolution:" Grid.Row="7" VerticalAlignment="Center" Margin="0" />-->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Grid.Row="6" VerticalAlignment="Center" Height="45" Margin="0,2.5" Visibility="{Binding IsExportTestImages, ConverterParameter=Collapsed, Converter={StaticResource InvertedBooleanToVisibleConverter}}">
+                    <ComboBox SelectedItem="{Binding ExportImage.ExportImageTextSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ExportImage.ExportImageTextList}" VerticalAlignment="Center" Width="125" Style="{DynamicResource UidComboBoxStyle}"/>
+                    <TextBlock TextWrapping="Wrap" Text="pt" VerticalAlignment="Center" Margin="4,0,0,0"/>
+                </StackPanel>
+                <!--     <StackPanel Grid.Column="1" Orientation="Horizontal" Grid.Row="7" VerticalAlignment="Center">
+                    <xctk:IntegerUpDown Value="{Binding ExportImage.ExportImageResolution, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Width="58" Minimum="300" Maximum="1000" Height="30" />
+                    <TextBlock TextWrapping="Wrap" Text="px" VerticalAlignment="Center" Margin="4,0,0,0"/>
+                </StackPanel>-->
+                <CheckBox x:Name="scaleAndDetailsCheckBox" Content=" Scale and details" VerticalAlignment="Center" Grid.Row="1" Style="{DynamicResource UidCheckBoxStyle}" ToolTip="Show Scale Reference and Frame Details" IsChecked="{Binding ExportImage.ExportShowDetails}" HorizontalAlignment="Left" Margin="0,3" Grid.ColumnSpan="2" Width="262" Visibility="{Binding IsExportTestImages, ConverterParameter=Collapsed, Converter={StaticResource InvertedBooleanToVisibleConverter}}" Height="44"/>
+                <CheckBox x:Name="colorBarsCheckBox" Content=" Multispectral color bar" Grid.Row="3" Style="{DynamicResource UidCheckBoxStyle}" ToolTip="Show Color Bars" IsChecked="{Binding ExportImage.ExportShowColorBars}" HorizontalAlignment="Left" Margin="0,3" VerticalAlignment="Center" Grid.ColumnSpan="2" Width="262" Visibility="{Binding IsExportTestImages, ConverterParameter=Collapsed, Converter={StaticResource InvertedBooleanToVisibleConverter}}" Height="44"/>
+                <CheckBox x:Name="backColorBarCheckBox" Content=" Background color bar" VerticalAlignment="Center" Grid.Row="2" Style="{DynamicResource UidCheckBoxStyle}" Grid.ColumnSpan="2" ToolTip="Show Background Color Bar" IsChecked="{Binding ExportImage.ExportShowBackgroundColorBar}" HorizontalAlignment="Left" Margin="0,2.5" Width="255.337" Visibility="{Binding IsExportTestImages, ConverterParameter=Collapsed, Converter={StaticResource InvertedBooleanToVisibleConverter}}"/>
+                <TextBlock TextWrapping="Wrap" Text="Font size:" Grid.Row="6" VerticalAlignment="Center" Margin="0,11.7" Height="26.6" Visibility="{Binding IsExportTestImages, ConverterParameter=Collapsed, Converter={StaticResource InvertedBooleanToVisibleConverter}}"/>
+                <ComboBox VerticalAlignment="Center" 
+                     SelectedItem="{Binding SelectedImageStackExportFormatString}" ItemsSource="{Binding ImageStackExportFormatList.DisplayNameList}"                	
+                	 Style="{DynamicResource UidComboBoxStyle}" Grid.ColumnSpan="2"  Grid.Row="9" Margin="0,2.5,3,2.5"/>
+
+            </Grid>
+        </Grid>
+
+
+        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Row="2" d:LayoutOverrides="Height" VerticalAlignment="Center" Margin="0,0,16,0">
+            <Button x:Name="cancel" Content="Cancel" VerticalAlignment="Center" IsDefault="True" Click="cancelButton_Click" Margin="10" Width="100" IsCancel="True" Height="45" Style="{DynamicResource UidButtonTextStyle2}"/>
+            <Button x:Name="exportBtn" Content="Export" VerticalAlignment="Center" IsDefault="True"  Margin="10" Width="100" Height="45" Click="okButton_Click" Command="{Binding CommandExportImages, Mode=OneWay}" Style="{DynamicResource UidButtonTextStyle2}"/>
+        </StackPanel>
+        <StackPanel HorizontalAlignment="Left" Orientation="Vertical" VerticalAlignment="Center" Grid.Row="5" Margin="15,0,0,0"/>
+        <StackPanel Orientation="Horizontal" Grid.Row="2" d:LayoutOverrides="Height" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,0,0"/>
+        <!--	<CheckBox Content="Auto Scale Per frame" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Margin="11,0,0,0" Style="{DynamicResource CheckBoxMirrorStyle}" IsChecked="{Binding AutoScalePerFrame}" MinWidth="140"/>-->
+    </Grid>
+
+</UserControl>
+
+
+

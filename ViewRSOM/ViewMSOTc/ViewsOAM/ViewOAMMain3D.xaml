@@ -1,0 +1,57 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Experiment="clr-namespace:Xvue.MSOT.Hardware.ViewModels.Experiment;assembly=Xvue.MSOT.Hardware.ViewModels" 
+             xmlns:UIControls="clr-namespace:ViewMSOT.UIControls;assembly=ViewMSOT.UIControls" 
+             xmlns:Controls="clr-namespace:Xvue.Framework.Views.WPF.Controls;assembly=Xvue.Framework.Views.WPF"
+             xmlns:local="clr-namespace:ViewMSOTc" x:Name="userControl"
+             x:Class="ViewMSOTc.ViewOAMMain3D" 
+             xmlns:Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF"
+             mc:Ignorable="d" 
+             d:DesignHeight="440" d:DesignWidth="1168">
+    <UserControl.Resources>
+        <Experiment:ViewModelExperiment x:Key="ViewModelExperimentDataSource" d:IsDataSource="True"/>
+        <Converters:BooleanToVisibleConverter x:Key="BooleanToVisibleConverter"/>
+        <Converters:BooleanAndConverter x:Key="BooleanAndConverter"/>
+        <Converters:InvertedBooleanToVisibleConverter x:Key="InvertedBooleanToVisibleConverter"/>
+        <Style TargetType="local:ViewOAMMain3D">
+            <Setter Property="IsAnatomicalFocused" Value="{Binding AnatomicalPreview.IsFocused, Mode=OneWay}"/>
+        </Style>
+    </UserControl.Resources>
+    <Grid Background="Black" d:DataContext="{Binding Source={StaticResource ViewModelExperimentDataSource}}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="100"/>
+        </Grid.RowDefinitions>
+
+        <!--<Ellipse Fill="White" Width="10" Height="10" Grid.Row="2" VerticalAlignment="Top" Visibility="{Binding AnatomicalPreview.IsFocused, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}}"/>
+        <Ellipse Fill="White" Width="10" Height="10" Grid.Row="2" Grid.Column="1" VerticalAlignment="Top" Visibility="{Binding MspPreview.IsFocused, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}}" />-->
+        
+        <Border x:Name="anatomicalBorder" Grid.Column="0" Margin="10" BorderBrush="White" BorderThickness="2" MouseDown="anatomicalBorder_MouseDown">
+            <UIControls:View3DGrid DataContext="{Binding AnatomicalPreview.AnatomicalImageProperties.MainImage, Mode=OneWay}" EnableControls="True" CropVisibility="{Binding ImageProperties.ShowMIP}" Zoom="{Binding ImageProperties.CurrentZoom}" Visible3DGridPlanes="{Binding ImageProperties.Visible3DGridPlanes, Mode=OneWay}" ViewSelectPlaneIsEnabledView3D="{Binding MSOTService.IMSOTHardware.IMSOTLaser.TriggerState, Converter={StaticResource InverseBoolConverter}}"/>
+        </Border>
+
+        <Border x:Name="mspBorder" Grid.Column="1" Margin="10" BorderBrush="White" BorderThickness="2" MouseDown="mspBorder_MouseDown">
+            <UIControls:View3DGrid DataContext="{Binding MspPreview.MspImageProperties.MainImage, Mode=OneWay}" EnableControls="True" CropVisibility="{Binding ImageProperties.ShowMIP}" Zoom="{Binding ImageProperties.CurrentZoom}" Visible3DGridPlanes="{Binding ImageProperties.Visible3DGridPlanes, Mode=OneWay}" ViewSelectPlaneIsEnabledView3D="{Binding MSOTService.IMSOTHardware.IMSOTLaser.TriggerState, Converter={StaticResource InverseBoolConverter}}"/>
+        </Border>
+
+        <StackPanel Orientation="Vertical" Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Margin="10,0,10,2" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Background="Black" Panel.ZIndex="2">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+                <local:ViewAnatomicalWLSelection DataContext="{Binding AnatomicalPreview}"/>
+                <ToggleButton Style="{DynamicResource UidToggleButtonInvertedStyle}" Content="{StaticResource IconCycleWL2}" Height="50" IsChecked="{Binding ExperimentPreset.DisplayAllWavelengths, Mode=TwoWay}" ToolTip="Cycle wavelengths"/>
+            </StackPanel>
+
+            <UIControls:ViewImageLayers DataContext="{Binding AnatomicalPreview.AnatomicalImageProperties.MainImage}" AllowAutoScaling="True" HideTabSelector="True"/>
+        </StackPanel>
+
+        <UIControls:ViewImageLayers DataContext="{Binding MspPreview.MspImageProperties.MainImage}" AllowAutoScaling="True" 
+            Grid.Row="0" Grid.RowSpan="3" Grid.Column="1" Margin="10,0,10,2" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Background="Black" Panel.ZIndex="2"/>
+    </Grid>
+</UserControl>

@@ -1,0 +1,60 @@
+﻿<UserControl x:Class="ViewMSOTc.ViewImagingSessionGeneric"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Xvue_MSOT_ViewModels_ProjectManager_ImagingSession="clr-namespace:Xvue.MSOT.ViewModels.ProjectManager.ImagingSession;assembly=Xvue.MSOT.ViewModels"
+             xmlns:UIControls="clr-namespace:ViewMSOT.UIControls;assembly=ViewMSOT.UIControls" 
+             mc:Ignorable="d">
+    <Border x:Name="sessionBorder" BorderBrush="White" BorderThickness="5" Background="Black" Margin="1" PreviewMouseLeftButtonDown="sessionBorder_PreviewMouseLeftButtonDown">
+        <Border.Style>
+            <Style TargetType="Border">
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding IsCopyImageSessionSettingsAllowed}" Value="True"/>
+                            <Condition Binding="{Binding IsCopyPasteToAllSelected}" Value="True"/>
+                        </MultiDataTrigger.Conditions>
+                        <Setter Property="Cursor" Value="Arrow"/>
+                    </MultiDataTrigger>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding IsCopyImageSessionSettingsAllowed}" Value="True"/>
+                            <Condition Binding="{Binding IsCopyPasteToAllSelected}" Value="False"/>
+                        </MultiDataTrigger.Conditions>
+                        <Setter Property="Cursor" Value="{Binding ImageCursor, Mode=OneWay, IsAsync=True}"/>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Border.Style>
+        <Grid x:Name="imagingSessionItemsControls">
+            <Grid.Resources>
+				<DataTemplate DataType="{x:Type Xvue_MSOT_ViewModels_ProjectManager_ImagingSession:ViewModelEmptyImagingSession}">
+                     <Grid Background="Black">
+                        <TextBlock Foreground="White" Text="Drag and drop scan here" VerticalAlignment="Center" HorizontalAlignment="Center" Background="Black"></TextBlock>
+					</Grid>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type Xvue_MSOT_ViewModels_ProjectManager_ImagingSession:ViewModelMspImagingSession}">
+                    <Grid>
+                        <UIControls:View2DGrid DataContext="{Binding MainImageProperties.MainImage, Mode=OneWay}"/>
+                    </Grid>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type Xvue_MSOT_ViewModels_ProjectManager_ImagingSession:ViewModelMsp3DImagingSession}">
+                    <Grid>
+                        <UIControls:View3DGrid DataContext="{Binding MainImageProperties.MainImage, Mode=OneWay}" EnableControls="True" CropVisibility="{Binding ImageProperties.ShowMIP}" Zoom="{Binding ImageProperties.CurrentZoom}" Visible3DGridPlanes="{Binding ImageProperties.Visible3DGridPlanes, Mode=OneWay}"/>
+                    </Grid>
+                </DataTemplate>
+            </Grid.Resources>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <ContentPresenter Content="{Binding}"/>
+            <Slider x:Name="imageSlider" Grid.Row="1" Width="140" SmallChange="1" Minimum="1" Maximum="{Binding MaxSliceIndex, Mode=OneWay}" 
+                    Value="{Binding SelectedPreviewSliceIndex, Mode=TwoWay, UpdateSourceTrigger=Default}" Style="{DynamicResource UidSliderArrowsStyle}" 
+                    VerticalAlignment="Center" HorizontalAlignment="Center" 
+                    Visibility="{Binding IsImageSequence, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibleConverter}, Mode=OneWay}"
+                    IsEnabled="{Binding IsPreviewControlEnabled, Mode=OneWay}"/>
+        </Grid>
+    </Border>
+</UserControl>

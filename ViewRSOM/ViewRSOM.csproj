@@ -1,0 +1,351 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{93FEF3F3-6035-4082-8F68-C190B578B864}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ViewRSOM</RootNamespace>
+    <AssemblyName>ViewRSOM</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>iRSOM_GUI_FromScratch.App</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Basler.Pylon, Version=1.0.0.0, Culture=neutral, PublicKeyToken=e389355f398382ab, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Basler.Pylon\x64\Basler.Pylon.dll</HintPath>
+    </Reference>
+    <Reference Include="iExport">
+      <HintPath>..\..\iRecon\!iRecon_dll\iExport.dll</HintPath>
+    </Reference>
+    <Reference Include="iRecon3D, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\iRecon\!iRecon_dll\iRecon3D.dll</HintPath>
+    </Reference>
+    <Reference Include="iRecon_OpenCl">
+      <HintPath>..\..\iRecon_OpenCl\!iRecon_dll\iRecon_OpenCl.dll</HintPath>
+    </Reference>
+    <Reference Include="iScan, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\iScan\!iScan_dll\iScan.dll</HintPath>
+    </Reference>
+    <Reference Include="iScan_Alazar">
+      <HintPath>..\..\iScan\!iScan_dll\iScan_Alazar.dll</HintPath>
+    </Reference>
+    <Reference Include="iScan_dual">
+      <HintPath>..\..\iScan\!iScan_dll\iScan_dual.dll</HintPath>
+    </Reference>
+    <Reference Include="iScan_dualNative">
+      <HintPath>..\..\iScan\!iScan_dll\iScan_dualNative.dll</HintPath>
+    </Reference>
+    <Reference Include="iScan_mock">
+      <HintPath>..\..\iScan\!iScan_dll\iScan_mock.dll</HintPath>
+    </Reference>
+    <Reference Include="iScan_trig">
+      <HintPath>..\..\iScan\!iScan_dll\iScan_trig.dll</HintPath>
+    </Reference>
+    <Reference Include="MWArray, Version=2.16.1.0, Culture=neutral, PublicKeyToken=e1d84a0da19db86f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files\MATLAB\MATLAB Runtime\v91\toolbox\dotnetbuilder\bin\win64\v2.0\MWArray.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework.Aero" />
+    <Reference Include="System" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>exceed wpf toolkit binaries\Extended WPF Toolkit Binaries\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="Acquisition\initFullScan.cs" />
+    <Compile Include="Acquisition\initQuickScan.cs" />
+    <Compile Include="ConsoleStream\IOEventHandler.cs" />
+    <Compile Include="ConsoleStream\IOstreamListener.cs" />
+    <Compile Include="DataContext\DataModelPatient.cs" />
+    <Compile Include="DataContext\DisplayStringAttribute.cs" />
+    <Compile Include="Hardware\BaslerCamera\BaslerCamera.cs" />
+    <Compile Include="Hardware\GeneralTools\ArrayUtil.cs" />
+    <Compile Include="Hardware\GeneralTools\CubicSpline.cs" />
+    <Compile Include="Hardware\GeneralTools\Display_Communicator.cs" />
+    <Compile Include="Hardware\GeneralTools\Filewriter.cs" />
+    <Compile Include="Hardware\GeneralTools\myShapes.cs" />
+    <Compile Include="Hardware\GeneralTools\Shuffle.cs" />
+    <Compile Include="Hardware\GeneralTools\TriDiagonalMatrix.cs" />
+    <Compile Include="Hardware\LaserSW\ViewModelBrightSolutions.cs" />
+    <Compile Include="Hardware\LaserSW\ViewModelLaserBase.cs" />
+    <Compile Include="Hardware\Laser\DatamodelLaserBase.cs" />
+    <Compile Include="Hardware\Laser\DataModelLaserInnolas.cs" />
+    <Compile Include="Hardware\Laser\DataModelPluginConfiguration.cs" />
+    <Compile Include="Hardware\Laser\HandleOpoData.cs" />
+    <Compile Include="Hardware\Laser\LaserCalibrationTable.cs" />
+    <Compile Include="Hardware\Laser\LaserParameter.cs" />
+    <Compile Include="Hardware\Laser\ProtocolWrapper.cs" />
+    <Compile Include="Hardware\Laser\StandardCommandsDictionary.cs" />
+    <Compile Include="Hardware\Laser\ViewModelLaserBase_.cs" />
+    <Compile Include="Hardware\Laser\ViewModelLaserInnolas_.cs" />
+    <Compile Include="InstallerTasks\CreateEventSource.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="InstallerTasks\CreateEventSource.Designer.cs">
+      <DependentUpon>CreateEventSource.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Reconstruction\initExport.cs" />
+    <Compile Include="Reconstruction\initRecon.cs" />
+    <Compile Include="Reconstruction\ReconItem.cs" />
+    <Compile Include="RSOMsettings\acqFileItem.cs" />
+    <Compile Include="RSOMsettings\ProgrammSettings.cs" />
+    <Compile Include="RSOMsettings\reconFileItem.cs" />
+    <Compile Include="RSOMsettings\studyDateItem.cs" />
+    <Compile Include="RSOMsettings\studyParameters.cs" />
+    <Compile Include="DataContext\ViewModelBase.cs" />
+    <Compile Include="DataContext\ViewModelPatient.cs" />
+    <Compile Include="DataContext\ViewModelPatientManager.cs" />
+    <Compile Include="RSOMsettings\acquisitionParameters.cs" />
+    <Compile Include="RSOMsettings\detectorParameters.cs" />
+    <Compile Include="RSOMsettings\fileParameters.cs" />
+    <Compile Include="RSOMsettings\reconstructionParameters.cs" />
+    <Compile Include="RSOMsettings\systemState.cs" />
+    <Compile Include="SplashStartup.xaml.cs">
+      <DependentUpon>SplashStartup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewMSOTc\ViewAboutRSOM.xaml.cs">
+      <DependentUpon>ViewAboutRSOM.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewMSOTc\ViewReconstructionTab.xaml.cs">
+      <DependentUpon>ViewReconstructionTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewMSOTc\ViewScanningTab.xaml.cs">
+      <DependentUpon>ViewScanningTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewMSOTc\ViewsPatientOverview\ViewPatientOverview.xaml.cs">
+      <DependentUpon>ViewPatientOverview.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewMSOTc\ViewsProject\ViewPatientInformation.xaml.cs">
+      <DependentUpon>ViewPatientInformation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewMSOTc\ViewsProject\ViewPatientsPopup.xaml.cs">
+      <DependentUpon>ViewPatientsPopup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewRSOM_Main.xaml.cs">
+      <DependentUpon>ViewRSOM_Main.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Xvue.Framework\Xvue.Framework.Views.WPF\Converters\BackgroundConverter.cs" />
+    <Compile Include="Xvue.Framework\Xvue.Framework.Views.WPF\Converters\BooleanAndConverter.cs" />
+    <Compile Include="Xvue.Framework\Xvue.Framework.Views.WPF\Converters\BooleanAndToVisibleConverter.cs" />
+    <Compile Include="Xvue.Framework\Xvue.Framework.Views.WPF\Converters\BooleanOrConverter.cs" />
+    <Compile Include="Xvue.Framework\Xvue.Framework.Views.WPF\Converters\BooleanOrToVisibleConverter.cs" />
+    <Compile Include="Xvue.Framework\Xvue.Framework.Views.WPF\Converters\BooleanToBitmapScalingModeConverter.cs" />
+    <Compile Include="Xvue.Framework\Xvue.Framework.Views.WPF\Converters\BooleanToBrushConverter.cs" />
+    <Compile Include="Xvue.Framework\Xvue.Framework.Views.WPF\Converters\BooleanToColorConverter.cs" />
+    <Compile Include="Xvue.Framework\Xvue.Framework.Views.WPF\Converters\BooleanToVisibleConverter.cs" />
+    <Compile Include="Xvue.Framework\Xvue.Framework.Views.WPF\Converters\BooleanToWpfToolkitWindowStateConverter.cs" />
+    <Compile Include="Xvue.Framework\Xvue.Framework.Views.WPF\Converters\ColumnWidthConverter.cs" />
+    <Compile Include="Xvue.Framework\Xvue.Framework.Views.WPF\Converters\DoubleToStringConverter.cs" />
+    <Compile Include="Xvue.Framework\Xvue.Framework.Views.WPF\Converters\InvertedBooleanToVisibleConverter.cs" />
+    <Compile Include="Xvue.Framework\Xvue.Framework.Views.WPF\Converters\TaskbarItemBooleanToProgressStateConverter.cs" />
+    <Compile Include="Xvue.Framework\Xvue.Framework.Views.WPF\Converters\WpfToolkitWindowStateToBoolean.cs" />
+    <Page Include="SplashStartup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewMSOT.UIControls\GFX\sharedVectorIcons.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewMSOT.UIControls\Styles\SharediTheraStyling.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewMSOT.UIControls\Styles\Simple Styles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewMSOTc\GFX\icons\MSOTcVectorIcons.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewMSOTc\Styles\ClinicaliTheraStyling.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewMSOTc\ViewAboutRSOM.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewMSOTc\ViewReconstructionTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewMSOTc\ViewScanningTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewMSOTc\ViewsPatientOverview\ViewPatientOverview.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewMSOTc\ViewsProject\ViewPatientInformation.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewMSOTc\ViewsProject\ViewPatientsPopup.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewRSOM_Main.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewMSOTc\ViewsOAM\CameraInactive.png" />
+    <Resource Include="ViewMSOTc\ViewsOAM\LaserSafetyImageWearGoggles.png" />
+    <Resource Include="ViewMSOTc\GFX\icons\msot.ico" />
+    <Resource Include="Xceed.Wpf.Toolkit\Themes\Generic\Images\close_hover.png" />
+    <Resource Include="Xceed.Wpf.Toolkit\Themes\Generic\Images\close_inactive.png" />
+    <Resource Include="Xceed.Wpf.Toolkit\Themes\Generic\Images\close_normal.png" />
+    <Resource Include="Xceed.Wpf.Toolkit\Themes\Generic\Images\close_pressed.png" />
+    <Resource Include="Xceed.Wpf.Toolkit\Themes\Generic\Images\close_rounded_hover.png" />
+    <Resource Include="Xceed.Wpf.Toolkit\Themes\Generic\Images\close_rounded_inactive.png" />
+    <Resource Include="Xceed.Wpf.Toolkit\Themes\Generic\Images\close_rounded_normal.png" />
+    <Resource Include="Xceed.Wpf.Toolkit\Themes\Generic\Images\close_rounded_pressed.png" />
+    <Resource Include="Xceed.Wpf.Toolkit\Themes\Generic\Images\close_toolwindow_hover.png" />
+    <Resource Include="Xceed.Wpf.Toolkit\Themes\Generic\Images\close_toolwindow_inactive.png" />
+    <Resource Include="Xceed.Wpf.Toolkit\Themes\Generic\Images\close_toolwindow_normal.png" />
+    <Resource Include="Xceed.Wpf.Toolkit\Themes\Generic\Images\close_toolwindow_pressed.png" />
+    <Resource Include="Xceed.Wpf.Toolkit\Themes\Generic\Images\maximize_disabled.png" />
+    <Resource Include="Xceed.Wpf.Toolkit\Themes\Generic\Images\maximize_hover.png" />
+    <Resource Include="Xceed.Wpf.Toolkit\Themes\Generic\Images\maximize_inactive.png" />
+    <Resource Include="Xceed.Wpf.Toolkit\Themes\Generic\Images\maximize_normal.png" />
+    <Resource Include="Xceed.Wpf.Toolkit\Themes\Generic\Images\maximize_pressed.png" />
+    <Resource Include="Xceed.Wpf.Toolkit\Themes\Generic\Images\minimize_hover.png" />
+    <Resource Include="Xceed.Wpf.Toolkit\Themes\Generic\Images\minimize_inactive.png" />
+    <Resource Include="Xceed.Wpf.Toolkit\Themes\Generic\Images\minimize_normal.png" />
+    <Resource Include="Xceed.Wpf.Toolkit\Themes\Generic\Images\minimize_pressed.png" />
+    <Resource Include="Xceed.Wpf.Toolkit\Themes\Generic\Images\resize_grip.png" />
+    <Resource Include="Xceed.Wpf.Toolkit\Themes\Generic\Images\restore_disabled.png" />
+    <Resource Include="Xceed.Wpf.Toolkit\Themes\Generic\Images\restore_hover.png" />
+    <Resource Include="Xceed.Wpf.Toolkit\Themes\Generic\Images\restore_inactive.png" />
+    <Resource Include="Xceed.Wpf.Toolkit\Themes\Generic\Images\restore_normal.png" />
+    <Resource Include="Xceed.Wpf.Toolkit\Themes\Generic\Images\restore_pressed.png" />
+    <Resource Include="ViewMSOT.UIControls\GFX\ITH_Splashscreen_Images\ViewRSOM_logo.png" />
+    <Content Include="ViewMSOT.UIControls\ViewMSOT.UIControls.csproj">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewMSOT.UIControls\GFX\Bitmap Icons\arrow-down-3.ico" />
+    <Resource Include="ViewMSOT.UIControls\GFX\Bitmap Icons\arrow-up-3.ico" />
+    <Resource Include="ViewMSOT.UIControls\GFX\Bitmap Icons\IconError.png" />
+    <Resource Include="ViewMSOT.UIControls\GFX\Bitmap Icons\IconInfo.png" />
+    <Resource Include="ViewMSOT.UIControls\GFX\Bitmap Icons\IconWarning.png" />
+    <Resource Include="ViewMSOT.UIControls\GFX\Bitmap Icons\laser_safety_icon.png" />
+    <Resource Include="ViewMSOT.UIControls\GFX\Bitmap Icons\laser_safety_icon_disabled.png" />
+    <Resource Include="ViewMSOT.UIControls\GFX\iThera Wave.png" />
+    <Resource Include="ViewMSOT.UIControls\GFX\iThera_Wave_small.png" />
+    <Resource Include="ViewMSOT.UIControls\GFX\ITH_Splashscreen_Images\1.png" />
+    <Resource Include="ViewMSOT.UIControls\GFX\ITH_Splashscreen_Images\1_Layer Mask.png" />
+    <Resource Include="ViewMSOT.UIControls\GFX\ITH_Splashscreen_Images\2.png" />
+    <Resource Include="ViewMSOT.UIControls\GFX\ITH_Splashscreen_Images\2_Layer Mask.png" />
+    <Resource Include="ViewMSOT.UIControls\GFX\ITH_Splashscreen_Images\BG white.png" />
+    <Resource Include="ViewMSOT.UIControls\GFX\ITH_Splashscreen_Images\Ebene 1.png" />
+    <Resource Include="ViewMSOT.UIControls\GFX\ITH_Splashscreen_Images\Ebene 2.png" />
+    <Resource Include="ViewMSOT.UIControls\GFX\ITH_Startup_OAM.png" />
+    <Resource Include="ViewMSOT.UIControls\GFX\laser_safety.png" />
+    <Resource Include="ViewMSOT.UIControls\GFX\Paint.cur" />
+    <Resource Include="ViewMSOT.UIControls\GFX\Textures\backround texture.bmp" />
+    <Resource Include="ViewMSOT.UIControls\GFX\Textures\checkers.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="CoreClasses\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

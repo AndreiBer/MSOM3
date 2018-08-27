@@ -1,0 +1,88 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:ViewMSOT.UIControls"
+	mc:Ignorable="d"
+	x:Class="ViewMSOT.UIControls.ViewRegionControl"
+	x:Name="UserControl"
+	d:DesignWidth="100" d:DesignHeight="100" DataContextChanged="UserControl_DataContextChanged" SizeChanged="UserControl_SizeChanged" MouseLeftButtonDown="UserControl_MouseLeftButtonDown">
+
+    <UserControl.Resources>
+        <Style TargetType="local:ViewRegionControl">
+            <Setter Property="RoiPoints" Value="{Binding RoiPathPoints}"/>
+            <Setter Property="CurrentShape" Value="{Binding CurrentShape, Mode=TwoWay}"/>
+            <Setter Property="TrailPoint" Value="{Binding TrailPoint, Mode=TwoWay}"/>
+            <Setter Property="IsDrawing" Value="{Binding IsRoiDrawing, Mode=TwoWay}"/>
+            <Setter Property="IsRoiSelected" Value="{Binding IsRoiSelected, Mode=TwoWay}"/>
+            <Setter Property="RoiDetails" Value="{Binding RoiStatistics, Mode=OneWay}"/>
+            <Setter Property="IsDragging" Value="{Binding IsRoiDragging, Mode=TwoWay}"/>
+            <Setter Property="RoiColor" Value="{Binding RoiColor, Mode=OneWay}"/>
+        </Style>
+        <Color x:Key="PenColor">Red</Color>
+        <Color x:Key="TextColor">Black</Color>
+        <Style x:Key="PolygonControlThumbStyle" d:IsControlPart="True" TargetType="{x:Type Thumb}" BasedOn="{x:Null}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Grid Margin="0,0,0,0" x:Name="Grid" Visibility="Visible" Opacity="0.45">
+                            <Ellipse HorizontalAlignment="Stretch" x:Name="Rectangle" VerticalAlignment="Stretch" Width="12" Height="12" Stroke="{DynamicResource NormalBorderBrush}" Fill="#FFCA1C00"/>
+                            <Ellipse HorizontalAlignment="Stretch" x:Name="RectangleExpander" VerticalAlignment="Stretch" Width="{DynamicResource ControlThumbsTouchAreaLength}" Height="{DynamicResource ControlThumbsTouchAreaLength}" Stroke="Transparent" Fill="Transparent"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True"/>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Fill" TargetName="Rectangle" Value="#FFCA1C00"/>
+                                <Setter Property="Visibility" TargetName="Grid" Value="Visible"/>
+                                <Setter Property="Opacity" TargetName="Grid" Value="1"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False"/>
+                            <Trigger Property="IsDragging" Value="True"/>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsDragging" Value="False"/>
+                <EventTrigger RoutedEvent="FrameworkElement.Loaded"/>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="AnchorControlThumbStyle" d:IsControlPart="True" TargetType="{x:Type Thumb}" BasedOn="{x:Null}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Grid Margin="0,0,0,0" x:Name="Grid" Visibility="Visible" Opacity="0.45">
+                            <Ellipse HorizontalAlignment="Stretch" x:Name="Rectangle" VerticalAlignment="Stretch" Width="12" Height="12" Stroke="{DynamicResource NormalBorderBrush}" Fill="#FF0027FF"/>
+                            <Ellipse HorizontalAlignment="Stretch" x:Name="RectangleExpander" VerticalAlignment="Stretch" Width="{DynamicResource ControlThumbsTouchAreaLength}" Height="{DynamicResource ControlThumbsTouchAreaLength}" Stroke="Transparent" Fill="Transparent"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True"/>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Fill" TargetName="Rectangle" Value="#FFCA1C00"/>
+                                <Setter Property="Visibility" TargetName="Grid" Value="Visible"/>
+                                <Setter Property="Opacity" TargetName="Grid" Value="1"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False"/>
+                            <Trigger Property="IsDragging" Value="True"/>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsDragging" Value="False"/>
+                <EventTrigger RoutedEvent="FrameworkElement.Loaded"/>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <UserControl.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="Copy" Style="{DynamicResource UidMenuItemStyle}" Command="{Binding CopyRegionCommand, Mode=OneWay}"/>
+            <MenuItem Header="Delete" Style="{DynamicResource UidMenuItemStyle}" Command="{Binding DeleteRegionCommand, Mode=OneWay}"/>
+        </ContextMenu>
+    </UserControl.ContextMenu>
+    <Grid x:Name="LayoutRoot" SnapsToDevicePixels="False">
+        <Canvas x:Name="drawingCanvas">
+        </Canvas>
+    </Grid>
+</UserControl>

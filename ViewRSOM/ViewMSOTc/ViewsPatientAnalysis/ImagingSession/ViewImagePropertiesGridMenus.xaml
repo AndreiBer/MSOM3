@@ -1,0 +1,164 @@
+﻿<UserControl
+	xmlns:Controls="clr-namespace:Xvue.Framework.Views.WPF.Controls;assembly=Xvue.Framework.Views.WPF" 
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:Imaging="clr-namespace:Xvue.MSOT.EnumDescriptions.Imaging;assembly=Xvue.MSOT" 
+	xmlns:ServicesImaging="clr-namespace:Xvue.MSOT.Services.Imaging;assembly=Xvue.MSOT" 
+	xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" 
+	xmlns:Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF" 
+	xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+	xmlns:UIControls="clr-namespace:ViewMSOT.UIControls;assembly=ViewMSOT.UIControls"
+	xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+	xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
+	xmlns:Xvue_MSOT_ViewModels_ProjectManager_ImagingSession="clr-namespace:Xvue.MSOT.ViewModels.ProjectManager.ImagingSession;assembly=Xvue.MSOT.ViewModels"
+	xmlns:local="clr-namespace:ViewMSOTc"
+	mc:Ignorable="d"
+	x:Class="ViewMSOTc.ViewImagePropertiesGridMenus"
+	x:Name="UserControl">
+
+	<UserControl.Resources>
+		<Converters:InvertedBooleanToVisibleConverter x:Key="InvertedBooleanToVisibleConverter"/>
+		<Imaging:EnumConversionGridStyle x:Key="EnumConversionGridStyleDataSource" d:IsDataSource="True"/>
+		<Imaging:EnumConversionGridStyle x:Key="EnumConversionGridStyle"/>
+		<Converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter"/>
+		<Converters:BooleanToColorConverter x:Key="BooleanToColorConverter"/>
+		<Xvue_MSOT_ViewModels_ProjectManager_ImagingSession:ViewModelMspImagingSession x:Key="ViewModelImagingSessionDataSource" d:IsDataSource="True"/>
+	</UserControl.Resources>
+
+	<Grid x:Name="LayoutRoot" IsEnabled="{Binding PreviewVisibleImages, Converter={StaticResource InverseBoolConverter}}"
+		  d:DataContext="{Binding Source={StaticResource ViewModelImagingSessionDataSource}}">
+		<Grid.RowDefinitions>
+			<RowDefinition/>
+			<RowDefinition/>
+			<RowDefinition/>
+			<RowDefinition/>
+			<RowDefinition/>
+			<RowDefinition/>
+		</Grid.RowDefinitions>
+
+		<Grid>
+			<ToggleButton x:Name="speedOfSoundToggleButton" Content="{StaticResource IconFocus}" ToolTip="Focus" Margin="4" IsEnabled="{Binding IsCasing, Mode=OneWay}" Style="{DynamicResource UidToggleButtonInvertedStyle}"/>
+			<Controls:StoryboardControlledClosingPopup x:Name="speedOfSoundPopup" Grid.Row="0"  StaysOpen="False" IsOpen="{Binding IsChecked, ElementName=speedOfSoundToggleButton, Mode=TwoWay}" PlacementTarget="{Binding ElementName=speedOfSoundToggleButton, Mode=OneWay}" Placement="Right" HorizontalOffset="7" OpacityMask="Black" ControlToggleButton="{Binding ElementName=speedOfSoundToggleButton, Mode=OneWay}">
+				<Border Background="White" BorderBrush="Cyan" BorderThickness="1" IsEnabled="{Binding IsAutofocus, Converter={StaticResource InverseBoolConverter}}">
+					<local:ViewSpeedOfSoundImaging/>
+				</Border>
+				<i:Interaction.Triggers>
+					<i:EventTrigger EventName="ShortcutDrivenSpeedOfSoundChangedEvent" SourceObject="{Binding ReconPreset}">
+						<ei:ControlStoryboardAction ControlStoryboardOption="Play">
+							<ei:ControlStoryboardAction.Storyboard>
+								<Storyboard>
+									<DoubleAnimationUsingKeyFrames Storyboard.TargetName="speedOfSoundPopup" Storyboard.TargetProperty="OpenForSeconds" FillBehavior="Stop" Duration="0:0:0.1">
+										<SplineDoubleKeyFrame Value="5" KeyTime="0:0:0"/>
+									</DoubleAnimationUsingKeyFrames>
+								</Storyboard>
+							</ei:ControlStoryboardAction.Storyboard>
+						</ei:ControlStoryboardAction>
+					</i:EventTrigger>
+					<i:EventTrigger EventName="ShortcutDrivenPresetPropertiesChangedEvent" SourceObject="{Binding ReconPreset}">
+						<ei:ControlStoryboardAction ControlStoryboardOption="Play">
+							<ei:ControlStoryboardAction.Storyboard>
+								<Storyboard>
+									<BooleanAnimationUsingKeyFrames Storyboard.TargetName="speedOfSoundPopup" Storyboard.TargetProperty="CloseImmediately" FillBehavior="Stop" Duration="0:0:0.1">
+										<DiscreteBooleanKeyFrame Value="True" KeyTime="0:0:0"/>
+									</BooleanAnimationUsingKeyFrames>
+								</Storyboard>
+							</ei:ControlStoryboardAction.Storyboard>
+						</ei:ControlStoryboardAction>
+					</i:EventTrigger>
+					<i:EventTrigger EventName="ShortcutDrivenPropertiesChangedEvent" SourceObject="{Binding MainImageProperties}">
+						<ei:ControlStoryboardAction ControlStoryboardOption="Play">
+							<ei:ControlStoryboardAction.Storyboard>
+								<Storyboard>
+									<BooleanAnimationUsingKeyFrames Storyboard.TargetName="speedOfSoundPopup" Storyboard.TargetProperty="CloseImmediately" FillBehavior="Stop" Duration="0:0:0.1">
+										<DiscreteBooleanKeyFrame Value="True" KeyTime="0:0:0"/>
+									</BooleanAnimationUsingKeyFrames>
+								</Storyboard>
+							</ei:ControlStoryboardAction.Storyboard>
+						</ei:ControlStoryboardAction>
+					</i:EventTrigger>
+					<i:EventTrigger EventName="ShortcutDrivenEvent" SourceObject="{Binding}">
+						<ei:ControlStoryboardAction ControlStoryboardOption="Play">
+							<ei:ControlStoryboardAction.Storyboard>
+								<Storyboard>
+									<BooleanAnimationUsingKeyFrames Storyboard.TargetName="speedOfSoundPopup" Storyboard.TargetProperty="CloseImmediately" FillBehavior="Stop" Duration="0:0:0.1">
+										<DiscreteBooleanKeyFrame Value="True" KeyTime="0:0:0"/>
+									</BooleanAnimationUsingKeyFrames>
+								</Storyboard>
+							</ei:ControlStoryboardAction.Storyboard>
+						</ei:ControlStoryboardAction>
+					</i:EventTrigger>                    
+				</i:Interaction.Triggers>
+			</Controls:StoryboardControlledClosingPopup>
+		</Grid>
+
+
+
+		<Grid Grid.Row="1">
+			<ToggleButton x:Name="depthCorrectionToggleButton" Content="{StaticResource IconDepthCorrection}" ToolTip="Depth correction" Margin="4" Style="{DynamicResource UidToggleButtonInvertedStyle}" IsEnabled="{Binding IsCasing, Mode=OneWay}"/>
+		</Grid>
+		<Controls:ClosingPopup StaysOpen="False" IsOpen="{Binding IsChecked, ElementName=depthCorrectionToggleButton, Mode=TwoWay}" PlacementTarget="{Binding ElementName=depthCorrectionToggleButton, Mode=OneWay}" Placement="Right" HorizontalOffset="7" OpacityMask="Black" ControlToggleButton="{Binding ElementName=depthCorrectionToggleButton, Mode=OneWay}">
+			<Border Background="White" BorderBrush="Cyan" BorderThickness="1" IsEnabled="{Binding IsAutofocus, Converter={StaticResource InverseBoolConverter}}">
+				<local:ViewDepthCorrection DataContext="{Binding ReconPreset, Mode=OneWay}" Padding="5" />
+			</Border>
+		</Controls:ClosingPopup>
+
+		<Grid Grid.Row="2"  IsEnabled="{Binding IsVisualizationRefreshing, Converter={StaticResource InverseBoolConverter}}">
+			<UIControls:ViewRulerControlImagingSessionToggleButton DataContext="{Binding MainImageProperties.RulersViewingPlanes}" Margin="4" x:Name="rulerToggleButton" ToolTip="Distance"/>
+		</Grid>
+
+		<Grid Grid.Row="3">
+			<Menu Background="{x:Null}" Margin="4" Grid.Row="3" IsEnabled="{Binding IsVisualizationRefreshing, Converter={StaticResource InverseBoolConverter}}" Visibility="{Binding MainImageProperties.Is3DImageProperties, ConverterParameter=Collapsed, Converter={StaticResource InvertedBooleanToVisibleConverter}, Mode=OneWay}">
+				<MenuItem x:Name="roiDesignMenuItem" Template="{DynamicResource MenuItemInvertedVectorIconControlTemplate}" Header="{DynamicResource IconDrawROI}" ToolTip="Region of interest">
+					<MenuItem Style="{DynamicResource MenuItemCustomContentStyle}">
+						<MenuItem.Header>
+							<StackPanel Orientation="Horizontal">
+								<ToggleButton ToolTip="Rectangular ROI" Content="{DynamicResource IconDrawRectangle}" IsChecked="{Binding MainImageProperties.DrawingRegions2D.IsRoiRectangleShape}" Style="{DynamicResource UidToggleButtonStyle}" Click="roiSubMenuButton_Click"/>
+								<ToggleButton ToolTip="Round ROI" Content="{DynamicResource IconDrawCircle}" IsChecked="{Binding MainImageProperties.DrawingRegions2D.IsRoiCircleShape}" Style="{DynamicResource UidToggleButtonStyle}" Click="roiSubMenuButton_Click"/>
+								<ToggleButton ToolTip="Ellipse ROI" Content="{DynamicResource IconDrawElipse}" IsChecked="{Binding MainImageProperties.DrawingRegions2D.IsRoiEllipseShape}" Style="{DynamicResource UidToggleButtonStyle}" Click="roiSubMenuButton_Click"/>
+								<ToggleButton ToolTip="Polygon ROI" Content="{DynamicResource IconDrawPolygon}" IsChecked="{Binding MainImageProperties.DrawingRegions2D.IsRoiPolygonShape}" Style="{DynamicResource UidToggleButtonStyle}" Click="roiSubMenuButton_Click"/>
+							</StackPanel>
+						</MenuItem.Header>
+					</MenuItem>
+					<MenuItem Header="ROI appearance" Style="{DynamicResource UidMenuItemStyle}">
+						<MenuItem Header="Outline ROIs" IsChecked="{Binding MainImageProperties.SelectedROIsStyle, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static ServicesImaging:ROIsViewStyle.Outline}}" IsCheckable="True" Style="{DynamicResource UidMenuItemStyle}"/>
+						<MenuItem Header="Fill ROIs" IsChecked="{Binding MainImageProperties.SelectedROIsStyle, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static ServicesImaging:ROIsViewStyle.Fill}}" IsCheckable="True" Style="{DynamicResource UidMenuItemStyle}"/>
+						<MenuItem Header="Hide ROIs" IsChecked="{Binding MainImageProperties.SelectedROIsStyle, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static ServicesImaging:ROIsViewStyle.None}}" IsCheckable="True" Style="{DynamicResource UidMenuItemStyle}"/>
+					</MenuItem>
+				</MenuItem>
+			</Menu>
+		</Grid>
+
+		<Menu x:Name="imageDisplayOptionsMenu" Background="{x:Null}" Margin="4" Grid.Row="4" IsEnabled="{Binding IsVisualizationRefreshing, Converter={StaticResource InverseBoolConverter}}">
+			<MenuItem x:Name="imageDisplayOptionsMenuItem" Template="{DynamicResource MenuItemInvertedVectorIconControlTemplate}" Header="{DynamicResource IconImageControlGear}" ToolTip="Image display controls">
+				<MenuItem x:Name="menuItem" Header="Select images" Style="{DynamicResource UidMenuItemStyle}" Command="{Binding CommandEnableImageSeriesSelection, Mode=OneWay}" Click="menuItem_Click"/>
+				<MenuItem Header="Grid overlay" Style="{DynamicResource UidMenuItemStyle}">
+					<MenuItem Style="{DynamicResource MenuItemCustomContentStyle}">
+						<MenuItem.Header>
+							<UIControls:ViewRulerToolsControl
+							GridColor="{Binding MainImageProperties.ImageGridLineColor, Mode=TwoWay}"
+							GridSize="{Binding MainImageProperties.ImageGridLineStepSize, Mode=TwoWay}"
+							GridStyle="{Binding MainImageProperties.ImageGridLineType, Mode=TwoWay}"
+							IsImageGridLineOptionsAvailable="{Binding MainImageProperties.IsImageGridLineOptionsAvailable}"
+							/>
+						</MenuItem.Header>
+					</MenuItem>
+				</MenuItem>
+
+				<MenuItem x:Name="rgbMixingMenuItem" Header="RGB mixing" IsChecked="{Binding MainImageProperties.IsComposeMethodColorMixing}" IsCheckable="True" Style="{DynamicResource UidMenuItemStyle}" StaysOpenOnClick="True"/>
+
+				<MenuItem Header="Copy properties" Style="{DynamicResource UidMenuItemStyle}" IsEnabled="False">
+					<MenuItem Header="to another scan" Style="{DynamicResource UidMenuItemStyle}" IsCheckable="True"/>
+					<MenuItem Header="to all scans" Style="{DynamicResource UidMenuItemStyle}" IsCheckable="True"/>
+				</MenuItem>
+
+				<MenuItem Header="Reset properties" Style="{DynamicResource UidMenuItemStyle}">
+					<MenuItem Header="...to preset values" Style="{DynamicResource UidMenuItemStyle}" Command="{Binding CommandResetToPreset, Mode=OneWay}"/>
+					<MenuItem Header="...to examination values" Style="{DynamicResource UidMenuItemStyle}" Command="{Binding CommandResetToExamination, Mode=OneWay}"/>
+				</MenuItem>
+			</MenuItem>
+		</Menu>
+
+	</Grid>
+</UserControl>

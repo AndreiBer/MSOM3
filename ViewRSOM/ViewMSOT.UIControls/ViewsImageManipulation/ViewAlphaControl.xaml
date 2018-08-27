@@ -1,0 +1,129 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:Xvue_MSOT_ViewModels_Imaging="clr-namespace:Xvue.MSOT.ViewModels.Imaging;assembly=Xvue.MSOT.ViewModels"
+	xmlns:Xvue_Framework_Views_WPF_Converters="clr-namespace:Xvue.Framework.Views.WPF.Converters;assembly=Xvue.Framework.Views.WPF"
+	xmlns:MSOTApp_v3="clr-namespace:ViewMSOT.UIControls"
+    xmlns:Xvue_MSOT_EnumDescriptions_Imaging="clr-namespace:Xvue.MSOT.EnumDescriptions.Imaging;assembly=Xvue.MSOT"
+	mc:Ignorable="d"
+	x:Class="ViewMSOT.UIControls.ViewAlphaControl"
+	x:Name="UserControl">
+
+	<UserControl.Resources>
+		<Xvue_Framework_Views_WPF_Converters:DoubleToStringConverter x:Key="DoubleToStringConverter"/>
+		 <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+		 <Xvue_MSOT_ViewModels_Imaging:ViewModelImagingForeground x:Key="ViewModelImagingLayerDataSource" d:IsDataSource="True"/>
+        <Xvue_MSOT_EnumDescriptions_Imaging:EnumConversionAlphaCurveMap x:Key="EnumConversionAlphaCurveMapDataSource" d:IsDataSource="True"/>
+        <Xvue_MSOT_EnumDescriptions_Imaging:EnumConversionAlphaCurveMap x:Key="EnumConversionAlphaCurveMap"/>
+        <Xvue_Framework_Views_WPF_Converters:InvertedBooleanToVisibleConverter x:Key="InvertedBooleanToVisibleConverter"/>
+
+        <DataTemplate x:Key="curveControlLinearTemplate">
+            <MSOTApp_v3:CurveControl Cp1="{Binding ImagingComponent.UsedPalette.AlphaCp1, Mode=TwoWay}" Cp2="{Binding ImagingComponent.UsedPalette.AlphaCp2, Mode=TwoWay}" Width="300" CurvePoints="{Binding ImagingComponent.UsedPalette.DisplayAlphaLUT}" />
+        </DataTemplate>
+        <DataTemplate x:Key="curveControlParabolicTemplate">
+            <MSOTApp_v3:CurveControlParabolic Cp1="{Binding ImagingComponent.UsedPalette.AlphaCp1, Mode=TwoWay}" Cp2="{Binding ImagingComponent.UsedPalette.AlphaCp2, Mode=TwoWay}" Width="300" CurvePoints="{Binding ImagingComponent.UsedPalette.AlphaLUT}" />
+        </DataTemplate>
+        
+        
+    </UserControl.Resources>
+
+    <StackPanel x:Name="LayoutRoot" d:DataContext="{Binding Source={StaticResource ViewModelImagingLayerDataSource}}" Orientation="Horizontal">
+        <Border BorderBrush="White" BorderThickness="2" CornerRadius="3">
+            <Grid Background="#FF292929">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="3"/>
+                    <RowDefinition Height="22"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Rectangle Height="210">
+                    <Rectangle.Fill>
+                        <VisualBrush Visual="{Binding PixelDistributionPlot, Mode=OneWay}"/>
+                    </Rectangle.Fill>
+                    <Rectangle.LayoutTransform>
+                        <TransformGroup>
+                            <ScaleTransform ScaleY="-1" ScaleX="1"/>
+                            <SkewTransform AngleY="0" AngleX="0"/>
+                            <RotateTransform Angle="0"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Rectangle.LayoutTransform>
+                </Rectangle>
+                <ContentControl Content="{Binding}" IsEnabled="{Binding ImagingComponent.Semitransparent}">
+                    <ContentControl.Style>
+                        <Style TargetType="{x:Type ContentControl}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ImagingComponent.UsedPalette.IsAlphaCurveParabolicPower}" Value="False">
+                                    <Setter Property="ContentTemplate" Value="{StaticResource curveControlLinearTemplate}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ImagingComponent.UsedPalette.IsAlphaCurveParabolicPower}" Value="True">
+                                    <Setter Property="ContentTemplate" Value="{StaticResource curveControlParabolicTemplate}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ContentControl.Style>
+                </ContentControl>
+                <Rectangle x:Name="checkers" Grid.Row="2" Fill="{DynamicResource CheckersTexture}"/>
+                <Image x:Name="opacityPaletteImage" Grid.Row="2" Stretch="Fill" Source="{Binding ImagingComponent.UsedPalette.PaletteWithOpacity, Mode=OneWay}">
+                    <Image.LayoutTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform Angle="90"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Image.LayoutTransform>
+                </Image>
+
+                <!--Visibility="{Binding ImagingComponent.LogarithmicScaling, ConverterParameter=Collapsed, Converter={StaticResource InvertedBooleanToVisibleConverter}}"-->
+                <StackPanel Orientation="Horizontal" Grid.Row="3" Visibility="Collapsed" IsEnabled="{Binding ImagingComponent.Semitransparent}">
+                    <ComboBox Style="{DynamicResource UidComboBoxStyle}"
+												ItemsSource="{Binding DisplayNames, Source={StaticResource EnumConversionAlphaCurveMapDataSource}}" 
+												SelectedItem="{Binding ImagingComponent.UsedPalette.AlphaLutCurveMap, Converter={StaticResource EnumConversionAlphaCurveMap}, Mode=TwoWay}" Margin="0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    <!--<extToolkit:IntegerUpDown 
+												x:Name="powerUpDown" BorderThickness="1" VerticalAlignment="Center" HorizontalAlignment="Center" Width="37"
+												Value="{Binding ImagingComponent.UsedPalette.ParabolicAlphaCurvePower, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="1" ToolTip="Parabolic Power (Integer)" Margin="15,0,0,0"
+												Visibility="{Binding ImagingComponent.UsedPalette.IsAlphaCurveParabolicPower, Converter={StaticResource BooleanToVisibilityConverter}}" />-->
+                </StackPanel>
+            </Grid>
+        </Border>
+        <!--<Border Height="Auto" Width="Auto" CornerRadius="3" Margin="2" ToolTip="Contrast" Visibility="Collapsed">
+            <Grid Background="#00E5E5E5" Margin="0,2,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Slider x:Name="contrastSlider" Style="{DynamicResource UidSliderNoSymbolsStyle}" Orientation="Vertical" HorizontalAlignment="Center" Maximum="1" Minimum="0.001" LargeChange="0.1" Value="{Binding ImagingComponent.UsedPalette.Contrast}"/>
+                <TextBlock TextWrapping="Wrap" Text="{Binding Value, ConverterParameter=F1, Converter={StaticResource DoubleToStringConverter}, ElementName=contrastSlider}" VerticalAlignment="Center" d:LayoutOverrides="Width" Grid.Row="1" Foreground="White" HorizontalAlignment="Center"/>
+                <Button x:Name="contrastBtn" Command="{Binding ImagingComponent.UsedPalette.ResetContrastCommand, Mode=OneWay}" ToolTip="Reset Contrast" Margin="2" Grid.Row="2" Style="{DynamicResource UidButtonInvertedStyle}" Content="{DynamicResource IconContrast}" HorizontalAlignment="Center"/>
+            </Grid>
+        </Border>
+        <Border Height="Auto" Width="Auto" CornerRadius="3" Margin="2" ToolTip="Brightness" Visibility="Collapsed">
+            <Grid Background="#00E5E5E5" Margin="0,2,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Slider x:Name="brightnessSlider" HorizontalAlignment="Center" Style="{DynamicResource UidSliderNoSymbolsStyle}" Orientation="Vertical" Maximum="1" Minimum="0.001" LargeChange="0.1" Value="{Binding ImagingComponent.UsedPalette.Brightness}" IsDirectionReversed="True"/>
+                <TextBlock TextWrapping="Wrap" Text="{Binding ImagingComponent.UsedPalette.CorrectedBrightness, ConverterParameter=F1, Converter={StaticResource DoubleToStringConverter}}" VerticalAlignment="Center" Grid.Row="1" Foreground="White" d:LayoutOverrides="Width" HorizontalAlignment="Center"/>
+                <Button x:Name="brightnessBtn" Command="{Binding ImagingComponent.UsedPalette.ResetBrightnessCommand, Mode=OneWay}" ToolTip="Reset Brightness" Grid.Row="2" Margin="2" Style="{DynamicResource UidButtonInvertedStyle}" Content="{DynamicResource IconBrightness}" HorizontalAlignment="Center"/>
+            </Grid>
+        </Border>-->
+        <!--<Border Height="Auto" Width="Auto" CornerRadius="3" Margin="2" ToolTip="Rendering weight for component" Visibility="{Binding ImagingComponent.ImageProperties.Is3DImageProperties, ConverterParameter=Collapsed, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" IsEnabled="{Binding ImagingComponent.ImageProperties.Show3DVolumeRender}">
+            <Grid Background="#00E5E5E5" Margin="0,2,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Slider x:Name="renderingWeightSlider" Style="{DynamicResource UidSliderNoSymbolsStyle}" Orientation="Vertical" HorizontalAlignment="Center" Maximum="100" Minimum="0.001" LargeChange="0.1" Value="{Binding ImagingComponent.RenderingWeight}"/>
+                <TextBlock TextWrapping="Wrap" Text="{Binding Value, ConverterParameter=F1, Converter={StaticResource DoubleToStringConverter}, ElementName=renderingWeightSlider}" VerticalAlignment="Center" d:LayoutOverrides="Width" Grid.Row="1" Foreground="White" HorizontalAlignment="Center"/>
+                <Button x:Name="renderingWeightBtn" Command="{Binding ImagingComponent.ResetRenderingWeightCommand, Mode=OneWay}" Content="{DynamicResource IconWeightingA}" Margin="2" Grid.Row="2" Style="{DynamicResource UidButtonInvertedStyle}" ToolTip="Reset rendering weight for component" HorizontalAlignment="Center"/>
+            </Grid>
+        </Border>-->
+    </StackPanel>
+</UserControl>

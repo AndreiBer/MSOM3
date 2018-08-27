@@ -1,0 +1,23 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:ViewMSOT.UIControls"
+	mc:Ignorable="d"
+	x:Class="ViewMSOT.UIControls.ViewSelectPlane"
+    xmlns:ServicesImaging="clr-namespace:Xvue.MSOT.Services.Imaging;assembly=Xvue.MSOT" 
+    xmlns:Xvue_MSOT_ViewModels_Imaging="clr-namespace:Xvue.MSOT.ViewModels.Imaging;assembly=Xvue.MSOT.ViewModels" 
+	x:Name="UserControl" DataContextChanged="UserControl_DataContextChanged">
+
+    <UserControl.Resources>
+        <Xvue_MSOT_ViewModels_Imaging:ViewModelImageProperties x:Key="ViewModelImagePropertiesDataSource" d:IsDataSource="True"/>
+        <Style TargetType="local:ViewSelectPlane">
+            <Setter Property="Visible3DGridPlanes" Value="{Binding Visible3DGridPlanes, Mode=TwoWay}"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot" Background="Black" d:DataContext="{Binding Source={StaticResource ViewModelImagePropertiesDataSource}}">
+        <Button x:Name="controlButton" Content="{StaticResource IconShowPlaneCollapse}" Style="{DynamicResource UidButtonInvertedStyle}" Click="controlButton_Click" Height="45" Width="45"/>
+    </Grid>
+</UserControl>

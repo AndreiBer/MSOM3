@@ -1,0 +1,222 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+      None
+    </ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7725E813-1964-4D0D-9489-7D9F6E557E32}</ProjectGuid>
+    <OutputType>library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Xvue.Framework.Views.WPF</RootNamespace>
+    <AssemblyName>Xvue.Framework.Views.WPF</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <SccProjectName>%24/iOrasis/iOrasisV8/Xvue.Framework/Xvue.Framework.Views.WPF</SccProjectName>
+    <SccLocalPath>.</SccLocalPath>
+    <SccAuxPath>http://tfs-server:8080</SccAuxPath>
+    <SccProvider>{4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}</SccProvider>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <Utf8Output>true</Utf8Output>
+    <ExpressionBlendVersion>4.0.20525.0</ExpressionBlendVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>..\..\..\Xvue.MSOT.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\x64\Debug\Xvue.Framework.Views.WPF.XML</DocumentationFile>
+    <NoWarn>1591</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>..\..\..\Xvue.MSOT.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\x64\Release\Xvue.Framework.Views.WPF.XML</DocumentationFile>
+    <NoWarn>1591</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\xvue.msot.environment\Xceed\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Behaviors\BehaviorsHelper.cs" />
+    <Compile Include="Behaviors\MouseClickInsideOfControlBehavior.cs" />
+    <Compile Include="Behaviors\ListBoxKeyboardNavigationBehavior.cs" />
+    <Compile Include="Behaviors\MouseClickOutsideControlBehavior.cs" />
+    <Compile Include="Behaviors\TextBoxAllowableCharactersBehavior.cs" />
+    <Compile Include="Behaviors\TextBoxUnsignedIntegerRangeBehavior.cs" />
+    <Compile Include="Behaviors\TextBoxSelectAllBehavior.cs" />
+    <Compile Include="Controls\ExtraWindowStyles.cs" />
+    <Compile Include="Controls\MultiSelectListView.cs" />
+    <Compile Include="Controls\Slider2D.xaml.cs">
+      <DependentUpon>Slider2D.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ClosingPopup.cs" />
+    <Compile Include="Controls\SlowMovingSlider.cs" />
+    <Compile Include="Controls\StoryboardControlledClosingPopup.cs" />
+    <Compile Include="Controls\ToggleButtonManual.cs" />
+    <Compile Include="Controls\TrackBall.cs" />
+    <Compile Include="Controls\TrimmingTextBox.cs" />
+    <Compile Include="Controls\DisabledContentWheelScrollViewer.cs" />
+    <Compile Include="Controls\ViewRulerControlToggleButtonBase.cs" />
+    <Compile Include="Controls\WrapGridSimple.cs" />
+    <Compile Include="Controls\ZoomingScrollViewer.cs" />
+    <Compile Include="Controls\WrapGrid.cs" />
+    <Compile Include="Converters\BackgroundConverter.cs" />
+    <Compile Include="Converters\BooleanAndConverter.cs" />
+    <Compile Include="Converters\BooleanOrConverter.cs" />
+    <Compile Include="Converters\BooleanAndToVisibleConverter.cs" />
+    <Compile Include="Converters\GridLengthToDoubleConverter.cs" />
+    <Compile Include="Converters\BooleanToBitmapScalingModeConverter.cs" />
+    <Compile Include="Converters\BooleanToBrushConverter.cs" />
+    <Compile Include="Converters\BooleanToWpfToolkitWindowStateConverter.cs" />
+    <Compile Include="Converters\StateToVisiblilityConverter.cs" />
+    <Compile Include="Converters\WpfToolkitWindowStateToBoolean.cs" />
+    <Compile Include="Converters\BooleanToVisibleConverter.cs" />
+    <Compile Include="Converters\BooleanOrToVisibleConverter.cs" />
+    <Compile Include="Converters\ColumnWidthConverter.cs" />
+    <Compile Include="Converters\DoubleToPoint3DConverter.cs" />
+    <Compile Include="Converters\BooleanToColorConverter.cs" />
+    <Compile Include="Converters\IntToBooleanConverter.cs" />
+    <Compile Include="Converters\IntegerToStringAdditionConverter.cs" />
+    <Compile Include="Converters\StringToVector3DConverter.cs" />
+    <Compile Include="Converters\StringToPoint3DConverter.cs" />
+    <Compile Include="Converters\TaskbarItemBooleanToProgressStateConverter.cs" />
+    <Compile Include="Converters\DoubleToStringConverter.cs" />
+    <Compile Include="Converters\InvertedBooleanToVisibleConverter.cs" />
+    <Compile Include="Converters\StretchToBoolConverter.cs" />
+    <Compile Include="Converters\EnumToBooleanConverter.cs" />
+    <Compile Include="Converters\TimeSpanToStringConverter.cs" />
+    <Compile Include="Performance\ViewPerformanceCounter.xaml.cs">
+      <DependentUpon>ViewPerformanceCounter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Performance\ViewPerformanceCounterRecord.xaml.cs">
+      <DependentUpon>ViewPerformanceCounterRecord.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Performance\ViewPerformanceMonitor.xaml.cs">
+      <DependentUpon>ViewPerformanceMonitor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="VisualTreeBrowser\VisualTreeBrowser.cs" />
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Controls\Slider2D.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Performance\ViewPerformanceCounter.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Performance\ViewPerformanceCounterRecord.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Performance\ViewPerformanceMonitor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Xvue.Framework\Xvue.Framework.csproj">
+      <Project>{6DB457F0-C6B4-4268-8304-4F5B586E50FF}</Project>
+      <Name>Xvue.Framework</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="..\..\..\msotCustomDictionary.xml">
+      <Link>msotCustomDictionary.xml</Link>
+    </CodeAnalysisDictionary>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

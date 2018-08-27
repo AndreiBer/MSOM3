@@ -1,0 +1,44 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ViewMSOTc"
+             xmlns:ViewModels="clr-namespace:Xvue.MSOT.ViewModels;assembly=MSOTSystem"
+             xmlns:Xvue_MSOT_Hardware_ViewModels="clr-namespace:Xvue.MSOT.Hardware.ViewModels;assembly=Xvue.MSOT.Hardware.ViewModels"
+             x:Class="ViewMSOTc.ViewSelfTestInitialized"
+             mc:Ignorable="d" >
+    <UserControl.Resources>
+        <Xvue_MSOT_Hardware_ViewModels:ViewModelHardwareSelfTest x:Key="ViewModelHardwareSelfTestDataSource" d:IsDataSource="True"/>
+    </UserControl.Resources>
+    <Grid d:DataContext="{Binding Source={StaticResource ViewModelHardwareSelfTestDataSource}}" HorizontalAlignment="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition Height="80"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Vertical" Margin="10">
+            <Label Content="Please press the foot pedal to allow"/>
+            <Label Content="ViewMSOT to perform the system self-test"/>
+            <Label Content="procedure."/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Vertical" Margin="10">
+            <Label Content="If you do not want to proceed with an"/>
+            <Label Content="examination please go back to Scan"/>
+            <Label Content="Overview."/>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right" Margin="10" >
+            <!--<Button x:Name="testButton"  Width="120" Style="{DynamicResource UidButtonTextStyle2}"
+				Command="{Binding CommandAcceptInput}"                                        
+				Content="Simulate"
+				CommandParameter="{x:Static Xvue_MSOT_Hardware_ViewModels:SelfTestInput.FootPedalSimulate}" />-->
+            <Button x:Name="cancelButton" Width="120" Style="{DynamicResource UidButtonTextStyle2}"
+				Command="{Binding CommandAcceptInput}"                                        
+				CommandParameter="{x:Static Xvue_MSOT_Hardware_ViewModels:SelfTestInput.AcceptButton}"
+				Content="Cancel"
+				Margin="20,0,0,0"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
