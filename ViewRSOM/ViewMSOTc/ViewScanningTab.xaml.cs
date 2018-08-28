@@ -7,6 +7,7 @@ using System.Windows.Media.Imaging;
 using System.Threading;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 using Basler.Pylon;
@@ -34,6 +35,7 @@ namespace ViewRSOM
         //Hardware.Laser.ViewModelLaer  innolasLaser;
         HandleOpoData myOpoDataHandler = new HandleOpoData();
         public ViewModelLaserInnolas my_laser = null;
+        Hardware.LaserSW.ViewModelBrightSolutions ondaLaser = new Hardware.LaserSW.ViewModelBrightSolutions();
         ProtocolWrapper<StandardCommandType> innolasModule = new ProtocolWrapper<StandardCommandType>(StandardCommandsDictionary.StandardCommands, StandardCommandsDictionary.StandardErrors);
         bool GoOn;
         bool OpoStatus = false;
@@ -180,31 +182,43 @@ namespace ViewRSOM
                     acq_MessageBox.Text = value;
                 });
         }
+
+        private void retrieveWavelength(string sender, string receiver, string value)
+        {
+
+        }
+
+
         
        private void OPOWlChange(string sender, string receiver, string value)
         {
             
             //get number of wavelength from comment box
             int[] convertedItems = { Convert.ToInt32(LaserParameter.LaserDefaultWavelength) };
-            //string comment = comment_TextBox.Text;
             if (!string.IsNullOrEmpty(commentWL))
             {
-                char[] delimiterChars = { ' ', ',', '.', ':', ';', '\t' };
-                string[] tokens = commentWL.Split(delimiterChars);
-                convertedItems = Array.ConvertAll<string, int>(tokens, int.Parse);                
+                try
+                {
+                    convertedItems = my_laser.retrieveWL(commentWL);                    
+                }
+                catch (Exception )
+                {
+                    MessageBox.Show("Wavelengths - wrong syntaxis");
+                    my_laser.illuminationOFF();
+                }
+                //convertedItems = Array.ConvertAll<string, int>(tokens, int.Parse);                
             }
             else
-            {                
+            {
                 my_laser.setWavelength(convertedItems[0]);
             }
-
+            
             System.Windows.Application.Current.Dispatcher.Invoke(
                 System.Windows.Threading.DispatcherPriority.Normal, (Action)delegate
                 {
                     acq_MessageBox.Text = value;
                     if (!string.IsNullOrEmpty(commentWL))
-                    {
-                        
+                    {                        
                         bool canParse2;
                         Int16 doubleParse2;
                         canParse2 = Int16.TryParse(value.Substring(16,1), styles, culture, out doubleParse2);
@@ -329,154 +343,7 @@ namespace ViewRSOM
                 //acqPreviewImage.Stretch = Stretch.UniformToFill;
             }
         }
-
-        //void GrabCameraImages()
-        //{
-        //    recording = true;
-
-        //    System.Threading.ThreadPool.QueueUserWorkItem(new WaitCallback(delegate (object o)
-        //    {
-        //        try
-        //        {
-        //            camera = new Camera();
-        //            // Create a camera object that selects the first camera device found.
-        //            // More constructors are available for selecting a specific camera device.
-        //            //using (Camera camera = new Camera())
-        //            {
-        //                // Print the model name of the camera.
-        //                Console.WriteLine("Using camera {0}.", camera.CameraInfo[CameraInfoKey.ModelName]);
-
-        //                // Set the acquisition mode to free running continuous acquisition when the camera is opened.
-        //                camera.CameraOpened += Configuration.AcquireContinuous;
-
-        //                // Open the connection to the camera device.
-        //                camera.Open();
-
-        //                // The parameter MaxNumBuffer can be used to control the amount of buffers
-        //                // allocated for grabbing. The default value of this parameter is 10.
-        //                camera.Parameters[PLCameraInstance.MaxNumBuffer].SetValue(5);
-
-        //                // Start grabbing.
-        //                camera.StreamGrabber.Start();
-
-        //                BitmapSource bmpSource;
-        //                // int counter = 0;
-
-        //                // Grab a number of images.
-        //                while (recording)
-        //                {
-                            
-        //                    //if (counter % 100 == 0)
-        //                    //{
-        //                    //    System.GC.Collect();
-        //                    //    System.GC.WaitForPendingFinalizers();
-        //                    //}
-
-        //                    // Wait for an image and then retrieve it. A timeout of 5000 ms is used.
-        //                    IGrabResult grabResult = camera.StreamGrabber.RetrieveResult(5000, TimeoutHandling.ThrowException);
-        //                    using (grabResult)
-        //                    {
-
-        //                        // counter++;
-
-        //                        // Image grabbed successfully?
-        //                        if (grabResult.GrabSucceeded)
-        //                        {
-        //                            // Access the image data.
-        //                            int stride = (int)grabResult.ComputeStride();
-        //                            byte[] buffer = grabResult.PixelData as byte[];
-
-        //                            // new buffer for format conversion
-        //                            byte[] new_buffer = new byte[grabResult.Width * grabResult.Height * 3];
-        //                            int new_stride = 3 * stride;
-
-        //                            // pixel conversion from Bayer to rgb 
-        //                            converter.OutputPixelFormat = PixelType.RGB8packed;
-        //                            converter.Convert<byte>(new_buffer, grabResult);//converter.Convert(buffer, grabResult);
-
-        //                            // create Bitmap
-        //                            bmpSource = BitmapSource.Create(grabResult.Width, grabResult.Height, 0, 0,
-        //                            PixelFormats.Rgb24, null, new_buffer, new_stride);
-        //                            bmpSource.Freeze();
-                                    
-        //                            // show
-        //                            System.Windows.Application.Current.Dispatcher.Invoke(
-        //                             System.Windows.Threading.DispatcherPriority.DataBind, (Action)delegate
-        //                             {
-        //                                 myCameraImage.Source = bmpSource;
-        //                             });
-
-        //                            // System.GC.Collect();
-        //                            // System.GC.WaitForPendingFinalizers();
-                                    
-        //                        }
-        //                        else
-        //                        {
-        //                            Console.WriteLine("Camera Error: {0} {1}", grabResult.ErrorCode, grabResult.ErrorDescription);
-        //                        }
-        //                    }
-
-        //                }
-
-        //                // Stop grabbing.
-        //                camera.StreamGrabber.Stop();
-
-        //                // Close the connection to the camera device.
-        //                camera.Close();
-
-
-        //            }
-        //        }
-        //        catch (Exception e)
-        //        {
-        //            Console.Error.WriteLine("Exception: {0}", e.Message);
-
-        //            // show laser warning sign --> no camera means clinical version
-        //            BitmapImage src = new BitmapImage();
-        //            src.BeginInit();
-        //            src.CacheOption = BitmapCacheOption.OnLoad;
-        //            src.UriSource = new Uri("pack://application:,,,/ViewMSOTc/ViewsOAM/LaserSafetyImageWearGoggles.png");
-        //            // src.UriSource = new Uri("H:\\!Repositories\\com.itheramedical.RSOM\\!v2_ViewRSOM\\ViewRSOM\\ViewRSOM\\ViewMSOTc\\ViewsOAM\\LaserSafetyImageWearGoggles.png", UriKind.Absolute);
-        //            src.EndInit();
-        //            src.Freeze();
-
-        //            // show
-        //            System.Windows.Application.Current.Dispatcher.Invoke(
-        //            System.Windows.Threading.DispatcherPriority.DataBind, (Action)delegate
-        //            {
-        //                myCameraImage.Source = src;
-        //                myCameraImage.VerticalAlignment = VerticalAlignment.Center;
-        //                // myCameraImage.Stretch = Stretch.Fill;
-        //             });             
-
-        //        }
-        //        finally
-        //        {
-        //            // Comment the following two lines to disable waiting on exit.
-        //            //Console.Error.WriteLine("\nPress enter to exit.");
-        //            //Console.ReadLine();
-        //        }
-
-        //    }));
-
-        //    //Environment.Exit(exitCode);
-        //}
-
-        //public void StopCamera()
-        //{
-        //    try
-        //    {
-        //        // Stop grabbing.
-        //        camera.StreamGrabber.Stop();
-
-        //        // Close the connection to the camera device.
-        //        camera.Close();
-        //    }
-        //    catch
-        //    {
-
-        //    }
-        //}
+                
         #endregion
 
         // GUI functionality for quick scan and full scan
@@ -507,7 +374,7 @@ namespace ViewRSOM
 
                 if (acquisitionParameters.laserSourceIndex == 0)
                 {
-                    Hardware.LaserSW.ViewModelBrightSolutions ondaLaser = new Hardware.LaserSW.ViewModelBrightSolutions();
+                    //Hardware.LaserSW.ViewModelBrightSolutions ondaLaser = new Hardware.LaserSW.ViewModelBrightSolutions();
 
                     try
                     {
@@ -518,7 +385,7 @@ namespace ViewRSOM
                             ondaLaser.setup();
 
                             // allow acq to be cancelled
-                            ondaLaser.laserHandle = (innersender, args) => cancelAcq_Button_Click(innersender, args, ondaLaser);
+                            ondaLaser.laserHandle = (innersender, args) => cancelAcq_Button_Click(innersender, args, ondaLaser, my_laser );
                             cancelAcq_Button.Click += ondaLaser.laserHandle;
 
                             // start acquisition
@@ -563,58 +430,26 @@ namespace ViewRSOM
                     }
                     else
                     {
-
-                        //ViewRSOM.MSOT.Hardware.ViewModels.Laser.ViewModelLaserInnolas multiLaser = new ViewRSOM.MSOT.Hardware.ViewModels.Laser.ViewModelLaserInnolas();
-                        //my_laser = new ViewModelLaserInnolas();
-                        //my_laser.AfterInitialize();
-                        myOpoDataHandler.ClearData();
-                        //myCoherent.ClearData();
-
+                                                
+                        myOpoDataHandler.ClearData();                        
                         myOpoDataHandler.myOpoMapData.Clear();
-                        //myCoherent.myCohMapData.Clear();
-                        //my_wavelengths.Clear();
-                        //wl = Int32.Parse(wlBox.Text);
-                        string StatusMessage;
-                        StatusMessage = my_laser.CheckShutterState();
-                        int wl = 550;
-                        my_laser.setWavelength(wl);
-                        Thread.Sleep(50);
-                        my_laser.lamp(true);
-                        Thread.Sleep(500);
-                        my_laser.AcceptTriggerChangeAndAttenuationCommands = true;
-                        LaserParameter.PowerControlMethod = "None";
-                        my_laser.setAttenuationViaPockelScell(myProgrammSettings.DefaultPockelsCellDelay);
-                        my_laser.q_switch(true);
-                        Thread.Sleep(3000);
-                        //my_laser.q_switch(false);
-                        // wavingThread.Abort stop
-                        // my_laser.fastScan();
-
-                         
-                       StatusMessage= my_laser.CheckShutterState();
-                       while (StatusMessage == "CLOSE")
-                       {
-                          // errorCode = innolasModule.ExchangeCommand(StandardCommandType.GetShutterState, "", out receivedCommands, out message);
-                           StatusMessage = my_laser.CheckShutterState(); ;
-                           Thread.Sleep(100);
-                       }
-                         
-
+                        my_laser.illuminationON();
                         
-                       // allow acq to be cancelled
-                       //myOpoDataHandler = (innersender, args) => cancelAcq_Button_Click(innersender, args, multiLaser);
-                       //cancelAcq_Button.Click += ondaLaser.laserHandle;
-                       
+                        // allow acq to be cancelled
+                        my_laser.laserHandle = (innersender, args) => cancelAcq_Button_Click(innersender, args, ondaLaser, my_laser);
+                        cancelAcq_Button.Click += my_laser.laserHandle;
 
-                       // start acquisition
-                       Acquisition.initQuickScan newQuickScan = new Acquisition.initQuickScan();
+                        // start acquisition
+                        Acquisition.initQuickScan newQuickScan = new Acquisition.initQuickScan();
                        if (comment == null)
                            comment = "no comment";
-                       System.Threading.ThreadPool.QueueUserWorkItem(new WaitCallback(delegate(object o)
-                       {
-                           newQuickScan.startMulti(comment, my_laser, cancelAcq_Button);
-                       }));
-                         
+                        System.Threading.ThreadPool.QueueUserWorkItem(new WaitCallback(delegate (object o)
+                        {
+                            newQuickScan.startMulti(comment, my_laser, cancelAcq_Button);
+                        }));
+                        
+                           // newQuickScan.startMulti(comment, my_laser, cancelAcq_Button);                     
+
                     }
                 }
             }
@@ -643,7 +478,7 @@ namespace ViewRSOM
 
                 if (acquisitionParameters.laserSourceIndex == 0)
                 {
-                    Hardware.LaserSW.ViewModelBrightSolutions ondaLaser = new Hardware.LaserSW.ViewModelBrightSolutions();
+                   // Hardware.LaserSW.ViewModelBrightSolutions ondaLaser = new Hardware.LaserSW.ViewModelBrightSolutions();
 
                     try
                     {
@@ -654,7 +489,7 @@ namespace ViewRSOM
                             ondaLaser.setup();
 
                             // allow acq to be cancelled
-                            ondaLaser.laserHandle = (innersender, args) => cancelAcq_Button_Click(innersender, args, ondaLaser);
+                            ondaLaser.laserHandle = (innersender, args) => cancelAcq_Button_Click(innersender, args, ondaLaser, my_laser);
                             cancelAcq_Button.Click += ondaLaser.laserHandle;
 
                             // define comment
@@ -705,61 +540,27 @@ namespace ViewRSOM
                     }
                     else
                     {
+                            myOpoDataHandler.ClearData();
+                            myOpoDataHandler.myOpoMapData.Clear();
+                            my_laser.illuminationON();
 
-                        //ViewRSOM.MSOT.Hardware.ViewModels.Laser.ViewModelLaserInnolas multiLaser = new ViewRSOM.MSOT.Hardware.ViewModels.Laser.ViewModelLaserInnolas();
-                        //my_laser = new ViewModelLaserInnolas();
-                        //my_laser.AfterInitialize();
-                        myOpoDataHandler.ClearData();
-                        //myCoherent.ClearData();
+                            // allow acq to be cancelled
+                            my_laser.laserHandle = (innersender, args) => cancelAcq_Button_Click(innersender, args, ondaLaser, my_laser);
+                            cancelAcq_Button.Click += my_laser.laserHandle;
+                  
 
-                        myOpoDataHandler.myOpoMapData.Clear();
-                        //myCoherent.myCohMapData.Clear();
-                        //my_wavelengths.Clear();
-                        //wl = Int32.Parse(wlBox.Text);
-                        string StatusMessage;
-                        StatusMessage = my_laser.CheckShutterState();
-                        //int wl = 550;
+                            // define comment
+                            Acquisition.initFullScan newFullScan = new Acquisition.initFullScan();
+                       
+                            if (comment == null)
+                            comment = "no comment";
 
-                        my_laser.setWavelength(Convert.ToInt32(LaserParameter.LaserDefaultWavelength));
-                        Thread.Sleep(50);
-                        my_laser.lamp(true);
-                        Thread.Sleep(500);
-                        my_laser.AcceptTriggerChangeAndAttenuationCommands = true;
-                        LaserParameter.PowerControlMethod = "None";
-                        my_laser.setAttenuationViaPockelScell(myProgrammSettings.DefaultPockelsCellDelay);
-                        my_laser.q_switch(true);
-                        Thread.Sleep(3000);
-                        //my_laser.q_switch(false);
-                        // wavingThread.Abort stop
-                        // my_laser.fastScan();
-
-                         
-                       StatusMessage= my_laser.CheckShutterState();
-                       while (StatusMessage == "CLOSE")
-                       {
-                          // errorCode = innolasModule.ExchangeCommand(StandardCommandType.GetShutterState, "", out receivedCommands, out message);
-                           StatusMessage = my_laser.CheckShutterState(); ;
-                           Thread.Sleep(100);
-                       }
-                         
-
-                        
-                       // allow acq to be cancelled
-                       //myOpoDataHandler = (innersender, args) => cancelAcq_Button_Click(innersender, args, multiLaser);
-                       //cancelAcq_Button.Click += ondaLaser.laserHandle;                      
-
-                       // define comment
-                       Acquisition.initFullScan newFullScan = new Acquisition.initFullScan();
-                       //string comment = comment_TextBox.Text;
-                       if (comment == null)
-                           comment = "no comment";
-
-                       // start acquisition
-                       System.Threading.ThreadPool.QueueUserWorkItem(new WaitCallback(delegate(object o)
-                       {
-                           myQuickScanItems.Clear();
-                           newFullScan.startMulti(comment, my_laser, cancelAcq_Button);
-                       }));
+                           // start acquisition
+                           System.Threading.ThreadPool.QueueUserWorkItem(new WaitCallback(delegate(object o)
+                           {
+                               myQuickScanItems.Clear();
+                               newFullScan.startMulti(comment, my_laser, cancelAcq_Button);
+                           }));
                          
                     }
 
@@ -768,7 +569,7 @@ namespace ViewRSOM
         }
 
 
-        private void cancelAcq_Button_Click(object sender, RoutedEventArgs e, Hardware.LaserSW.ViewModelBrightSolutions ondaLaser)
+        private void cancelAcq_Button_Click(object sender, RoutedEventArgs e, Hardware.LaserSW.ViewModelBrightSolutions ondaLaser, ViewModelLaserInnolas my_laser)
         {
             // Configure the message box to be displayed
             // string messageBoxText = "Please press the EMISSION button on the laser control box OR release the foot pedal.";
@@ -789,18 +590,23 @@ namespace ViewRSOM
                     try
                     {
                         // control laser
-                        if (systemState.LASERconnected == 1 || systemState.LASERconnected == 2)
+                        if (acquisitionParameters.laserSource == "SW")
                         {
-                            // switch laser off and close connection
-                            ondaLaser.EmissionOFF();
-                        } 
-                        // turn off OPO
-                        if (OpoStatus != false)
-                        {
-                            offOPOMethod();
-                            OpoStatus = false;
+                            if (systemState.LASERconnected == 1 || systemState.LASERconnected == 2)
+                            {
+                                // switch laser off and close connection
+                                ondaLaser.EmissionOFF();
+                            }
                         }
-
+                        else
+                        {
+                            // OPO illumination off
+                            if (my_laser.CheckShutterState() == "OPEN")
+                            {
+                                my_laser.illuminationOFF();
+                            }
+                        }
+                       
                     }
                     catch (Exception err)
                     {
@@ -831,7 +637,7 @@ namespace ViewRSOM
             // choose a laser
             acquisitionParameters.laserSourceIndex = laserSource_ComboBox.SelectedIndex;
             acquisitionParameters.laserSource = acquisitionParameters.laserSource_list[acquisitionParameters.laserSourceIndex];
-            //if (reconFolderWithoutPath.Length > 7 && dataNames[i].Length > 5)
+            
                 if (acquisitionParameters.laserSourceIndex == 1)
                 {
                     // Start OPO laser
@@ -841,15 +647,7 @@ namespace ViewRSOM
                         OpoStatus = true;
 
                     }
-                    //StartOPOMethod();
-                    /*
-                    // Hardware.Laser.ViewModelBrightSolutions ondaLaser = new Hardware.Laser.ViewModelBrightSolutions();
-                    my_laser = new ViewModelLaserInnolas();
-                    my_laser.AfterInitialize();
-                    //GoOn = false;
-                    my_laser.compositeInit();
-                    // errorCode = innolasModule.ExchangeCommand(StandardCommandType.ShutdownLaser, "", out expectedCommands, out message);
-                     * */
+                    
                 }
 
         }
@@ -872,9 +670,7 @@ namespace ViewRSOM
 
         public void StartOPOMethod()
         {
-            
-                //StartOPO.Text == "00OPO on";
-                
+                               
                 my_laser = new ViewModelLaserInnolas();
                 my_laser.AfterInitialize();
                 GoOn = false;
@@ -884,7 +680,7 @@ namespace ViewRSOM
                 {
                     while (!GoOn)
                     {
-                        Thread.Sleep(5000);
+                        Thread.Sleep(2000);
                         my_laser.GetLaserState();
                     }
                 }));
@@ -894,7 +690,7 @@ namespace ViewRSOM
                     my_laser.GetLaserState();
 
                 Thread.Sleep(1000);
-                StartOPO.Content = "OPO ON";
+                StartOPO.Content = "ON";
             }        
             
 
@@ -903,7 +699,7 @@ namespace ViewRSOM
                         try
                         {
                             my_laser.compositeClose();
-                            StartOPO.Content = "OPO OFF";
+                            StartOPO.Content = "OFF";
                         }
                         catch { System.Windows.MessageBox.Show("Not possible"); }
             }

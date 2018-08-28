@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -35,9 +36,11 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
 
         }
 
-        
+
 
         #region publicvariables
+        // define laser EventHandler
+        public RoutedEventHandler laserHandle;
         public bool AcceptTriggerChangeAndAttenuationCommands
         {
             get { return _acceptTriggerChangeAndAttenuationCommands; }
@@ -451,8 +454,84 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
             innolasModule.ExchangeCommand(StandardCommandType.SetWavelength, wl.ToString(), out message); 
         }
 
-               
-        
+        public override void illuminationON()
+        {
+            string StatusMessage;
+            StatusMessage = CheckShutterState();
+            if (StatusMessage == "OPEN")
+            {
+                q_switch(false);
+                lamp(false);
+                Thread.Sleep(1000);
+            }
+            int wl = Convert.ToInt32(LaserParameter.LaserDefaultWavelength);
+            setWavelength(wl);            
+            Thread.Sleep(50);
+            lamp(true);
+            Thread.Sleep(500);
+            AcceptTriggerChangeAndAttenuationCommands = true;
+            LaserParameter.PowerControlMethod = "None";
+            setAttenuationViaPockelScell(LaserParameter.PockelscellDelay);
+            q_switch(true);
+            //Thread.Sleep(1000);
+            
+            StatusMessage = CheckShutterState();
+            while (StatusMessage == "CLOSE")
+            {
+                // errorCode = innolasModule.ExchangeCommand(StandardCommandType.GetShutterState, "", out receivedCommands, out message);
+                StatusMessage = CheckShutterState(); ;
+                Thread.Sleep(100);
+            }
+        }
+
+        public override void illuminationOFF()
+        {
+            q_switch(false);
+            lamp(false);
+            
+        }
+
+        public override int[] retrieveWL(string comment)
+        {
+            
+            
+                char[] delimiterChars = { ']', '[', '}', '{', '(', ')', ' ', ',', '.', '\t' };
+                string[] words = comment.Split(delimiterChars);
+                words = words.Where(x => !string.IsNullOrEmpty(x)).ToArray(); //delete empty array elements
+                List<int> numArrList = new List<int>();
+                int[] numArrStep = new int[0];
+                string[] tempStr = new string[] { };
+                int firstVal = new int { };
+                int step = new int { };
+                int secondVal = new int { };
+                int count = new int { };
+                // parse the elements
+                for (int i = 0; i < words.Length; i++)
+                {
+                    if (words[i].Contains(":") == true)
+                    {
+                        tempStr = words[i].Split(':');
+                        firstVal = int.Parse(tempStr[0]);
+                        step = int.Parse(tempStr[1]);
+                        secondVal = int.Parse(tempStr[2]);
+                        for (int val = firstVal; val <= secondVal; val = (val + step))
+                        {
+                            numArrList.Add(val);
+                        }
+                    }
+                    else
+                    {
+                        numArrList.Add(int.Parse(words[i]));
+                    }
+                }
+                int[] numArr = numArrList.ToArray();
+                Array.Sort(numArr);
+                //convertedItems = numArr;            
+
+            return numArr;
+            
+        }
+
         public override bool tune(List<double> wavelengths, int pulsesPerWl, int repeatCount)
         {
             int errorCode = 0;

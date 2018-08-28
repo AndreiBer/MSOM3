@@ -1,0 +1,73 @@
+if (fileParameters.studyFolder == null)
+            {
+                acq_MessageBox.Text = "Choose study first! \n";
+            }
+            else
+            {
+
+                string comment = comment_TextBox.Text;
+commentWL = comment;
+                // Prepare GUI
+                acq_MessageBox.Text = "Starting quick scan \n";
+                acq_PreviewImage.Source = null;
+                myQuickScanItems.Clear();
+                quickScanFrameNumber_Label.Visibility = Visibility.Collapsed;
+                quickScanNextFrame_Button.Visibility = Visibility.Collapsed;
+                
+                // update GUI buttons
+                systemState.acqThreadFree = false;
+                acq_ProgressBar.Value = 0;
+                acq_ProgressBar.Foreground = Brushes.LimeGreen;
+
+                // Start laser
+
+                if (acquisitionParameters.laserSourceIndex == 0)
+                {
+                    Hardware.LaserSW.ViewModelBrightSolutions ondaLaser = new Hardware.LaserSW.ViewModelBrightSolutions();
+
+                    try
+                    {
+                        // control laser
+                        if (systemState.LASERconnected == 1 || systemState.LASERconnected == 2)
+                        {
+                            // setup laser -> initialize and switch on
+                            ondaLaser.setup();
+
+                            // allow acq to be cancelled
+                            ondaLaser.laserHandle = (innersender, args) => cancelAcq_Button_Click(innersender, args, ondaLaser);
+							cancelAcq_Button.Click += ondaLaser.laserHandle;
+
+                            // start acquisition
+                            Acquisition.initQuickScan newQuickScan = new Acquisition.initQuickScan();
+							System.Threading.ThreadPool.QueueUserWorkItem(new WaitCallback(delegate(object o)
+                            {
+                                newQuickScan.start(ondaLaser, cancelAcq_Button);
+                            }));
+
+                        }
+                    }
+                    catch (Exception err)
+                    {
+                        // check if laser emission can be stopped
+                        if (ondaLaser != null)
+                        {
+                            try
+                            {
+                                ondaLaser.EmissionOFF();
+                                ondaLaser.closeConnection();
+                                cancelAcq_Button.Click -= ondaLaser.laserHandle;
+                            }
+                            catch
+                            {
+                                Console.WriteLine("WARNING: switch off laser EMISSION if necessary.");
+                            };
+                        }
+
+                        if (!err.Message.Contains("ERROR:"))
+                        {
+                            Console.WriteLine("ERROR:" + err.Message);
+                        }
+                        Console.WriteLine("\n");
+                        Console.WriteLine("Status-Acq: 1.00");
+                    }
+                }

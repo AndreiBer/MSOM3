@@ -348,13 +348,19 @@ namespace ViewRSOM.Acquisition
             MWNumericArray quickScan = 0;
 
             //get number of wavelength from comment box
-            if (!string.IsNullOrEmpty(comment)) 
+            if (!string.IsNullOrEmpty(comment))
             {
-                char[] delimiterChars = { ' ', ',', '.', ':', ';', '\t' };
-                string[] tokens = comment.Split(delimiterChars);
-                int[] convertedItems = Array.ConvertAll<string, int>(tokens, int.Parse);
-                numberOfWavelength = convertedItems.Length;
-                //Console.WriteLine(convertedItems);
+                try
+                {
+                    numberOfWavelength = multiLaser.retrieveWL(comment).Length;
+                }
+                catch (Exception)
+                {
+                    multiLaser.illuminationOFF();
+                    Console.WriteLine("Wavelengths - wrong syntaxis");
+                    //cancelAcq_Button.Click -= multiLaser.laserHandle;
+                    Environment.Exit(1);
+                }
             }
 
             // copy file parameters to structure
@@ -453,14 +459,11 @@ namespace ViewRSOM.Acquisition
                             break;
                     }
 
-                    // switch off laser and close connection
-                    //if (systemState.LASERconnected == 1 || systemState.LASERconnected == 2)
+                    // switch off laser and close connection                    
                     {
-                        // switch laser off and close connection
-                        multiLaser.q_switch(false);
-
-                        multiLaser.lamp(false);
-                        //cancelAcq_Button.Click -= multiLaser.laserHandle;
+                        multiLaser.illuminationOFF();
+                        cancelAcq_Button.Click -= multiLaser.laserHandle;
+                        
                     }
 
                 }
@@ -473,9 +476,14 @@ namespace ViewRSOM.Acquisition
                     try
                     {
 
-                        multiLaser.q_switch(false);
-                        multiLaser.lamp(false);
-                        //cancelAcq_Button.Click -= multiLaser.laserHandle;
+                        multiLaser.illuminationOFF();
+                        string StatusMessage;
+                        StatusMessage = multiLaser.CheckShutterState();
+                        if (StatusMessage == "OPEN")
+                        {
+                            Console.WriteLine("WARNING: switch off OPO EMISSION if necessary.");
+                        }
+                        cancelAcq_Button.Click -= multiLaser.laserHandle;
                     }
                     catch
                     {
