@@ -11,6 +11,9 @@ using System.IO;
 using System.Globalization;
 using System.Threading;
 using System.Xml;
+using ViewRSOM.MSOT.Hardware.ViewModels.Laser;
+using Laser.OpoData;
+
 
 namespace ViewRSOM
 {
@@ -25,13 +28,16 @@ namespace ViewRSOM
 
         // camera object
         Hardware.BaslerCamera.BaslerCamera myUSBcamera;
-
+        // OPO object
+        HandleOpoData myOpoDataHandler = new HandleOpoData();
+        public ViewModelLaserInnolas my_laser = null; 
         // define culture 
         CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
         NumberStyles styles = NumberStyles.AllowExponent | NumberStyles.Number;
         
         public ViewRSOM_Main()
         {
+            my_laser = new ViewModelLaserInnolas();
             InitializeComponent();
             patientPopup.CancelPopupEvent += new EventHandler(MyEventHandlerFunction_CancelPopupEvent);
             patientPopup.SelectPopupEvent += new EventHandler(MyEventHandlerFunction_SelectPopupEvent);
@@ -1456,6 +1462,15 @@ namespace ViewRSOM
                     myUSBcamera.cameraRecord = false;
                     Thread.Sleep(100);
                     myUSBcamera.StopCamera();
+                    try
+                    {
+                        my_laser = new ViewModelLaserInnolas();
+                        //my_laser.initTask();
+                        my_laser.AfterInitialize();
+                        my_laser.compositeInit();
+                        my_laser.compositeClose();                        
+                    }
+                    catch { System.Windows.MessageBox.Show("Not possible"); }
 
                     this.Close();
                     break;

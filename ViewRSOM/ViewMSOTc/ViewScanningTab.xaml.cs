@@ -894,7 +894,7 @@ namespace ViewRSOM
                     my_laser.GetLaserState();
 
                 Thread.Sleep(1000);
-                StartOPO.Content = "OPO ON";
+                StartOPO.Content = "ON";
             }        
             
 
@@ -903,7 +903,7 @@ namespace ViewRSOM
                         try
                         {
                             my_laser.compositeClose();
-                            StartOPO.Content = "OPO OFF";
+                            StartOPO.Content = "OFF";
                         }
                         catch { System.Windows.MessageBox.Show("Not possible"); }
             }
