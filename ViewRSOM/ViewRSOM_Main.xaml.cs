@@ -34,7 +34,7 @@ namespace ViewRSOM
         // define culture 
         CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
         NumberStyles styles = NumberStyles.AllowExponent | NumberStyles.Number;
-        
+
         public ViewRSOM_Main()
         {
             my_laser = new ViewModelLaserInnolas();
@@ -1466,8 +1466,8 @@ namespace ViewRSOM
                     {
                         my_laser = new ViewModelLaserInnolas();
                         //my_laser.initTask();
-                        my_laser.AfterInitialize();
-                        my_laser.compositeInit();
+                        //my_laser.AfterInitialize();
+                        //my_laser.compositeInit();
                         my_laser.compositeClose();                        
                     }
                     catch { System.Windows.MessageBox.Show("Not possible"); }

@@ -38,21 +38,7 @@ namespace ViewRSOM
         bool GoOn;
         bool OpoStatus = false;
         string commentWL;
-
-        //define camera event handler
-        //private void Notify(string argument)
-        //{
-        //    if (this.PropertyChanged != null)
-        //    {
-        //        this.PropertyChanged(this, new PropertyChangedEventArgs(argument));
-        //    }
-        //}
-
-        //private BitmapSource camerabmp;
-        //public BitmapSource CameraImage { get { return camerabmp; } set { camerabmp = value; Notify("CameraImage"); } }
-
-        // define laser EventHandler
-        // RoutedEventHandler laserHandle;
+        
 
         // define culture 
         CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
@@ -186,7 +172,6 @@ namespace ViewRSOM
             
             //get number of wavelength from comment box
             int[] convertedItems = { Convert.ToInt32(LaserParameter.LaserDefaultWavelength) };
-            //string comment = comment_TextBox.Text;
             if (!string.IsNullOrEmpty(commentWL))
             {
                 char[] delimiterChars = { ' ', ',', '.', ':', ';', '\t' };
@@ -831,27 +816,15 @@ namespace ViewRSOM
             // choose a laser
             acquisitionParameters.laserSourceIndex = laserSource_ComboBox.SelectedIndex;
             acquisitionParameters.laserSource = acquisitionParameters.laserSource_list[acquisitionParameters.laserSourceIndex];
-            //if (reconFolderWithoutPath.Length > 7 && dataNames[i].Length > 5)
-                if (acquisitionParameters.laserSourceIndex == 1)
+              if (acquisitionParameters.laserSourceIndex == 1)
                 {
                     // Start OPO laser
                     if (OpoStatus == false)
                     {
                         StartOPOMethod();
                         OpoStatus = true;
-
                     }
-                    //StartOPOMethod();
-                    /*
-                    // Hardware.Laser.ViewModelBrightSolutions ondaLaser = new Hardware.Laser.ViewModelBrightSolutions();
-                    my_laser = new ViewModelLaserInnolas();
-                    my_laser.AfterInitialize();
-                    //GoOn = false;
-                    my_laser.compositeInit();
-                    // errorCode = innolasModule.ExchangeCommand(StandardCommandType.ShutdownLaser, "", out expectedCommands, out message);
-                     * */
                 }
-
         }
 
         private void StartOPO_Click(object sender, RoutedEventArgs e)
@@ -889,10 +862,8 @@ namespace ViewRSOM
                     }
                 }));
 
-                if (myProgrammSettings.LaserError == 7) // if Laser in State CBANK.OFF 
-                    //my_laser.StartChargerChange();
+                if (myProgrammSettings.LaserError == 7) // if Laser in State CBANK.OFF
                     my_laser.GetLaserState();
-
                 Thread.Sleep(1000);
                 StartOPO.Content = "ON";
             }        

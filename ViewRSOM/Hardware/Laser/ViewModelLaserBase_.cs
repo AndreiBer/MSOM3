@@ -154,7 +154,15 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
             initThread.Start();
             return true;
         }
-        
+
+        //public bool turnOffOPO()
+        //{
+        //    initThread = new Thread(new ThreadStart(compositeClose));
+        //    initThread.Name = "Laser Initialization Thread";
+        //    initThread.Start();
+        //    return true;
+        //}
+
         protected bool lampWarmUp(object e)
         {
             warmupThread = new Thread(new ThreadStart(warmUpTask));
@@ -217,7 +225,8 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
         public abstract bool setAttenuationViaAttenuator(double attenuation);
         public abstract void GetVersionInformation();
         public abstract string CheckShutterState();
-        
+        public abstract bool connectOPO();
+
 
         protected void checkWavelengthRange()
         {

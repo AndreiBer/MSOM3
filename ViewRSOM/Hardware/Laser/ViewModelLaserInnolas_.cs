@@ -9,16 +9,18 @@ using System.Threading;
 /**/ //using Xvue.MSOT.Services.HardwareSystem_;
 /**/ //using Xvue.MSOT.DataModels.Plugins.HardwareSystem;
 using ViewRSOM.MSOT.Hardware.ViewModels.Laser.Innolas;
+using ViewRSOM.MSOT.Hardware.ViewModels.Laser;
 using System.Net;
 using General.Tools.Communication;
 using Laser.Parameter;
+using Laser.OpoData;
 
 namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
 {
     public class ViewModelLaserInnolas : ViewModelLaserBase
     {
         #region localvariables
-        ProtocolWrapper<StandardCommandType> innolasModule;
+        //ProtocolWrapper<StandardCommandType> innolasModule;
         new DataModelLaserInnolas DMMS;
         bool _isIinterlockOpen;
         int lastOpo3Counter;        
@@ -29,7 +31,15 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
         DataModelLaserVersionInfo _versionInfo;
         #endregion localvariables
 
-        
+        public ProgrammSettings myProgrammSettings = new ProgrammSettings();
+
+        // Innolas laser object
+        //Hardware.Laser.ViewModelLaer  innolasLaser;
+        HandleOpoData myOpoDataHandler = new HandleOpoData();
+        public ViewModelLaserInnolas my_laser = null;
+        ProtocolWrapper<StandardCommandType> innolasModule = new ProtocolWrapper<StandardCommandType>(StandardCommandsDictionary.StandardCommands, StandardCommandsDictionary.StandardErrors);
+
+
         public ViewModelLaserInnolas()
         {              
 
@@ -117,6 +127,26 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
         #region importantpublicmethods
 
 
+        public override bool connectOPO()
+        {
+            //SHUTDOWN_LASER
+            int errorCode = 0;            
+            IPAddress proxyIP;
+            int proxyPort;
+            proxyIP = IPAddress.Parse(LaserParameter.proxyIP);
+            proxyPort = LaserParameter.proxyPort;
+            GUI_Communicator.sendStatus("Laser", "HardwareMonitor", "Parsing IpAdress: " + proxyIP);
+            GUI_Communicator.sendStatus("Laser", "HardwareMonitor", "Trying to connect to " + proxyIP + " on Port " + proxyPort);
+            errorCode = innolasModule.Connect(proxyIP, proxyPort);
+            if (errorCode != 0)
+            {
+                return false;
+            }
+            else {
+                return true;
+            }
+
+        }
 
         public override void AfterInitialize()
         {
@@ -279,6 +309,15 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
             int errorCode = 0;
             bool error = false;
             string message = "";
+            List<string> receivedCommands;
+            IPAddress proxyIP;
+            int proxyPort;
+            proxyIP = IPAddress.Parse(LaserParameter.proxyIP);
+            proxyPort = LaserParameter.proxyPort;
+            GUI_Communicator.sendStatus("Laser", "HardwareMonitor", "Parsing IpAdress: " + proxyIP);
+            GUI_Communicator.sendStatus("Laser", "HardwareMonitor", "Trying to connect to " + proxyIP + " on Port " + proxyPort);
+            errorCode = innolasModule.Connect(proxyIP, proxyPort);
+
             try
             {
                 //_exitLogging = true;
