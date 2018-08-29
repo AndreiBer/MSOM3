@@ -14,7 +14,7 @@ namespace ViewRSOM.MSOT.DataModels.Plugins.Laser
             LowPower = 50;
             Power = 100;
             Wavelength = 532.0;
-            WarmUpInSecs = 10;
+            WarmUpInSecs = 5;
         }
 
         /// <summary>

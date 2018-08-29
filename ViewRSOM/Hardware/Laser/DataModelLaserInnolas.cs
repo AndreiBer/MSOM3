@@ -36,7 +36,7 @@ namespace ViewRSOM.MSOT.DataModels.Plugins.Laser
             WarmUpInSecs = 2;
             // ProxyIp = 0; leave as 0 so as to gradually remove from settings
             ProxyIpAsString = "127.0.0.1";
-            Port = 8025;
+            Port = 1025;
             PowerControlMethod = InnolasPowerControlMethod.None;
             AmplifierMin = 42;
             AmplifierMax = 300;

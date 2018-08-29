@@ -5,20 +5,11 @@ using System.Text;
 using System.Windows.Input;
 using System.Threading;
 using System.IO;
-
-//using Xvue.Framework.API.Services.MonitorPlugins;
-//using Xvue.MSOT.ViewModels.Base;
-//using Xvue.MSOT.Services.Laser;
 using ViewRSOM.MSOT.DataModels.Plugins.Laser;
 using ViewRSOM.MSOT.Hardware.ViewModels.Laser;
 using Laser.Parameter;
-//using Xvue.Framework.API.Commands;
 using System.Diagnostics;
-//using Xvue.MSOT.Services.HardwareSystem_;
 using System.Collections.ObjectModel;
-//using Xvue.MSOT.DataModels.Plugins.AcousticDataSampling;
-//using Xvue.MSOT.Services.Log;
-
 using General.Tools.Communication;
 
 
@@ -211,6 +202,9 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
         public abstract string getSweepStateAsString();
         public abstract bool lamp(bool state);
         public abstract void setWavelength(int wl);
+        public abstract void illuminationON();
+        public abstract void illuminationOFF();
+        public abstract int[] retrieveWL(string comment);
 
         public bool AcceptTriggerChangeAndAttenuationCommands;
         public double Attenuation;

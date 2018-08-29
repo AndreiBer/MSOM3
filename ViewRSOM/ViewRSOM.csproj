@@ -310,6 +310,8 @@
     <Resource Include="Xceed.Wpf.Toolkit\Themes\Generic\Images\restore_normal.png" />
     <Resource Include="Xceed.Wpf.Toolkit\Themes\Generic\Images\restore_pressed.png" />
     <Resource Include="ViewMSOT.UIControls\GFX\ITH_Splashscreen_Images\ViewRSOM_logo.png" />
+    <Resource Include="Temp\test.txt" />
+    <Resource Include="Temp\test 2.txt" />
     <Content Include="ViewMSOT.UIControls\ViewMSOT.UIControls.csproj">
       <SubType>Designer</SubType>
     </Content>

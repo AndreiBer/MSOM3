@@ -27,13 +27,13 @@ namespace Laser.Parameter
         public static double GlobalAttenuator = 0;
 
 
-        public static double LaserMinAllowedWavelength = 420;
+        public static double LaserMinAllowedWavelength = 415;
         public static double LaserMaxAllowedWavelength = 680;
         public static double LaserDefaultWavelength = 532;
-        public static double SystemMinAllowedWavelength = 420;
-        public static double SystemMaxAllowedWavelength = 680;
+        public static double SystemMinAllowedWavelength = 410;
+        public static double SystemMaxAllowedWavelength = 685;
         public static string CurrentState = "";
-        public static double minWaveLength = 420;
+        public static double minWaveLength = 415;
         public static double maxWaveLength = 680;
         public static double LaserTriggerRate = 0;
         
