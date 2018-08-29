@@ -148,6 +148,7 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
             else {
                 return true;
             }
+            
 
         }
 

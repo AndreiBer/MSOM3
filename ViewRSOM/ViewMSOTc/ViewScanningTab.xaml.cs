@@ -69,6 +69,7 @@ namespace ViewRSOM
 
             //// start camera
             // GrabCameraImages();
+            //StartOPO.Content = "ON";
         }
         
 
