@@ -32,7 +32,7 @@ namespace ViewRSOM
         public int maxAllowedPulseDivider = 10;
         public int minAllowedPulseDivider = 1;
         public double maxAllowedWavelength = 1350;
-        public double minAllowedWavelength = 400;
+        public double minAllowedWavelength = 415;
         public int minAllowedAverages = 30;
         public int laserUndividedTrigger = 50;
         public int defaultOpoScaleMax = 2000;
@@ -53,7 +53,7 @@ namespace ViewRSOM
         private  string _folder = "d://";
         private int _laserPulseDivider = 1;
         private int _shotsPerPoint = 100;
-        private double _wavelength = 575;
+        private double _wavelength = 525;
         private double _aperture = 3;
         private string _triggerSource = "ext";
         private string _laserControl = "automatic"; //"automatic"-> Laser is controlled by programm. "manual"-> Laser has to be controlled manually

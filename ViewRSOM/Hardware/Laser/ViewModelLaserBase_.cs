@@ -212,14 +212,14 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
         public abstract bool sendTriggerChangeCommand(int counter);
         public abstract bool setAttenuationViaPockelScell(int attenuation);
 
-        public abstract void GetLaserState();
+        public abstract void GetLaserState(out List<string> receivedCommands, out string message);
         public abstract bool q_switch(bool state);
         public abstract void AfterInitialize();
         public abstract bool StartChargerChange();
         public abstract bool setAttenuationViaAttenuator(double attenuation);
         public abstract void GetVersionInformation();
         public abstract string CheckShutterState();
-        public abstract bool connectOPO();
+        public abstract void connectOPO(out bool status, out string strStatus);
 
 
         protected void checkWavelengthRange()

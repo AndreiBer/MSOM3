@@ -9,6 +9,7 @@ using iScan_dual;
 using MathWorks.MATLAB.NET.Arrays;
 using System.Windows.Controls;
 using System.Threading;
+using Laser.Parameter;
 
 namespace ViewRSOM.Acquisition
 {
@@ -311,7 +312,8 @@ namespace ViewRSOM.Acquisition
             MWNumericArray numberOfWavelength = acquisitionParameters.numberOfWavelength;
             MWNumericArray BscanUpdate = acquisitionParameters.BscanUpdate;
             MWArray controllerSerialNumber = acquisitionParameters.controllerSerialNumber;
-            MWNumericArray quickScan = 1;
+            MWNumericArray quickScan = 1;            
+            MWArray ArrayOfWavelength = acquisitionParameters.ArrayOfWavelength;
 
             //get number of wavelength from comment box
             if (!string.IsNullOrEmpty(comment))
@@ -319,6 +321,18 @@ namespace ViewRSOM.Acquisition
                 try
                 {
                     numberOfWavelength = multiLaser.retrieveWL(comment).Length;
+                    int[] tempArr = multiLaser.retrieveWL(comment);
+                    string stringArr = "";
+                    for (int i = 0; i < multiLaser.retrieveWL(comment).Length; i++)
+                    {
+                        if (i == 0)
+                        { stringArr = tempArr[i].ToString(); }
+                        else
+                        {
+                            stringArr = stringArr + " " + tempArr[i].ToString();
+                        }
+                    }
+                    ArrayOfWavelength = stringArr;
                 }
                 catch (Exception)
                 {
@@ -327,15 +341,16 @@ namespace ViewRSOM.Acquisition
                     //cancelAcq_Button.Click -= multiLaser.laserHandle;
                     Thread.Sleep(5000);
                     Environment.Exit(1);
-               }
+                }
             }
+            else { ArrayOfWavelength = LaserParameter.LaserDefaultWavelength.ToString(); }
             
 
             // copy file parameters to structure
             string[] fieldNames2 = { "y_0", "x_0", "l_y", "l_x", "ds",
                                     "PRR", "triggerWidth", "f_s", "inputRange", "z_low", "z_target", "z_high",
                                     "v_x", "acc", "acqDelay", "d_acc", "acqRes", "acqMode", "triggerLevel", "numberOfWavelength",
-                                    "BscanUpdate", "controllerSerialNumber", "quickScan" };
+                                    "ArrayOfWavelength","BscanUpdate", "controllerSerialNumber", "quickScan" };
             MWStructArray aP = new MWStructArray(1, 1, fieldNames2);
             aP.SetField("y_0", y_0);
             aP.SetField("x_0", x_0);
@@ -357,6 +372,7 @@ namespace ViewRSOM.Acquisition
             aP.SetField("acqMode", acqMode);
             aP.SetField("triggerLevel", triggerLevel);
             aP.SetField("numberOfWavelength", numberOfWavelength);
+            aP.SetField("ArrayOfWavelength", ArrayOfWavelength);
             aP.SetField("BscanUpdate", BscanUpdate);
             aP.SetField("controllerSerialNumber", controllerSerialNumber);
             aP.SetField("quickScan", quickScan);

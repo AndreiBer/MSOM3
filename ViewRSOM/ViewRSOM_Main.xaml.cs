@@ -25,6 +25,7 @@ namespace ViewRSOM
 
         // define redirected console stream
         public TextWriter _writer = null;
+        //public bool OPO_connected = false;
 
         // camera object
         Hardware.BaslerCamera.BaslerCamera myUSBcamera;
@@ -66,6 +67,7 @@ namespace ViewRSOM
 
             // initialize camera
             myUSBcamera = new Hardware.BaslerCamera.BaslerCamera();
+           // bool OPO_connected = my_laser.connectOPO();
 
         }
 
@@ -1464,10 +1466,7 @@ namespace ViewRSOM
                     myUSBcamera.StopCamera();
                     try
                     {
-                        my_laser = new ViewModelLaserInnolas();
-                        //my_laser.initTask();
-                        //my_laser.AfterInitialize();
-                        //my_laser.compositeInit();
+                        //my_laser = new ViewModelLaserInnolas();                        
                         my_laser.compositeClose();                        
                     }
                     catch { System.Windows.MessageBox.Show("Not possible"); }

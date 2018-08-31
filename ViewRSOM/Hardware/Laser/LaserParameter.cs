@@ -29,7 +29,7 @@ namespace Laser.Parameter
 
         public static double LaserMinAllowedWavelength = 415;
         public static double LaserMaxAllowedWavelength = 680;
-        public static double LaserDefaultWavelength = 532;
+        public static int LaserDefaultWavelength = 532;
         public static double SystemMinAllowedWavelength = 410;
         public static double SystemMaxAllowedWavelength = 685;
         public static string CurrentState = "";

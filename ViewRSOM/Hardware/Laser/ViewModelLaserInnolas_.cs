@@ -130,9 +130,8 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
         #region importantpublicmethods
 
 
-        public override bool connectOPO()
+        public override void connectOPO(out bool status, out string strStatus)
         {
-            //SHUTDOWN_LASER
             int errorCode = 0;            
             IPAddress proxyIP;
             int proxyPort;
@@ -143,10 +142,12 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
             errorCode = innolasModule.Connect(proxyIP, proxyPort);
             if (errorCode != 0)
             {
-                return false;
+                status = false;
+                strStatus = "No Connection to OPO";
             }
             else {
-                return true;
+                status = true;
+                strStatus = "OPO connected";
             }
             
 
@@ -165,10 +166,10 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
             AcceptTriggerChangeAndAttenuationCommands = true;
         }
 
-        public override void GetLaserState()
+        public override void GetLaserState(out List<string> receivedCommands, out string message)
         {
-            List<string> receivedCommands;
-            string message = "";
+            //List<string> receivedCommands;
+            //string message = "";
             innolasModule.ExchangeCommand(StandardCommandType.GetLaserState, "", out receivedCommands, out message);
         }
         public override void initTask()
@@ -565,7 +566,10 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
                     }
                 }
                 int[] numArr = numArrList.ToArray();
+
                 Array.Sort(numArr);
+            //string wlArrStr = numArr.ToString(); 
+                
                 //convertedItems = numArr;            
 
             return numArr;

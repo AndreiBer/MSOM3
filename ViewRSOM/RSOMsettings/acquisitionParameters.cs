@@ -57,6 +57,7 @@ namespace ViewRSOM
         private static int _triggerMode;
         private static int _triggerLevel;
         private static int _numberOfWavelength;
+        private static string _ArrayOfWavelength;
         private static int _BscanUpdate;
         private static string _controllerSerialNumber;
         // List of scan parameters for GUI
@@ -71,9 +72,19 @@ namespace ViewRSOM
 
         // GUI plot QuickScan parameters
         private static int _NQuickScan;
-        
+
 
         // public static versions (for DataBinding) - acquisitionParameters
+
+        public static string ArrayOfWavelength
+        {
+            get { return _ArrayOfWavelength; }
+            set
+            {
+                _ArrayOfWavelength = value;
+                Notify("ArrayOfWavelength");
+            }
+        }
 
         // ROI
         public static double y_0

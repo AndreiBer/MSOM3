@@ -14,6 +14,7 @@ using ViewRSOM.MSOT.Hardware.ViewModels.Laser;
 using ViewRSOM.MSOT.Hardware.ViewModels.Laser.Innolas;
 using Laser.Parameter;
 using Laser.OpoData;
+using System.Net;
 
 namespace ViewRSOM
 {
@@ -24,21 +25,16 @@ namespace ViewRSOM
     {
         // define preview list of quick scan
         public static List<BitmapImage> myQuickScanItems = new List<BitmapImage>();
-        //public event PropertyChangedEventHandler PropertyChanged;
-        //public bool recording = false;
-        //public Camera camera;
-        //private PixelDataConverter converter = new PixelDataConverter();
         public ProgrammSettings myProgrammSettings = new ProgrammSettings();
 
         // Innolas laser object
-        //Hardware.Laser.ViewModelLaer  innolasLaser;
         HandleOpoData myOpoDataHandler = new HandleOpoData();
-        public ViewModelLaserInnolas my_laser = null;
+        public ViewModelLaserInnolas my_laser = new ViewModelLaserInnolas();
         ProtocolWrapper<StandardCommandType> innolasModule = new ProtocolWrapper<StandardCommandType>(StandardCommandsDictionary.StandardCommands, StandardCommandsDictionary.StandardErrors);
         bool GoOn;
         bool OpoStatus = false;
         string commentWL;
-        
+
 
         // define culture 
         CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
@@ -48,7 +44,7 @@ namespace ViewRSOM
         {
             InitializeComponent();
 
-            my_laser = new ViewModelLaserInnolas();
+            //my_laser = new ViewModelLaserInnolas();
             this.DataContext = myProgrammSettings;
             //this.Loaded += new RoutedEventHandler(initialize);
 
@@ -67,11 +63,10 @@ namespace ViewRSOM
             // define IO-stream for wlchange
             ConsoleStream.IOEventHandler.myOPOWl += new ConsoleStream.OPOWlEventHandler(OPOWlChange);
 
-            //// start camera
-            // GrabCameraImages();
-            //StartOPO.Content = "ON";
+            //Connect OPO
+            OPOstatusConnection();
         }
-        
+
 
 
         #region event_handlers
@@ -147,7 +142,7 @@ namespace ViewRSOM
                             quickScanFrameNumber_Label.Visibility = Visibility.Visible;
                             quickScanNextFrame_Button.Visibility = Visibility.Visible;
                         }
-                        
+
                         // remove quick scan file
                         if (QuickScanFile.EndsWith(".png"))
                             File.Delete(QuickScanFile);
@@ -167,20 +162,30 @@ namespace ViewRSOM
                     acq_MessageBox.Text = value;
                 });
         }
-        
-       private void OPOWlChange(string sender, string receiver, string value)
+
+        private void OPOWlChange(string sender, string receiver, string value)
         {
-            
+
             //get number of wavelength from comment box
+
             int[] convertedItems = { Convert.ToInt32(LaserParameter.LaserDefaultWavelength) };
+            //int convertedItemsInt = Convert.ToInt32(convertedItems);
             if (!string.IsNullOrEmpty(commentWL))
+
             {
-                char[] delimiterChars = { ' ', ',', '.', ':', ';', '\t' };
-                string[] tokens = commentWL.Split(delimiterChars);
-                convertedItems = Array.ConvertAll<string, int>(tokens, int.Parse);                
+                try
+                {
+                    convertedItems = my_laser.retrieveWL(commentWL);
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Wavelengths - wrong syntaxis");
+                    my_laser.illuminationOFF();
+                }
+                //convertedItems = Array.ConvertAll<string, int>(tokens, int.Parse);     
             }
             else
-            {                
+            {
                 my_laser.setWavelength(convertedItems[0]);
             }
 
@@ -190,23 +195,23 @@ namespace ViewRSOM
                     acq_MessageBox.Text = value;
                     if (!string.IsNullOrEmpty(commentWL))
                     {
-                        
+
                         bool canParse2;
                         Int16 doubleParse2;
-                        canParse2 = Int16.TryParse(value.Substring(16,1), styles, culture, out doubleParse2);
+                        canParse2 = Int16.TryParse(value.Substring(16, 1), styles, culture, out doubleParse2);
                         if (canParse2)
                         {
                             //doubleParse2 = doubleParse2 * 100;
                             //acq_ProgressBar.Value = doubleParse2;
-                            my_laser.setWavelength(convertedItems[doubleParse2-1]);
+                            my_laser.setWavelength(convertedItems[doubleParse2 - 1]);
                         }
                     }
 
                 });
-               
-    
+
+
         }
-        
+
 
         #endregion
 
@@ -219,7 +224,7 @@ namespace ViewRSOM
 
             // Make the first item selected.
             l_x_ComboBox.SelectedIndex = acquisitionParameters.l_x_listIndex;
-            acquisitionParameters.l_x = acquisitionParameters.x_list[acquisitionParameters.l_x_listIndex];            
+            acquisitionParameters.l_x = acquisitionParameters.x_list[acquisitionParameters.l_x_listIndex];
         }
 
         private void l_x_ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -264,6 +269,35 @@ namespace ViewRSOM
         }
         #endregion
 
+
+
+
+        public bool OPOstatusConnection()
+        {
+
+            bool status;
+            string strStatus = string.Empty;
+            List<string> receivedCommands;
+            string message = "";
+            my_laser.connectOPO(out status, out strStatus);
+            my_laser.GetLaserState(out receivedCommands, out message);
+            if (receivedCommands.Count != 0)
+            {
+                if (receivedCommands.Contains("OFF.FlowOff"))
+                { StartOPO.Content = "OFF"; OpoStatus = false; }
+                else { StartOPO.Content = "ON"; OpoStatus = true; }
+                acq_MessageBox.Text = strStatus;
+                return status;
+            }
+            else
+            {
+                acq_MessageBox.Text = "No connection to OPO";
+                StartOPO.Content = "OFF";
+                return status;
+            }
+
+        }
+
         private void scanName_TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (scanName_TextBox.Text.Length > 0)
@@ -286,7 +320,7 @@ namespace ViewRSOM
             try
             {
                 canParse = Int32.TryParse(pulseEnergy_TextBox.Text, styles, culture, out intParse);
-                if (!canParse || intParse<0 || intParse>100)
+                if (!canParse || intParse < 0 || intParse > 100)
                 {
                     throw new Exception("Input of laser power invalid.");
                 }
@@ -351,7 +385,7 @@ namespace ViewRSOM
         //                // Grab a number of images.
         //                while (recording)
         //                {
-                            
+
         //                    //if (counter % 100 == 0)
         //                    //{
         //                    //    System.GC.Collect();
@@ -384,7 +418,7 @@ namespace ViewRSOM
         //                            bmpSource = BitmapSource.Create(grabResult.Width, grabResult.Height, 0, 0,
         //                            PixelFormats.Rgb24, null, new_buffer, new_stride);
         //                            bmpSource.Freeze();
-                                    
+
         //                            // show
         //                            System.Windows.Application.Current.Dispatcher.Invoke(
         //                             System.Windows.Threading.DispatcherPriority.DataBind, (Action)delegate
@@ -394,7 +428,7 @@ namespace ViewRSOM
 
         //                            // System.GC.Collect();
         //                            // System.GC.WaitForPendingFinalizers();
-                                    
+
         //                        }
         //                        else
         //                        {
@@ -483,18 +517,17 @@ namespace ViewRSOM
                 myQuickScanItems.Clear();
                 quickScanFrameNumber_Label.Visibility = Visibility.Collapsed;
                 quickScanNextFrame_Button.Visibility = Visibility.Collapsed;
-                
+
                 // update GUI buttons
                 systemState.acqThreadFree = false;
                 acq_ProgressBar.Value = 0;
                 acq_ProgressBar.Foreground = Brushes.LimeGreen;
 
                 // Start laser
-
+                Hardware.LaserSW.ViewModelBrightSolutions ondaLaser = new Hardware.LaserSW.ViewModelBrightSolutions();
                 if (acquisitionParameters.laserSourceIndex == 0)
                 {
-                    Hardware.LaserSW.ViewModelBrightSolutions ondaLaser = new Hardware.LaserSW.ViewModelBrightSolutions();
-
+                    //Hardware.LaserSW.ViewModelBrightSolutions ondaLaser = new Hardware.LaserSW.ViewModelBrightSolutions();
                     try
                     {
                         // control laser
@@ -504,12 +537,12 @@ namespace ViewRSOM
                             ondaLaser.setup();
 
                             // allow acq to be cancelled
-                            ondaLaser.laserHandle = (innersender, args) => cancelAcq_Button_Click(innersender, args, ondaLaser);
+                            ondaLaser.laserHandle = (innersender, args) => cancelAcq_Button_Click(innersender, args, ondaLaser, my_laser);
                             cancelAcq_Button.Click += ondaLaser.laserHandle;
 
                             // start acquisition
                             Acquisition.initQuickScan newQuickScan = new Acquisition.initQuickScan();
-                            System.Threading.ThreadPool.QueueUserWorkItem(new WaitCallback(delegate(object o)
+                            System.Threading.ThreadPool.QueueUserWorkItem(new WaitCallback(delegate (object o)
                             {
                                 newQuickScan.start(ondaLaser, cancelAcq_Button);
                             }));
@@ -550,16 +583,9 @@ namespace ViewRSOM
                     else
                     {
 
-                        //ViewRSOM.MSOT.Hardware.ViewModels.Laser.ViewModelLaserInnolas multiLaser = new ViewRSOM.MSOT.Hardware.ViewModels.Laser.ViewModelLaserInnolas();
-                        //my_laser = new ViewModelLaserInnolas();
-                        //my_laser.AfterInitialize();
-                        myOpoDataHandler.ClearData();
-                        //myCoherent.ClearData();
 
+                        myOpoDataHandler.ClearData();
                         myOpoDataHandler.myOpoMapData.Clear();
-                        //myCoherent.myCohMapData.Clear();
-                        //my_wavelengths.Clear();
-                        //wl = Int32.Parse(wlBox.Text);
                         string StatusMessage;
                         StatusMessage = my_laser.CheckShutterState();
                         int wl = 550;
@@ -572,35 +598,26 @@ namespace ViewRSOM
                         my_laser.setAttenuationViaPockelScell(myProgrammSettings.DefaultPockelsCellDelay);
                         my_laser.q_switch(true);
                         Thread.Sleep(3000);
-                        //my_laser.q_switch(false);
-                        // wavingThread.Abort stop
-                        // my_laser.fastScan();
+                        StatusMessage = my_laser.CheckShutterState();
+                        while (StatusMessage == "CLOSE")
+                        {
+                            StatusMessage = my_laser.CheckShutterState(); ;
+                            Thread.Sleep(100);
+                        }
 
-                         
-                       StatusMessage= my_laser.CheckShutterState();
-                       while (StatusMessage == "CLOSE")
-                       {
-                          // errorCode = innolasModule.ExchangeCommand(StandardCommandType.GetShutterState, "", out receivedCommands, out message);
-                           StatusMessage = my_laser.CheckShutterState(); ;
-                           Thread.Sleep(100);
-                       }
-                         
+                        // allow acq to be cancelled
+                        my_laser.laserHandle = (innersender, args) => cancelAcq_Button_Click(innersender, args, ondaLaser, my_laser);
+                        cancelAcq_Button.Click += my_laser.laserHandle;
 
-                        
-                       // allow acq to be cancelled
-                       //myOpoDataHandler = (innersender, args) => cancelAcq_Button_Click(innersender, args, multiLaser);
-                       //cancelAcq_Button.Click += ondaLaser.laserHandle;
-                       
+                        // start acquisition
+                        Acquisition.initQuickScan newQuickScan = new Acquisition.initQuickScan();
+                        if (comment == null)
+                            comment = "no comment";
+                        System.Threading.ThreadPool.QueueUserWorkItem(new WaitCallback(delegate (object o)
+                        {
+                            newQuickScan.startMulti(comment, my_laser, cancelAcq_Button);
+                        }));
 
-                       // start acquisition
-                       Acquisition.initQuickScan newQuickScan = new Acquisition.initQuickScan();
-                       if (comment == null)
-                           comment = "no comment";
-                       System.Threading.ThreadPool.QueueUserWorkItem(new WaitCallback(delegate(object o)
-                       {
-                           newQuickScan.startMulti(comment, my_laser, cancelAcq_Button);
-                       }));
-                         
                     }
                 }
             }
@@ -626,11 +643,9 @@ namespace ViewRSOM
                 commentWL = comment;
 
                 // Start laser
-
+                Hardware.LaserSW.ViewModelBrightSolutions ondaLaser = new Hardware.LaserSW.ViewModelBrightSolutions();
                 if (acquisitionParameters.laserSourceIndex == 0)
                 {
-                    Hardware.LaserSW.ViewModelBrightSolutions ondaLaser = new Hardware.LaserSW.ViewModelBrightSolutions();
-
                     try
                     {
                         // control laser
@@ -640,17 +655,16 @@ namespace ViewRSOM
                             ondaLaser.setup();
 
                             // allow acq to be cancelled
-                            ondaLaser.laserHandle = (innersender, args) => cancelAcq_Button_Click(innersender, args, ondaLaser);
+                            ondaLaser.laserHandle = (innersender, args) => cancelAcq_Button_Click(innersender, args, ondaLaser, my_laser);
                             cancelAcq_Button.Click += ondaLaser.laserHandle;
 
                             // define comment
                             Acquisition.initFullScan newFullScan = new Acquisition.initFullScan();
-                            //string comment = comment_TextBox.Text;
                             if (comment == null)
                                 comment = "no comment";
 
                             // start acquisition
-                            System.Threading.ThreadPool.QueueUserWorkItem(new WaitCallback(delegate(object o)
+                            System.Threading.ThreadPool.QueueUserWorkItem(new WaitCallback(delegate (object o)
                             {
                                 myQuickScanItems.Clear();
                                 newFullScan.start(comment, ondaLaser, cancelAcq_Button);
@@ -684,24 +698,15 @@ namespace ViewRSOM
                     }
                 }
                 else
-                { 
+                {
                     if (OpoStatus == false)
                     {
                         acq_MessageBox.Text = "Turn on OPO! \n";
                     }
                     else
                     {
-
-                        //ViewRSOM.MSOT.Hardware.ViewModels.Laser.ViewModelLaserInnolas multiLaser = new ViewRSOM.MSOT.Hardware.ViewModels.Laser.ViewModelLaserInnolas();
-                        //my_laser = new ViewModelLaserInnolas();
-                        //my_laser.AfterInitialize();
                         myOpoDataHandler.ClearData();
-                        //myCoherent.ClearData();
-
                         myOpoDataHandler.myOpoMapData.Clear();
-                        //myCoherent.myCohMapData.Clear();
-                        //my_wavelengths.Clear();
-                        //wl = Int32.Parse(wlBox.Text);
                         string StatusMessage;
                         StatusMessage = my_laser.CheckShutterState();
                         //int wl = 550;
@@ -715,46 +720,34 @@ namespace ViewRSOM
                         my_laser.setAttenuationViaPockelScell(myProgrammSettings.DefaultPockelsCellDelay);
                         my_laser.q_switch(true);
                         Thread.Sleep(3000);
-                        //my_laser.q_switch(false);
-                        // wavingThread.Abort stop
-                        // my_laser.fastScan();
+                        StatusMessage = my_laser.CheckShutterState();
+                        while (StatusMessage == "CLOSE")
+                        {
+                            StatusMessage = my_laser.CheckShutterState(); ;
+                            Thread.Sleep(100);
+                        }
+                        // allow acq to be cancelled
+                        my_laser.laserHandle = (innersender, args) => cancelAcq_Button_Click(innersender, args, ondaLaser, my_laser);
+                        cancelAcq_Button.Click += my_laser.laserHandle;
 
-                         
-                       StatusMessage= my_laser.CheckShutterState();
-                       while (StatusMessage == "CLOSE")
-                       {
-                          // errorCode = innolasModule.ExchangeCommand(StandardCommandType.GetShutterState, "", out receivedCommands, out message);
-                           StatusMessage = my_laser.CheckShutterState(); ;
-                           Thread.Sleep(100);
-                       }
-                         
+                        // define comment
+                        Acquisition.initFullScan newFullScan = new Acquisition.initFullScan();
+                        if (comment == null)
+                            comment = "no comment";
+                        // start acquisition
+                        System.Threading.ThreadPool.QueueUserWorkItem(new WaitCallback(delegate (object o)
+                        {
+                            myQuickScanItems.Clear();
+                            newFullScan.startMulti(comment, my_laser, cancelAcq_Button);
+                        }));
 
-                        
-                       // allow acq to be cancelled
-                       //myOpoDataHandler = (innersender, args) => cancelAcq_Button_Click(innersender, args, multiLaser);
-                       //cancelAcq_Button.Click += ondaLaser.laserHandle;                      
-
-                       // define comment
-                       Acquisition.initFullScan newFullScan = new Acquisition.initFullScan();
-                       //string comment = comment_TextBox.Text;
-                       if (comment == null)
-                           comment = "no comment";
-
-                       // start acquisition
-                       System.Threading.ThreadPool.QueueUserWorkItem(new WaitCallback(delegate(object o)
-                       {
-                           myQuickScanItems.Clear();
-                           newFullScan.startMulti(comment, my_laser, cancelAcq_Button);
-                       }));
-                         
                     }
-
                 }
-            }            
+            }
         }
 
 
-        private void cancelAcq_Button_Click(object sender, RoutedEventArgs e, Hardware.LaserSW.ViewModelBrightSolutions ondaLaser)
+        private void cancelAcq_Button_Click(object sender, RoutedEventArgs e, Hardware.LaserSW.ViewModelBrightSolutions ondaLaser, ViewModelLaserInnolas my_laser)
         {
             // Configure the message box to be displayed
             // string messageBoxText = "Please press the EMISSION button on the laser control box OR release the foot pedal.";
@@ -771,22 +764,19 @@ namespace ViewRSOM
             switch (result)
             {
                 case MessageBoxResult.Yes:
-                    
+                    // control laser
+                    // switch laser off and close connection
                     try
                     {
-                        // control laser
-                        if (systemState.LASERconnected == 1 || systemState.LASERconnected == 2)
+                        if (acquisitionParameters.laserSourceIndex == 0 && (systemState.LASERconnected == 1 || systemState.LASERconnected == 2))
                         {
-                            // switch laser off and close connection
                             ondaLaser.EmissionOFF();
-                        } 
+                        }
                         // turn off OPO
                         if (OpoStatus != false)
                         {
-                            offOPOMethod();
-                            OpoStatus = false;
+                            my_laser.illuminationOFF();
                         }
-
                     }
                     catch (Exception err)
                     {
@@ -804,12 +794,12 @@ namespace ViewRSOM
         {
             // list of laser sources
             laserSource_ComboBox.ItemsSource = acquisitionParameters.laserSource_list;
-                //= acquisitionParameters.laserSource_list.Add("Single Wavelength");
+            //= acquisitionParameters.laserSource_list.Add("Single Wavelength");
 
             // Make the first item selected
             laserSource_ComboBox.SelectedIndex = acquisitionParameters.laserSourceIndex;
             acquisitionParameters.laserSource = acquisitionParameters.laserSource_list[acquisitionParameters.laserSourceIndex];
-            
+
         }
 
         private void laserSource_ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -817,7 +807,12 @@ namespace ViewRSOM
             // choose a laser
             acquisitionParameters.laserSourceIndex = laserSource_ComboBox.SelectedIndex;
             acquisitionParameters.laserSource = acquisitionParameters.laserSource_list[acquisitionParameters.laserSourceIndex];
-              if (acquisitionParameters.laserSourceIndex == 1)
+            if (acquisitionParameters.laserSourceIndex == 1)
+            {
+                bool status;
+                string strStatus = string.Empty;
+                my_laser.connectOPO(out status, out strStatus);
+                if (status == true)
                 {
                     // Start OPO laser
                     if (OpoStatus == false)
@@ -826,68 +821,87 @@ namespace ViewRSOM
                         OpoStatus = true;
                     }
                 }
+                else { acq_MessageBox.Text = "No connection to OPO"; }
+            }
         }
+
 
         private void StartOPO_Click(object sender, RoutedEventArgs e)
         {
-            if (OpoStatus == false)
-            { 
-                StartOPOMethod();
-                OpoStatus = true;
-                
-            }
-            else
+            //if (myProgrammSettings.LaserError == 0)
             {
-                offOPOMethod();
-                OpoStatus = false;
-            }
-        }
 
+                if (OPOstatusConnection() == true)
+                {
+                    if (OpoStatus == false)
+                    {
+                        StartOPOMethod();
+                        OpoStatus = true;
+
+                    }
+                    else
+                    {
+                        offOPOMethod();
+                        OpoStatus = false;
+                    }
+                }
+
+            }
+            //else { acq_MessageBox.Text = "No connection to OPO"; }
+        }
 
         public void StartOPOMethod()
         {
-            
-                //StartOPO.Text == "00OPO on";
-                
-                my_laser = new ViewModelLaserInnolas();
-                my_laser.AfterInitialize();
-                GoOn = false;
-                my_laser.compositeInit();
+            //StartOPO.Text == "00OPO on";
+            List<string> receivedCommands;
+            string message = "";
+            my_laser = new ViewModelLaserInnolas();
+            my_laser.AfterInitialize();
+            GoOn = false;
+            my_laser.compositeInit();
+            my_laser.GetLaserState(out receivedCommands, out message);
 
-                System.Threading.ThreadPool.QueueUserWorkItem(new WaitCallback(delegate(object o)
+            System.Threading.ThreadPool.QueueUserWorkItem(new WaitCallback(delegate (object o)
                 {
                     while (!GoOn)
                     {
-                        Thread.Sleep(5000);
-                        my_laser.GetLaserState();
+                        Thread.Sleep(1000);
+                        my_laser.GetLaserState(out receivedCommands, out message);
                     }
                 }));
 
-                if (myProgrammSettings.LaserError == 7) // if Laser in State CBANK.OFF
-                    my_laser.GetLaserState();
-                Thread.Sleep(1000);
-                StartOPO.Content = "ON";
-            }        
-            
+            if (myProgrammSettings.LaserError == 7) // if Laser in State CBANK.OFF
+                my_laser.GetLaserState(out receivedCommands, out message);
+            Thread.Sleep(1000);
+            StartOPO.Content = "ON";
+            //"NoIPConnection":
+            //myProgrammSettings.LaserError = 1; // not connected, off
+        }
 
-            public void offOPOMethod()
+
+        public void offOPOMethod()
+        {
+            if (OPOstatusConnection() == true)
             {
-                        try
-                        {
-                            my_laser.compositeClose();
-                            StartOPO.Content = "OFF";
-                        }
-                        catch { System.Windows.MessageBox.Show("Not possible"); }
+                try
+                {
+
+                    my_laser.compositeClose();
+                    StartOPO.Content = "OFF";
+                }
+                catch { System.Windows.MessageBox.Show("Not possible"); }
             }
+            else { acq_MessageBox.Text = "No connection to OPO"; }
+        }
 
 
         #region eventhandler
 
-          
+
 
         private void handleLaserErrorMessage(string sender, string receiver, string message)
         {
-            System.Threading.ThreadPool.QueueUserWorkItem(new WaitCallback(delegate(object o)
+            System.Threading.ThreadPool.QueueUserWorkItem(new WaitCallback(delegate (object o)
             {
                 try
                 {
@@ -900,316 +914,288 @@ namespace ViewRSOM
         }
 
 
-        private void handleLaserStatusMessage(string sender, string receiver, string message)
-        {
-            System.Windows.Application.Current.Dispatcher.Invoke(
-            System.Windows.Threading.DispatcherPriority.Normal, (Action)delegate
-            {
-                if (receiver == "GUI")
-                {
-                    if (sender == "LASER_STATE")
-                    {
-                        switch (message)
-                        {
-                            case "IPConnectionOK":
-                                myProgrammSettings.LaserError = 2; // connected but not initialized
-                                
-
-                                //ConnectLaserButton.IsEnabled = false;
-                                break;
-                            case "NoIPConnection":
-                                myProgrammSettings.LaserError = 1; // not connected, off
-                               
-                                System.Windows.MessageBox.Show("Could not connect to Laser. Check Ip and Port");
-                                
-                                break;
-                            case "InitTaskException":
-                                myProgrammSettings.LaserError = 8; // init Task failed;
-                                
-                                GoOn = true;
-                                break;
-                            case "InitTaskComplete":
-                                myProgrammSettings.LaserError = 3; // initialized but not ready (warm up)                                
-                                GoOn = true;
-                                break;
-                            case "INITDONE":
-                                myProgrammSettings.LaserError = 3; // initialized but not ready (warm up)                               
-                                GoOn = true;
-                                break;
-                            case "LaserWarmingUp":
-                                myProgrammSettings.LaserError = 3; // initialized but not ready (warm up)
-                                
-                                break;
-                            case "InitTaskNotCompleted":
-                                myProgrammSettings.LaserError = 2; // connected but not initialized
-                                
-                                my_laser.GetLaserState();
-                                //System.Windows.MessageBox.Show("Could not complete Laser Initialization.");
-                                break;
-                            case "LaserReady":
-                                myProgrammSettings.LaserError = 0; // Laser Ready
-                                myProgrammSettings.LaserReady = true;
-                                
-                                GoOn = true;
-                                
-                                break;
-                            case "LaserSwitchingOff":
-                                myProgrammSettings.LaserError = 1; // not connected,off
-                                myProgrammSettings.LaserReady = false;
-                                
-                                break;
-                            case "LaserOff":
-                                myProgrammSettings.LaserError = 5; // not connected,off
-                                myProgrammSettings.LaserReady = false;
-                                
-                                break;
-                            case "LaserCharged":
-                                myProgrammSettings.LaserError = 6; // CBANK.Wait
-                                myProgrammSettings.LaserReady = false;
-                                
-                                GoOn = true;
-                                
-                                if (LaserParameter.HW_Version == "not defined")
-                                {
-                                    System.Threading.ThreadPool.QueueUserWorkItem(new WaitCallback(delegate(object o)
-                                    {
-                                        try
-                                        {
-                                            my_laser.GetVersionInformation();
-                                        }
-                                        catch { }
-                                    }));
-                                }
-
-                                break;
-                            case "LaserConnectedNotCharged":
-                                myProgrammSettings.LaserError = 7; // CBANK.Off
-                                myProgrammSettings.LaserReady = false;
-                                
-                                GoOn = true;
-                                
-                                my_laser.StartChargerChange();
-                                break;
+        //private void handleLaserStatusMessage(string sender, string receiver, string message)
+        //{
+        //    System.Windows.Application.Current.Dispatcher.Invoke(
+        //    System.Windows.Threading.DispatcherPriority.Normal, (Action)delegate
+        //    {
+        //        if (receiver == "GUI")
+        //        {
+        //            if (sender == "LASER_STATE")
+        //            {
+        //                switch (message)
+        //                {
+        //                    case "IPConnectionOK":
+        //                        myProgrammSettings.LaserError = 2; // connected but not initialized
 
 
-                            //LaserSatusMessage
-                            //OPO3data
-                            //LaserAbbruch
-                        }
+        //                        //ConnectLaserButton.IsEnabled = false;
+        //                        break;
+        //                    case "NoIPConnection":
+        //                        myProgrammSettings.LaserError = 1; // not connected, off
 
-                    }
-                }
-                if (receiver == "VERSION_NUMBERS")
-                {
-                    switch (sender)
-                    {
-                        case "CONTROLLER_SW_VERSION":
-                            LaserParameter.Controller_SW_Version = message;
-                            break;
-                        case "FPGA SW VERSION":
-                            LaserParameter.FPGA_SW_Version = message;
-                            break;
-                        case "HW VERSION":
-                            LaserParameter.HW_Version = message;
-                            break;
-                        case "GUI VERSION":
-                            LaserParameter.GUI_Version = message;
-                            break;
-                        case "PROXY VERSION":
-                            LaserParameter.Proxy_Version = message;
-                            break;
-                        case "OPO VERSION":
-                            LaserParameter.Opo_Version = message;
-                            break;
-                        case "ENERGY MONITOR VERSION":
-                            LaserParameter.Energy_Monitor_Version = message;
-                            break;
+        //                        System.Windows.MessageBox.Show("Could not connect to Laser. Check Ip and Port");
 
-                    }
-                    
-                }
+        //                        break;
+        //                    case "InitTaskException":
+        //                        myProgrammSettings.LaserError = 8; // init Task failed;
 
+        //                        GoOn = true;
+        //                        break;
+        //                    case "InitTaskComplete":
+        //                        myProgrammSettings.LaserError = 3; // initialized but not ready (warm up)                                
+        //                        GoOn = true;
+        //                        break;
+        //                    case "INITDONE":
+        //                        myProgrammSettings.LaserError = 3; // initialized but not ready (warm up)                               
+        //                        GoOn = true;
+        //                        break;
+        //                    case "LaserWarmingUp":
+        //                        myProgrammSettings.LaserError = 3; // initialized but not ready (warm up)
 
-                if (sender == "SWEEP_STATE")
-                {
-                    switch (message)
-                    {
-                        case "SETUP INCOMPLETE":
+        //                        break;
+        //                    case "InitTaskNotCompleted":
+        //                        myProgrammSettings.LaserError = 2; // connected but not initialized
 
-                            break;
-                        case "CHECKSUM COMPUTING -ONGOING":
-                            GoOn = false;
-                            break;
-                        case "CHECKSUM INVALID":
+        //                        my_laser.GetLaserState();
+        //                        //System.Windows.MessageBox.Show("Could not complete Laser Initialization.");
+        //                        break;
+        //                    case "LaserReady":
+        //                        myProgrammSettings.LaserError = 0; // Laser Ready
+        //                        myProgrammSettings.LaserReady = true;
 
-                            break;
-                        case "SWEEP_POSSIBLE":
-                            GoOn = true;
+        //                        GoOn = true;
 
-                            break;
-                        case "SWEEP PAUSED":
+        //                        break;
+        //                    case "LaserSwitchingOff":
+        //                        myProgrammSettings.LaserError = 1; // not connected,off
+        //                        myProgrammSettings.LaserReady = false;
 
-                            break;
+        //                        break;
+        //                    case "LaserOff":
+        //                        myProgrammSettings.LaserError = 5; // not connected,off
+        //                        myProgrammSettings.LaserReady = false;
 
+        //                        break;
+        //                    case "LaserCharged":
+        //                        myProgrammSettings.LaserError = 6; // CBANK.Wait
+        //                        myProgrammSettings.LaserReady = false;
 
-                    }
-                    
-                }
+        //                        GoOn = true;
 
+        //                        if (LaserParameter.HW_Version == "not defined")
+        //                        {
+        //                            System.Threading.ThreadPool.QueueUserWorkItem(new WaitCallback(delegate (object o)
+        //                            {
+        //                                try
+        //                                {
+        //                                    my_laser.GetVersionInformation();
+        //                                }
+        //                                catch { }
+        //                            }));
+        //                        }
 
-                if (receiver == "COHERENT" && sender == "OPO_DATA_HANDLER")
-                {
-                    string wl_changed = "NEW_WL_INDEX=";
-                    if (message.StartsWith(wl_changed))
-                    {
-                        // Ermittle Wellenlänge
+        //                        break;
+        //                    case "LaserConnectedNotCharged":
+        //                        myProgrammSettings.LaserError = 7; // CBANK.Off
+        //                        myProgrammSettings.LaserReady = false;
 
-                        string[] stringSeparators = new string[] { "," };
-                        string[] values = message.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
-                        string msgBody = values[0].Replace(wl_changed, "");
-                        int real_shotcount = Convert.ToInt32(values[1]);                        
+        //                        GoOn = true;
 
-                        //setzte neue Wellenlänge im energy meter
+        //                        my_laser.StartChargerChange();
+        //                        break;
 
 
-                        string Coh_answer = "";
-                        
-                        DateTime coh_time = DateTime.Now;
+        //                        //LaserSatusMessage
+        //                        //OPO3data
+        //                        //LaserAbbruch
+        //                }
+
+        //            }
+        //        }
+        //        if (receiver == "VERSION_NUMBERS")
+        //        {
+        //            switch (sender)
+        //            {
+        //                case "CONTROLLER_SW_VERSION":
+        //                    LaserParameter.Controller_SW_Version = message;
+        //                    break;
+        //                case "FPGA SW VERSION":
+        //                    LaserParameter.FPGA_SW_Version = message;
+        //                    break;
+        //                case "HW VERSION":
+        //                    LaserParameter.HW_Version = message;
+        //                    break;
+        //                case "GUI VERSION":
+        //                    LaserParameter.GUI_Version = message;
+        //                    break;
+        //                case "PROXY VERSION":
+        //                    LaserParameter.Proxy_Version = message;
+        //                    break;
+        //                case "OPO VERSION":
+        //                    LaserParameter.Opo_Version = message;
+        //                    break;
+        //                case "ENERGY MONITOR VERSION":
+        //                    LaserParameter.Energy_Monitor_Version = message;
+        //                    break;
+
+        //            }
+
+        //        }
 
 
-                        // alles weitere in neuen Thread auslagern
-                        System.Threading.ThreadPool.QueueUserWorkItem(new WaitCallback(delegate(object o)
-                        {
-                            // Initialisiere Variablen                            
-                            double actualAttenuation = 0;
-                            double mean_coh = 0;
-                            double mean_opo = 0;
-                            double opo_stdv = 0;
+        //        if (sender == "SWEEP_STATE")
+        //        {
+        //            switch (message)
+        //            {
+        //                case "SETUP INCOMPLETE":
 
-                            // erzeuge neue OpoMap Daten
-                            List<OPOData> actualOPOData = myOpoDataHandler.showRecordedData(myOpoDataHandler.showRecordedData().Count - myProgrammSettings.ShotsPerPoint - 1, myOpoDataHandler.showRecordedData().Count - 1);
+        //                    break;
+        //                case "CHECKSUM COMPUTING -ONGOING":
+        //                    GoOn = false;
+        //                    break;
+        //                case "CHECKSUM INVALID":
 
-                            
+        //                    break;
+        //                case "SWEEP_POSSIBLE":
+        //                    GoOn = true;
+
+        //                    break;
+        //                case "SWEEP PAUSED":
+
+        //                    break;
+
+
+        //            }
+
+        //        }
+
+
+        //        if (receiver == "COHERENT" && sender == "OPO_DATA_HANDLER")
+        //        {
+        //            string wl_changed = "NEW_WL_INDEX=";
+        //            if (message.StartsWith(wl_changed))
+        //            {
+        //                // Ermittle Wellenlänge
+
+        //                string[] stringSeparators = new string[] { "," };
+        //                string[] values = message.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+        //                string msgBody = values[0].Replace(wl_changed, "");
+        //                int real_shotcount = Convert.ToInt32(values[1]);
+
+        //                //setzte neue Wellenlänge im energy meter
+
+
+        //                string Coh_answer = "";
+
+        //                DateTime coh_time = DateTime.Now;
+
+
+        //                // alles weitere in neuen Thread auslagern
+        //                System.Threading.ThreadPool.QueueUserWorkItem(new WaitCallback(delegate (object o)
+        //                {
+        //                    // Initialisiere Variablen                            
+        //                    double actualAttenuation = 0;
+        //                    double mean_coh = 0;
+        //                    double mean_opo = 0;
+        //                    double opo_stdv = 0;
+
+        //                    // erzeuge neue OpoMap Daten
+        //                    List<OPOData> actualOPOData = myOpoDataHandler.showRecordedData(myOpoDataHandler.showRecordedData().Count - myProgrammSettings.ShotsPerPoint - 1, myOpoDataHandler.showRecordedData().Count - 1);
 
 
 
-                            // erzeuge neue OpoMap Daten
-
-                            //myOpoDataHandler.processOpoData(myOpoDataHandler.showRecordedData(myOpoDataHandler.showRecordedData().Count - myProgrammSettings.ShotsPerPoint - 1, myOpoDataHandler.showRecordedData().Count - 1), my_wavelengths[last_WL_index]);
-                            // erzeuge neue CohMap Daten
-                            // !! DER COUNTER wird von den OPO-DATEn übernommen, da evtl. schon wesentlich mehr Energy-Meter-Daten aufgelaufen sind, und somit die Zuordnung nicht mehr stimmen würde 
-                            // da evtl ein energy meter value weniger aufgenommen wurde (timedelay) wird auch der index hier um eins niedriger angesetzt(-2)
-
-                            //ent.processCohData(actualWlData, my_wavelengths[last_WL_index]);
-
-                            // save mean value and StDv of collected Coherent Data to Coherent Map 
-                            double meanCoh = 0;//ent.myCohMapData[myCoherent.myCohMapData.Count - 1].MeanEnergy;
-                            double stdvCoh = 0;// myCoherent.myCohMapData[myOpoDataHandler.myOpoMapData.Count() - 1].Stdv;
-                           
-
-                            // check max Energy Value                  
-                            double actualMaxEnergy = 0;
-                            double actualMinEnergy = 1000;
-                            try
-                            {
-                                
-                            }
-                            catch
-                            { }
-
-                            
-                            if (myProgrammSettings.UseWithoutEnergyMeter)
-                            {
-                                meanCoh = 0;
-                                stdvCoh = 1;
-                            }
-
-                            System.Windows.Application.Current.Dispatcher.Invoke(
-                            System.Windows.Threading.DispatcherPriority.Normal, (Action)delegate
-                            {
-                                //OutputTextBox.Text += my_wavelengths[last_WL_index] + "nm; " + Math.Round(meanCoh, 2) + "(+/- " + Math.Round(stdvCoh, 2) + ")mJ\n";
-                                //OutputTextBox.ScrollToEnd();
-
-                                
-
-                                //display coh value
-                                //int posX = Convert.ToInt32(((double)(my_wavelengths[last_WL_index] - myProgrammSettings.MinWavelength) / (myProgrammSettings.MaxWavelength - myProgrammSettings.MinWavelength)) * 600);
-                                int posY = 0;
-                                if (!myProgrammSettings.UseWithoutEnergyMeter)
-                                {
-                                    try
-                                    {
-                                        posY = Convert.ToInt32((200 - (meanCoh / myProgrammSettings.EnergyMeterScaleMax) * 200));
-                                        //EnergyCanvas.Children.Add(myShapes.myPhi(Convert.ToInt32(stdvCoh / myProgrammSettings.EnergyMeterScaleMax * 200), posX + 9, posY + 10, "WL: " + my_wavelengths[last_WL_index] + "nm; E:" + Math.Round(meanCoh, 2) + "mJ; Stdv: " + Math.Round(stdvCoh, 2) + "mJ"));
-                                    }
-                                    catch
-                                    {
-                                        posY = Convert.ToInt32((200 - (0 / myProgrammSettings.EnergyMeterScaleMax) * 200));
-                                        //EnergyCanvas.Children.Add(myShapes.myPhi(Convert.ToInt32(1 / myProgrammSettings.EnergyMeterScaleMax * 200), posX + 9, posY + 10, "WL: " + my_wavelengths[last_WL_index] + "nm; E:Measurement Failure"));
-                                    }
-
-                                }
-
-                                else if (myProgrammSettings.UseWithoutEnergyMeter)
-                                {
-                                    posY = 1;
-                                    //EnergyCanvas.Children.Add(myShapes.myPhi(Convert.ToInt32(stdvCoh / myProgrammSettings.EnergyMeterScaleMax * 200), posX + 9, posY, "WL: " + my_wavelengths[last_WL_index] + "nm; (Measurement Mode without Energy Meter)"));
-                                }
-
-                                //display opo value
-                                //int OpoPosX = Convert.ToInt32(((double)(my_wavelengths[last_WL_index] - myProgrammSettings.MinWavelength) / (myProgrammSettings.MaxWavelength - myProgrammSettings.MinWavelength)) * 600);
-                                //int OpoPosY = Convert.ToInt32((200 - (meanOpo / myProgrammSettings.defaultOpoScaleMax) * 200));
-                                //EnergyMonitorCanvas.Children.Add(myShapes.myPhi(Convert.ToInt32(stdvOpo / myProgrammSettings.defaultOpoScaleMax * 200), OpoPosX + 9, OpoPosY + 10, "WL: " + my_wavelengths[last_WL_index] + "nm; Value:" + Math.Round(meanOpo, 2) + "; Stdv: " + Math.Round(stdvOpo, 2) + ""));
-
-                                ////
-
-                                
-                            });
-
-                            // create and fill Data file for actual wavelength
-                            
-
-                            
-                            
-
-                                //myCoherent.stopMeasuring();
-                                try
-                                {
-                                    my_laser.q_switch(false);
-                                    my_laser.lamp(false);
-                                }
-                                catch { }
-                                System.Windows.Application.Current.Dispatcher.Invoke(
-                                System.Windows.Threading.DispatcherPriority.Normal, (Action)delegate
-                                {
-                                    System.Windows.MessageBox.Show("Done!");
-                                    /*
-                                    ProgressLabel.Content = "Measurement Done!";
-                                    LogTextBox.Text += DateTime.Now.ToString("o") + " : SCAN ENDED\n";
-                                    myProgressbar.Value = 100;
-                                    ShowResult();
-                                    enableAllGuiControls();
-                                     */
-                                });
-
-                                
-
-                            
 
 
-                        }));
+        //                    // erzeuge neue OpoMap Daten
+
+        //                    //myOpoDataHandler.processOpoData(myOpoDataHandler.showRecordedData(myOpoDataHandler.showRecordedData().Count - myProgrammSettings.ShotsPerPoint - 1, myOpoDataHandler.showRecordedData().Count - 1), my_wavelengths[last_WL_index]);
+        //                    // erzeuge neue CohMap Daten
+        //                    // !! DER COUNTER wird von den OPO-DATEn übernommen, da evtl. schon wesentlich mehr Energy-Meter-Daten aufgelaufen sind, und somit die Zuordnung nicht mehr stimmen würde 
+        //                    // da evtl ein energy meter value weniger aufgenommen wurde (timedelay) wird auch der index hier um eins niedriger angesetzt(-2)
+
+        //                    //ent.processCohData(actualWlData, my_wavelengths[last_WL_index]);
+
+        //                    // save mean value and StDv of collected Coherent Data to Coherent Map 
+        //                    double meanCoh = 0;//ent.myCohMapData[myCoherent.myCohMapData.Count - 1].MeanEnergy;
+        //                    double stdvCoh = 0;// myCoherent.myCohMapData[myOpoDataHandler.myOpoMapData.Count() - 1].Stdv;
 
 
-                    }
+        //                    // check max Energy Value                  
+        //                    double actualMaxEnergy = 0;
+        //                    double actualMinEnergy = 1000;
+        //                    try
+        //                    {
+
+        //                    }
+        //                    catch
+        //                    { }
+
+
+        //                    if (myProgrammSettings.UseWithoutEnergyMeter)
+        //                    {
+        //                        meanCoh = 0;
+        //                        stdvCoh = 1;
+        //                    }
+
+        //                    System.Windows.Application.Current.Dispatcher.Invoke(
+        //                    System.Windows.Threading.DispatcherPriority.Normal, (Action)delegate
+        //                    {
+        //                        //OutputTextBox.Text += my_wavelengths[last_WL_index] + "nm; " + Math.Round(meanCoh, 2) + "(+/- " + Math.Round(stdvCoh, 2) + ")mJ\n";
+        //                        //OutputTextBox.ScrollToEnd();
 
 
 
-                }
-                //LogTextBox.Text += data.Timestamp + ": " + data.Energy + "\n";
+        //                        //display coh value
+        //                        //int posX = Convert.ToInt32(((double)(my_wavelengths[last_WL_index] - myProgrammSettings.MinWavelength) / (myProgrammSettings.MaxWavelength - myProgrammSettings.MinWavelength)) * 600);
+        //                        int posY = 0;
+        //                        if (!myProgrammSettings.UseWithoutEnergyMeter)
+        //                        {
+        //                            try
+        //                            {
+        //                                posY = Convert.ToInt32((200 - (meanCoh / myProgrammSettings.EnergyMeterScaleMax) * 200));
+        //                                //EnergyCanvas.Children.Add(myShapes.myPhi(Convert.ToInt32(stdvCoh / myProgrammSettings.EnergyMeterScaleMax * 200), posX + 9, posY + 10, "WL: " + my_wavelengths[last_WL_index] + "nm; E:" + Math.Round(meanCoh, 2) + "mJ; Stdv: " + Math.Round(stdvCoh, 2) + "mJ"));
+        //                            }
+        //                            catch
+        //                            {
+        //                                posY = Convert.ToInt32((200 - (0 / myProgrammSettings.EnergyMeterScaleMax) * 200));
+        //                                //EnergyCanvas.Children.Add(myShapes.myPhi(Convert.ToInt32(1 / myProgrammSettings.EnergyMeterScaleMax * 200), posX + 9, posY + 10, "WL: " + my_wavelengths[last_WL_index] + "nm; E:Measurement Failure"));
+        //                            }
 
-            });
+        //                        }
 
-        }
+        //                        else if (myProgrammSettings.UseWithoutEnergyMeter)
+        //                        {
+        //                            posY = 1;
+        //                            //EnergyCanvas.Children.Add(myShapes.myPhi(Convert.ToInt32(stdvCoh / myProgrammSettings.EnergyMeterScaleMax * 200), posX + 9, posY, "WL: " + my_wavelengths[last_WL_index] + "nm; (Measurement Mode without Energy Meter)"));
+        //                        }
+        //                    });
+
+        //                    try
+        //                    {
+        //                        my_laser.q_switch(false);
+        //                        my_laser.lamp(false);
+        //                    }
+        //                    catch { }
+        //                    System.Windows.Application.Current.Dispatcher.Invoke(
+        //                    System.Windows.Threading.DispatcherPriority.Normal, (Action)delegate
+        //                    {
+        //                        System.Windows.MessageBox.Show("Done!");
+        //                    });
+
+
+
+
+
+
+        //                }));
+
+
+        //            }
+        //        }
+        //    });
+
+        //}
 
         #endregion eventhandler
 
@@ -1222,24 +1208,17 @@ namespace ViewRSOM
 
             //XmlDocument xml = new XmlDocument();
             // Read settings File(xml)
-            
             try
-            {                
-
+            {
                 my_laser = new ViewModelLaserInnolas();
             }
             catch (Exception ex)
             {
                 System.Windows.MessageBox.Show("Not able to read data from Settings file:" + ex);
             }
-
-          
-
-
-
         }
 
-        
+
 
         #endregion initialise and close
 
@@ -1248,7 +1227,6 @@ namespace ViewRSOM
 
         }
 
-        
 
     }
 }
