@@ -302,9 +302,9 @@ namespace ViewRSOM.Acquisition
             MWNumericArray z_low = acquisitionParameters.z_low;
             MWNumericArray z_target = acquisitionParameters.z_target;
             MWNumericArray z_high = acquisitionParameters.z_high;
-            MWNumericArray v_x = 10; // dx/PRR
-            MWNumericArray acc = 300;
-            MWNumericArray acqDelay = 3;
+            MWNumericArray v_x = 10; // 10; // dx/PRR
+            MWNumericArray acc = 2000; // 300;
+            MWNumericArray acqDelay = 0; // 3;
             MWNumericArray d_acc = 0.17;
             MWNumericArray acqRes = acquisitionParameters.acqRes;
             MWArray acqMode = acquisitionParameters.acqMode;

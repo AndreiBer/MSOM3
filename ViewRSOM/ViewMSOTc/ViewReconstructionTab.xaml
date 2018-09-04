@@ -241,7 +241,7 @@
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="15,0,5,2">
                     <Label Content="motion correction:" Width="215" Background="Black" Foreground="White"/>
-                    <ComboBox x:Name="motionCorrection_ComboBox" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0,0,0,0"  Width="90" Loaded="motionCorrection_ComboBox_Loaded" SelectionChanged="motionCorrection_ComboBox_SelectionChanged" Grid.Column="1"/>
+                    <ComboBox x:Name="motionCorrection_ComboBox" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0,0,0,0"  Width="90" Loaded="motionCorrection_ComboBox_Loaded" SelectionChanged="motionCorrection_ComboBox_SelectionChanged"/>
                 </StackPanel>
                 <Label Content="Export" Foreground="White"  Margin="0,15,0,0" />
                 <StackPanel Orientation="Horizontal" Margin="15,0,5,2">

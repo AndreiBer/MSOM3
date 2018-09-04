@@ -339,8 +339,8 @@ namespace ViewRSOM.Acquisition
             MWNumericArray z_high = acquisitionParameters.z_high;
             MWNumericArray v_x = 10; // dx/PRR
             MWNumericArray acc = 300;
-            MWNumericArray acqDelay = 3; 
-            MWNumericArray d_acc = 0.17;
+            MWNumericArray acqDelay = 0; 
+            MWNumericArray d_acc = 0;
             MWNumericArray acqRes = acquisitionParameters.acqRes;
             MWArray acqMode = acquisitionParameters.acqMode;
             MWNumericArray triggerLevel = acquisitionParameters.triggerLevel;
