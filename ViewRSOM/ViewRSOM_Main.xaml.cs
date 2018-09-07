@@ -104,11 +104,13 @@ namespace ViewRSOM
         {
             analysisToggleButton.IsChecked = false;
             acquisitionToggleButton.IsChecked = false;
+            UnmixingToggleButton.IsChecked = false;
 
             // update tab visibilities
             patientOverviewControl.Visibility = Visibility.Visible;
             ScanningControl.Visibility = Visibility.Collapsed;
             ReconstructionControl.Visibility = Visibility.Collapsed;
+            UnmixingControl.Visibility = Visibility.Collapsed;
 
             // update camera
             myUSBcamera.cameraRecord = false;
@@ -142,6 +144,23 @@ namespace ViewRSOM
             patientOverviewControl.Visibility = Visibility.Collapsed;
             ScanningControl.Visibility = Visibility.Collapsed;
             ReconstructionControl.Visibility = Visibility.Visible;
+
+            // update camera
+            myUSBcamera.cameraRecord = false;
+        }
+
+        private void UnmixingToggleButton_Checked(object sender, RoutedEventArgs e)
+        {
+            overviewToggleButton.IsChecked = false;
+            acquisitionToggleButton.IsChecked = false;
+
+            // ReconstructionControl.recon_MessageBox.Text = "";
+
+            // update tab visibilities
+            patientOverviewControl.Visibility = Visibility.Collapsed;
+            ScanningControl.Visibility = Visibility.Collapsed;
+            ReconstructionControl.Visibility = Visibility.Collapsed;
+            UnmixingControl.Visibility = Visibility.Visible;
 
             // update camera
             myUSBcamera.cameraRecord = false;
@@ -403,6 +422,8 @@ namespace ViewRSOM
 
                 // initialize acq file list
                 List<acqFileItem> myAcqFiles_list = new List<acqFileItem>();
+                // initialize recon file list
+                List<reconFileItem> myReconFiles_list = new List<reconFileItem>();
 
                 // run through all acquisition files found
                 for (int i_acq = 0; i_acq < acqFileEntries.Length; i_acq++)
@@ -424,6 +445,7 @@ namespace ViewRSOM
                                 // add recon folder to list
                                 reconFileItem newReconItem = new reconFileItem(i_recon, acqFileEntries[i_acq], reconFolderEntries[i_recon], true);
                                 myReconFolders_list.Add(newReconItem);
+                                
                             }
                         }
 
@@ -445,6 +467,7 @@ namespace ViewRSOM
             studyParameters.myStudyDates_listIndex = studyParameters.myStudyDates_list.Count - 1;
 
             ReconstructionControl.studyList_Updated();
+            UnmixingControl.studyList_Updated();
             ReconstructionControl.xy_reconImage.Source = null;
             ReconstructionControl.yz_reconImage.Source = null;
             ReconstructionControl.xz_reconImage.Source = null;
@@ -958,6 +981,7 @@ namespace ViewRSOM
                         // update the list of acq files to reconstruct in recon tab - Show no recon image
                         update_scanList();
                         ReconstructionControl.studyList_Updated();
+                        UnmixingControl.studyList_Updated();
 
                         break;
 
@@ -1002,6 +1026,7 @@ namespace ViewRSOM
 
             // update the list of acq files to reconstruct in recon tab - Show no recon image
             ReconstructionControl.studyList_Updated();
+            UnmixingControl.studyList_Updated();
             ReconstructionControl.xy_reconImage.Source = null;
             ReconstructionControl.yz_reconImage.Source = null;
             ReconstructionControl.xz_reconImage.Source = null;
@@ -1010,9 +1035,11 @@ namespace ViewRSOM
             overviewToggleButton.IsChecked = false;
             acquisitionToggleButton.IsChecked = false;
             analysisToggleButton.IsChecked = true;
+            UnmixingToggleButton.IsChecked = false;
             patientOverviewControl.Visibility = Visibility.Collapsed;
             ScanningControl.Visibility = Visibility.Collapsed;
             ReconstructionControl.Visibility = Visibility.Visible;
+            UnmixingControl.Visibility = Visibility.Collapsed;
         }
 
         private void renameScan(object sender, RoutedEventArgs e, int date, int acq, Button renameButton_acq, Button deleteButton_acq, TextBox renameText_acq, Button rename_acq_yes, Button rename_acq_no)
@@ -1240,6 +1267,7 @@ namespace ViewRSOM
                     // update the list of acq files to reconstruct in recon tab - Show no recon image
                     update_scanList();
                     ReconstructionControl.studyList_Updated();
+                    UnmixingControl.studyList_Updated();
                     ReconstructionControl.xy_reconImage.Source = null;
                     ReconstructionControl.yz_reconImage.Source = null;
                     ReconstructionControl.xz_reconImage.Source = null;
@@ -1297,6 +1325,7 @@ namespace ViewRSOM
                     // update the list of acq files to reconstruct in recon tab - Show no recon image
                     update_scanList();
                     ReconstructionControl.studyList_Updated();
+                    UnmixingControl.studyList_Updated();
 
                     break;
 
@@ -1328,6 +1357,7 @@ namespace ViewRSOM
                     // update the list of acq files to reconstruct in recon tab - Show no recon image
                     update_scanList();
                     ReconstructionControl.studyList_Updated();
+                    UnmixingControl.studyList_Updated();
 
                     break;
 
@@ -1363,15 +1393,19 @@ namespace ViewRSOM
 
             // update the list of acq files to reconstruct in recon tab - Show recon image
             ReconstructionControl.studyList_Updated();
+            UnmixingControl.studyList_Updated();
             ReconstructionControl.showRecon(iHelp_date, iHelp_acq, iHelp_recon, iHelp_freq);
 
             // make recon tab visible
             overviewToggleButton.IsChecked = false;
             acquisitionToggleButton.IsChecked = false;
             analysisToggleButton.IsChecked = true;
+            UnmixingToggleButton.IsChecked = false;
             patientOverviewControl.Visibility = Visibility.Collapsed;
             ScanningControl.Visibility = Visibility.Collapsed;
             ReconstructionControl.Visibility = Visibility.Visible;
+            UnmixingControl.Visibility = Visibility.Collapsed;
+            
         }
 
         private void unregisterRegisteredNames()

@@ -153,9 +153,11 @@
     <Compile Include="RSOMsettings\fileParameters.cs" />
     <Compile Include="RSOMsettings\reconstructionParameters.cs" />
     <Compile Include="RSOMsettings\systemState.cs" />
+    <Compile Include="RSOMsettings\unmixFileItem.cs" />
     <Compile Include="SplashStartup.xaml.cs">
       <DependentUpon>SplashStartup.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Unmixing\UnmixItem.cs" />
     <Compile Include="ViewMSOTc\ViewAboutRSOM.xaml.cs">
       <DependentUpon>ViewAboutRSOM.xaml</DependentUpon>
     </Compile>
@@ -180,6 +182,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ViewMSOTc\ViewUnmixingTab.xaml.cs">
+      <DependentUpon>ViewUnmixingTab.xaml</DependentUpon>
     </Compile>
     <Compile Include="Xvue.Framework\Xvue.Framework.Views.WPF\Converters\BackgroundConverter.cs" />
     <Compile Include="Xvue.Framework\Xvue.Framework.Views.WPF\Converters\BooleanAndConverter.cs" />
@@ -245,6 +250,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="ViewRSOM_Main.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewMSOTc\ViewUnmixingTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

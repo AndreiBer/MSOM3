@@ -18,6 +18,7 @@ namespace ViewRSOM
             isChecked = _isChecked;
             myAcqFiles_list = _myAcqFiles_list;
             myAcqFiles_listIndex = _myAcqFiles_listIndex;
+
         }
     }
 }

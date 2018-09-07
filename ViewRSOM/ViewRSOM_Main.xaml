@@ -489,6 +489,8 @@
                                 ClickMode="Press" Checked="acquisitionToggleButton_Checked"/>
                 <ToggleButton x:Name="analysisToggleButton" Content="Reconstruction" Width="253" Style="{DynamicResource ToggleButtonNeonStyle}" IsHitTestVisible="true" 
                                 ClickMode="Press" Checked="analysisToggleButton_Checked" Command="{Binding ProjectManager.ActiveStudy.CommandLoadSuperSession, Mode=OneWay}" IsEnabled="true"/>
+                <ToggleButton x:Name="UnmixingToggleButton" Content="Unmixing" Width="253" Style="{DynamicResource ToggleButtonNeonStyle}" IsHitTestVisible="true" 
+                                ClickMode="Press" Checked="UnmixingToggleButton_Checked" />
             </StackPanel>
         </Grid>
 
@@ -500,6 +502,7 @@
             <local:ViewPatientOverview x:Name="patientOverviewControl" Margin="10,10,-10,-10" Grid.RowSpan="2" />
             <local:ViewScanningTab x:Name="ScanningControl" Visibility="Collapsed" Grid.RowSpan="2"/>
             <local:ViewReconstructionTab x:Name="ReconstructionControl" Visibility="Collapsed" Grid.RowSpan="2"/>
+            <local:ViewUnmixingTab x:Name="UnmixingControl" Visibility="Collapsed" Grid.RowSpan="2"/>
         </Grid>
 
         <exceedToolkit:WindowContainer x:Name="childWindowContainer" Grid.RowSpan="3" Panel.ZIndex="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ModalBackgroundBrush="#80ffffff">
