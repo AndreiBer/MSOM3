@@ -4,6 +4,7 @@ using System.Threading;
 using System.Xml;
 using System.Globalization;
 using System.IO;
+using System.Collections.Generic;
 
 namespace ViewRSOM
 {
@@ -533,6 +534,42 @@ namespace ViewRSOM
                 else { throw new Exception("Cannot parse detector parameter dataSign."); }
                 #endregion
 
+                #region unmixing
+                try
+                {
+                    string unmixingComponents_string = xml.SelectSingleNode("RSOMsettings/unmixingParameters/Components").InnerText;
+                    values = unmixingComponents_string.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries); // separate string in single values
+                    for (int i = 0; i < values.Length; i++)
+                    {
+                        unmixingParameters.myUnmixComponents.Add(values[i]);                        
+                    }
+                }
+                catch
+                {
+                    throw new Exception("Cannot load unmixing parameter Components.");
+                }
+
+                try
+                {
+                    unmixingParameters.Spectra = xml.SelectSingleNode("RSOMsettings/unmixingParameters/Spectra").InnerText;
+                    
+                }
+                catch { throw new Exception("Cannot load unmixingParameters Spectra."); }
+
+                try
+                {
+                    unmixingParameters.LaserEnergy = xml.SelectSingleNode("RSOMsettings/unmixingParameters/LaserEnergy").InnerText;
+
+                }
+                catch { throw new Exception("Cannot load unmixingParameters LaserEnergy for calibration."); }
+                try { canParse = Double.TryParse(xml.SelectSingleNode("RSOMsettings/unmixingParameters/Unmixing3D").InnerText, styles, culture, out doubleParse); }
+                catch { throw new Exception("Cannot load unmixingParameters Unmixing3D."); }
+
+
+                #endregion
+
+
+
             }
             catch (Exception ex)
             {
@@ -551,7 +588,7 @@ namespace ViewRSOM
             {
                 // load RSOMpreset
                 xml_preset.Load(@presetFilename);
-                
+
                 // define culture and helping varibale to load the config file
                 CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
                 NumberStyles styles = NumberStyles.AllowExponent | NumberStyles.Number;

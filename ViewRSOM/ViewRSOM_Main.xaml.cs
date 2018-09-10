@@ -67,7 +67,7 @@ namespace ViewRSOM
 
             // initialize camera
             myUSBcamera = new Hardware.BaslerCamera.BaslerCamera();
-           // bool OPO_connected = my_laser.connectOPO();
+            // bool OPO_connected = my_laser.connectOPO();
 
         }
 
@@ -120,6 +120,7 @@ namespace ViewRSOM
         {
             overviewToggleButton.IsChecked = false;
             analysisToggleButton.IsChecked = false;
+            UnmixingToggleButton.IsChecked = false;
 
             // ScanningControl.acq_MessageBox.Text = "";
             ScanningControl.pulseEnergy_TextBox.Text = Convert.ToString(acquisitionParameters.laserPower);
@@ -137,6 +138,7 @@ namespace ViewRSOM
         {
             overviewToggleButton.IsChecked = false;
             acquisitionToggleButton.IsChecked = false;
+            UnmixingToggleButton.IsChecked = false;
 
             // ReconstructionControl.recon_MessageBox.Text = "";
 
@@ -144,6 +146,8 @@ namespace ViewRSOM
             patientOverviewControl.Visibility = Visibility.Collapsed;
             ScanningControl.Visibility = Visibility.Collapsed;
             ReconstructionControl.Visibility = Visibility.Visible;
+            UnmixingControl.Visibility = Visibility.Collapsed;
+
 
             // update camera
             myUSBcamera.cameraRecord = false;
@@ -153,7 +157,9 @@ namespace ViewRSOM
         {
             overviewToggleButton.IsChecked = false;
             acquisitionToggleButton.IsChecked = false;
+            analysisToggleButton.IsChecked = false;
 
+            //UnmixingToggleButton.IsChecked = true;
             // ReconstructionControl.recon_MessageBox.Text = "";
 
             // update tab visibilities
@@ -286,11 +292,11 @@ namespace ViewRSOM
 
                             // free cancel button event
                             ReconstructionControl.cancelRecon_Button.Click -= systemState.reconHandle;
-                            
+
                             // update camera
                             if (acquisitionToggleButton.IsChecked == true)
                             {
-                                myUSBcamera.GrabImages();
+                                //myUSBcamera.GrabImages();
                             }
 
                         }

@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 
 
+
 namespace ViewRSOM
 {
     /// <summary>
@@ -23,11 +24,14 @@ namespace ViewRSOM
         NumberStyles styles = NumberStyles.AllowExponent | NumberStyles.Number;
         // define recon list item
         private static List<Unmixing.UnmixItem> myUnmixItems = new List<Unmixing.UnmixItem>();
+        private static List<Unmixing.CompItem> myCompItems = new List<Unmixing.CompItem>();
         private static List<string> unmixFolders_list = new List<string>();
 
         public ViewUnmixingTab()
         {
             InitializeComponent();
+            // define IO-stream for wlchange
+            ConsoleStream.IOEventHandler.myIOEvent  += new ConsoleStream.CharEventHandler(ErrorLog);
         }
 
         // First Panel with files to unmix
@@ -48,8 +52,10 @@ namespace ViewRSOM
             studyDate_ComboBox.SelectedIndex = studyParameters.myStudyDates_listIndex;
             studyDate_ComboBox.Items.Refresh();
 
-            // load recon files combo box
+            // load unmix files combo box
             load_unmixItems();
+            // load unmix components 
+            load_unmixCompItems();
 
         }
 
@@ -69,16 +75,12 @@ namespace ViewRSOM
                 string[] reconFolderEntries = Directory.GetDirectories(dateFolderEntries[i_date]).ToArray();
 
                 // run through all reconstructed files found
-
-                //for (int i_recon = 0; i_recon < reconFolderEntries.Length; i_recon++)
-                //{
-
-                //}
-
+                
                 // initialize acq file list
                 List<acqFileItem> myAcqFiles_list = new List<acqFileItem>();
                 // initialize recon file list
                 List<reconFileItem> myReconFiles_list = new List<reconFileItem>();
+                List<unmixFileItem> myUnmixFiles_list = new List<unmixFileItem>();
 
                 // run through all acquisition files found
                 for (int i_acq = 0; i_acq < acqFileEntries.Length; i_acq++)
@@ -99,71 +101,36 @@ namespace ViewRSOM
                             {
                                 if (reconFolderWithoutPath.Contains("OPO"))
                                 {
-                                    // add recon folder to list
-                                    //unmixFileItem newUnmixItem = new unmixFileItem(i_recon, acqFileEntries[i_acq], reconFolderEntries[i_recon], true);
-                                    //myUnmixFolders_list.Add(newUnmixItem);
-
                                     string[] reconFileEntries = Directory.GetFiles(reconFolderEntries[i_recon], "*.mat").Select(System.IO.Path.GetFileNameWithoutExtension).ToArray();
-                                    // add recon folder to list
-                                    
-                                    
-                                    //myUnmixFolders_list.Add(newUnmixItem);
-
                                     for (int i_recon_files = 0; i_recon_files < reconFileEntries.Length; i_recon_files++)
                                     {
-                                        reconFileItem myReconItem = new reconFileItem(i_recon, reconFileEntries[i_recon_files], reconFolderEntries[i_recon], true);
-                                        myReconFiles_list.Add(myReconItem);
+                                        if (reconFileEntries[i_recon_files].Contains("OPO"))
+                                        {
+                                            //unmixFileItem myUnmixItems = new unmixFileItem(i_recon, reconFileEntries[i_recon_files], reconFolderEntries[i_recon], true);
+                                            // path to reconstructed file
+                                            myUnmixItems.Add(new Unmixing.UnmixItem(i_acq, reconFolderEntries[i_recon], reconFileEntries[i_recon_files], false));
+
+                                            //myUnmixFiles_list.Add(myUnmixItems);
+                                        }
+                                       
                                     }
 
-
-                                    //myReconFiles_list.Add(myReconItem);
-
-
+                                    UnmixFiles_ListBox.ItemsSource = myUnmixItems;
+                                    UnmixFiles_ListBox.Items.Refresh();
+                                    
                                 }
                             }
                         }
 
                     }
-
-                    // add acq file to list
-                    //acqFileItem myAcqItem = new acqFileItem(i_acq, acqFileEntries[i_acq], dateFolderEntries[i_date], true, myReconFolders_list, myReconFolders_list.Count - 1);
-                    //myAcqFiles_list.Add(myAcqItem);
                 }
-
-                // add study date list
-                //studyDateItem myStudyDateItem = new studyDateItem(i_date, dateFolderEntries[i_date], true, myAcqFiles_list, myAcqFiles_list.Count - 1);
-                //studyParameters.myStudyDates_list.Add(myStudyDateItem);
-
-                // add current study dates to overview tab
-                //createOverviewTab(myStudyDateItem);
             }
-
-
-            // Reconstruction.ReconItem myReconItem = new Reconstruction.ReconItem();
-            //myUnmixItems.Clear();
-            if (studyParameters.myStudyDates_listIndex >= 0)
-            {
-                for (int i_acq = 0; i_acq < studyParameters.myStudyDates_list[studyParameters.myStudyDates_listIndex].myAcqFiles_list.Count; i_acq++)
-                {
-
-                    bool isChecked = studyParameters.myStudyDates_list[studyParameters.myStudyDates_listIndex].myAcqFiles_list[i_acq].isChecked;
-                    myUnmixItems.Add(new Unmixing.UnmixItem(i_acq, studyParameters.myStudyDates_list[studyParameters.myStudyDates_listIndex].myAcqFiles_list[i_acq].fileName, isChecked));
-                }
-
-                UnmixFiles_ListBox.ItemsSource = myUnmixItems;
-                UnmixFiles_ListBox.Items.Refresh();
-            }
-
             //if (studyParameters.myStudyDates_listIndex >= 0)
             //    loadReconThumbnails();
 
         }
         #endregion
 
-        private void CheckBox_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
 
         private void studyDate_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -172,17 +139,60 @@ namespace ViewRSOM
 
         private void UnmixFiles_CheckBox_Click(object sender, RoutedEventArgs e)
         {
-           
+            var cb = sender as CheckBox;
+            var item = cb.DataContext;
+            UnmixFiles_ListBox.SelectedItem = item;
+            //if (studyParameters.myStudyDates_listIndex >= 0)
+            //    loadReconThumbnails();
         }
 
         private void export_Button_Click(object sender, RoutedEventArgs e)
-        {
-            
+        {            
         }
 
         private void unmix_Button_Click(object sender, RoutedEventArgs e)
         {
+            // initialize and start recon thread
+            
+                Thread unmixThread = new Thread(new ThreadStart(initUnmixThread));
+                unmixThread.IsBackground = true;
+                unmixThread.Start();
 
+                // allow thread to be cancelled
+                systemState.unmixHandle = (innersender, args) => cancelUnmix_Button_Click(innersender, args, unmixThread);
+                cancelUnmix_Button.Click += systemState.unmixHandle;
+                unmix_MessageBox.Text = "Starting unmixing routine \n";
+                //unmix_ProgressBar.Value = 1;
+                //unmix_ProgressBar.Foreground = Brushes.LimeGreen;
+                //unmix_ProgressBarTot.Value = 1;
+                //unmix_ProgressBarTot.Foreground = Brushes.LimeGreen;
+                systemState.unmixThreadFree = false;
+        }
+
+        private void initUnmixThread()
+        {
+
+            try
+            {
+                Unmixing.initUnmix newUnmix = new Unmixing.initUnmix();
+                newUnmix.start(myUnmixItems, myCompItems); 
+            }
+            catch (ThreadAbortException abortException)
+            {
+                Console.WriteLine((string)abortException.ExceptionState);
+                // show message when finished
+                systemState.unmixThreadFree = true;
+            }
+        }
+
+        private void load_unmixCompItems()
+        {
+            for (int i_comp = 0; i_comp < unmixingParameters.myUnmixComponents.Count; i_comp++)
+            {
+                myCompItems.Add(new Unmixing.CompItem(i_comp, unmixingParameters.myUnmixComponents[i_comp], false));
+            }
+            UnmixComponents_ListBox.ItemsSource = myCompItems;
+            UnmixComponents_ListBox.Items.Refresh();
         }
 
         private void UnmixFiles_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -192,10 +202,52 @@ namespace ViewRSOM
 
         private void UnmixComponents_CheckBox_Click(object sender, RoutedEventArgs e)
         {
-
+            var cb = sender as CheckBox;
+            var item = cb.DataContext;
+            UnmixComponents_ListBox.SelectedItem = item;
         }
 
 
+        private void cancelUnmix_Button_Click(object sender, RoutedEventArgs e, Thread unmixThread)
+        {
+            // Configure the message box to be displayed
+            string messageBoxText = "You are about to cancel the current unmixing! Continue?";
+            string caption = "Cancel unmixing";
+            MessageBoxButton button = MessageBoxButton.YesNo;
+            MessageBoxImage icon = MessageBoxImage.Warning;
+
+            // Display message box
+            MessageBoxResult result = MessageBox.Show(messageBoxText, caption, button, icon);
+
+            // Process message box results
+            switch (result)
+            {
+                case MessageBoxResult.Yes:
+
+                    // Configure the message box to be displayed
+                    messageBoxText = "Unmixing routine will stop after the current unmixing.";
+                    caption = "Cancel reconstruction";
+                    button = MessageBoxButton.OK;
+                    icon = MessageBoxImage.Information;
+                    MessageBox.Show(messageBoxText, caption, button, icon);
+
+                    // Stop thread
+                    unmixThread.Abort();
+                    break;
+
+                case MessageBoxResult.No:
+                    break;
+            }
+        }
+
+        private void ErrorLog(string sender, string receiver, string value)
+        {
+            System.Windows.Application.Current.Dispatcher.Invoke(
+                System.Windows.Threading.DispatcherPriority.Normal, (Action)delegate
+                {
+                    unmix_MessageBox.Text = value; 
+                });
+        }
 
 
 

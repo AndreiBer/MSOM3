@@ -26,9 +26,11 @@ namespace ViewRSOM
         // Active threads
         private static bool _reconThreadFree = true;
         private static bool _acqThreadFree = true;
+        private static bool _unmixThreadFree = true;
 
         // define laser EventHandler
         private static RoutedEventHandler _reconHandle;
+        private static RoutedEventHandler _unmixHandle;
 
         // camera image
         private static ImageSource _currentCameraImage;
@@ -94,7 +96,17 @@ namespace ViewRSOM
                 Notify("acqThreadFree");
             }
         }
-        
+
+        public static bool unmixThreadFree
+        {
+            get { return _unmixThreadFree; }
+            set
+            {
+                _unmixThreadFree = value;
+                Notify("unmixThreadFree");
+            }
+        }
+
         public static RoutedEventHandler reconHandle
         {
             get { return _reconHandle; }
@@ -102,6 +114,16 @@ namespace ViewRSOM
             {
                 _reconHandle = value;
                 Notify("reconHandle");
+            }
+        }
+
+        public static RoutedEventHandler unmixHandle
+        {
+            get { return _unmixHandle; }
+            set
+            {
+                _unmixHandle = value;
+                Notify("unmixHandle");
             }
         }
 

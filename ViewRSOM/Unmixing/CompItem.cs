@@ -6,19 +6,17 @@ using System.Threading.Tasks;
 
 namespace ViewRSOM.Unmixing
 {
-    class UnmixItem
+    class CompItem
     {
         public int id { get; set; }
-        public string fileName { get; set; }
-        public string reconFolder { get; set; }
+        public string compName { get; set; }
         public bool isChecked { get; set; }
 
 
-        public UnmixItem(int _id, string _reconFolder, string _fileName, bool _isChecked)
+        public CompItem(int _id, string _compName, bool _isChecked)
         {
             id = _id;
-            reconFolder = _reconFolder;
-            fileName = _fileName;
+            compName = _compName;
             isChecked = _isChecked;
         }
     }
