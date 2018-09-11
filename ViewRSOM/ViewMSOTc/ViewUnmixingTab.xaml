@@ -247,7 +247,7 @@
                 </Button>
                 <Button DockPanel.Dock="Left"  Height ="90" Width="90" x:Name="cancelUnmix_Button" Visibility="Collapsed" Content="{StaticResource IconDelete}" Margin="10,10,10,10" Style="{DynamicResource UidScanButton}"/>
                 <Button DockPanel.Dock="Right"  Height ="90" Width="90" x:Name="export_Button" Click="export_Button_Click" Content="{StaticResource IconExportAll}" Margin="10,10,10,10" Style="{DynamicResource UidScanButton}"/>
-                <ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto" Margin="5,5,5,5" VerticalAlignment="Stretch">
+                <ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto" Margin="5,5,5,5" >
                     <StackPanel x:Name="UnmixThumbnailPanel" Orientation="Horizontal" Background="Black"  CanHorizontallyScroll="True">
                     </StackPanel>
                 </ScrollViewer>

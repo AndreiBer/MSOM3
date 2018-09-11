@@ -12,8 +12,10 @@ namespace ViewRSOM.ConsoleStream
     public delegate void AcqPreviewEventHandler(string sender, string receiver, string value);
     public delegate void QuickScanEventHandler(string sender, string receiver, string value);
     public delegate void ReconStatusEventHandler(string sender, string receiver, string value);
+    public delegate void UnmixStatusEventHandler(string sender, string receiver, string value);
     public delegate void AcqTimeEstimate(string sender, string receiver, string value);
     public delegate void ReconFinishedEventHandler(string sender, string receiver, string value);
+    public delegate void UnmixFinishedEventHandler(string sender, string receiver, string value);
     public delegate void OPOWlEventHandler(string sender, string receiver, string value);
 
     public static class IOEventHandler
@@ -23,8 +25,10 @@ namespace ViewRSOM.ConsoleStream
         public static event AcqPreviewEventHandler myPreviewAcq;
         public static event QuickScanEventHandler myQuickScan;
         public static event ReconStatusEventHandler myStatusRecon;
+        public static event UnmixStatusEventHandler myStatusUnmix;
         public static event AcqTimeEstimate myTimeEstimate;
         public static event ReconFinishedEventHandler myReconFinished;
+        public static event UnmixFinishedEventHandler myUnmixFinished;
         public static event OPOWlEventHandler myOPOWl;
 
         // this method can fire an event
@@ -219,6 +223,28 @@ namespace ViewRSOM.ConsoleStream
                         if (myReconFinished != null) myReconFinished(sender, receiver, value);
                     }
                 }
+
+
+
+                if (value.Length > 11)
+                {
+                    if (String.Equals(value.Substring(0, 12), "Status-Unmix"))
+                    {
+                        if (myStatusUnmix != null) myStatusUnmix(sender, receiver, value);
+                    }
+                }
+
+                if (value.Length > 13)
+                {
+                    if (String.Equals(value.Substring(0, 14), "Unmix-finished"))
+                    {
+                        if (myUnmixFinished != null) myUnmixFinished(sender, receiver, value);
+                    }
+                }
+
+
+
+
 
                 if (value.Length > 25)
                 {

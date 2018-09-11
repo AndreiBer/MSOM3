@@ -32,6 +32,8 @@ namespace ViewRSOM
             InitializeComponent();
             // define IO-stream for wlchange
             ConsoleStream.IOEventHandler.myIOEvent  += new ConsoleStream.CharEventHandler(ErrorLog);
+            //ConsoleStream.IOEventHandler.myStatusUnmix += new ConsoleStream.UnmixStatusEventHandler(UnmixProgressUpdate);
+
         }
 
         // First Panel with files to unmix

@@ -59,6 +59,9 @@ namespace ViewRSOM
             // recon finished
             ConsoleStream.IOEventHandler.myReconFinished += new ConsoleStream.ReconFinishedEventHandler(reconFinished);
 
+            //unmix finished
+            ConsoleStream.IOEventHandler.myUnmixFinished += new ConsoleStream.UnmixFinishedEventHandler(unmixFinished);
+
             // show patient popup on startup
             patientPopupChildWindow.Visibility = Visibility.Visible;
             
@@ -129,6 +132,7 @@ namespace ViewRSOM
             patientOverviewControl.Visibility = Visibility.Collapsed;
             ScanningControl.Visibility = Visibility.Visible;
             ReconstructionControl.Visibility = Visibility.Collapsed;
+            UnmixingControl.Visibility = Visibility.Collapsed;
 
             // update camera
             myUSBcamera.GrabImages();
@@ -241,6 +245,11 @@ namespace ViewRSOM
                         ReconstructionControl.recon_MessageBox.AppendText(value);
                         ReconstructionControl.recon_MessageBox.ScrollToEnd();
                     }
+                    if (!systemState.unmixThreadFree)
+                    {
+                        UnmixingControl.unmix_MessageBox.AppendText(value);
+                        UnmixingControl.unmix_MessageBox.ScrollToEnd();
+                    }
                 });
         }
 
@@ -262,6 +271,10 @@ namespace ViewRSOM
                             ReconstructionControl.recon_Button.IsEnabled = true;
                             ReconstructionControl.export_Button.IsEnabled = true;
 
+                            // enable unmix buttons
+                            UnmixingControl.unmix_Button.IsEnabled = true;
+                            UnmixingControl.export_Button.IsEnabled = true;
+
                             // notify user by sound
                             System.Media.SystemSounds.Hand.Play();
                         }
@@ -275,6 +288,9 @@ namespace ViewRSOM
                             // disable recon buttons
                             ReconstructionControl.recon_Button.IsEnabled = false;
                             ReconstructionControl.export_Button.IsEnabled = false;
+                            // disable unmix buttons
+                            UnmixingControl.unmix_Button.IsEnabled = false;
+                            UnmixingControl.export_Button.IsEnabled = false;
                         }
                     }
 
@@ -289,9 +305,13 @@ namespace ViewRSOM
                             ReconstructionControl.recon_Button.IsEnabled = true;
                             ReconstructionControl.cancelRecon_Button.Visibility = Visibility.Collapsed;
                             ReconstructionControl.export_Button.IsEnabled = true;
+                            // enable unmix buttons
+                            UnmixingControl.unmix_Button.IsEnabled = true;
+                            UnmixingControl.export_Button.IsEnabled = true;
+                            UnmixingControl.cancelUnmix_Button.Visibility = Visibility.Collapsed;
 
                             // free cancel button event
-                            ReconstructionControl.cancelRecon_Button.Click -= systemState.reconHandle;
+                            //ReconstructionControl.cancelRecon_Button.Click -= systemState.reconHandle;
 
                             // update camera
                             if (acquisitionToggleButton.IsChecked == true)
@@ -309,6 +329,54 @@ namespace ViewRSOM
                             ReconstructionControl.recon_Button.IsEnabled = false;
                             ReconstructionControl.cancelRecon_Button.Visibility = Visibility.Visible;
                             ReconstructionControl.export_Button.IsEnabled = false;
+                            // disable unmix buttons
+                            UnmixingControl.unmix_Button.IsEnabled = false;
+                            UnmixingControl.export_Button.IsEnabled = false;
+                            UnmixingControl.cancelUnmix_Button.Visibility = Visibility.Collapsed;
+                        }
+                    }
+
+                    if (value.Equals("unmixThreadFree"))
+                    {
+                        if (systemState.unmixThreadFree)
+                        {
+                            // enable acquisition buttons
+                            ScanningControl.quickScan_Button.IsEnabled = true;
+                            ScanningControl.fullScan_Button.IsEnabled = true;
+                            ScanningControl.fullScan_Button.Visibility = Visibility.Visible;
+                            ScanningControl.cancelAcq_Button.Visibility = Visibility.Collapsed;
+                            // enable recon buttons
+                            ReconstructionControl.recon_Button.IsEnabled = true;
+                            ReconstructionControl.export_Button.IsEnabled = true;
+                            ReconstructionControl.cancelRecon_Button.Visibility = Visibility.Collapsed;
+
+                            // enable unmix buttons
+                            UnmixingControl.unmix_Button.IsEnabled = true;
+                            UnmixingControl.cancelUnmix_Button.Visibility = Visibility.Collapsed;
+                            UnmixingControl.export_Button.IsEnabled = true;
+
+                            // free cancel button event
+                            UnmixingControl.cancelUnmix_Button.Click -= systemState.unmixHandle;
+
+                            // update camera
+                            if (acquisitionToggleButton.IsChecked == true)
+                            {
+                                //myUSBcamera.GrabImages();
+                            }
+
+                        }
+                        else
+                        {
+                            // disable acquisition buttons
+                            ScanningControl.quickScan_Button.IsEnabled = false;
+                            ScanningControl.fullScan_Button.IsEnabled = false;
+                            // disable recon buttons
+                            ReconstructionControl.recon_Button.IsEnabled = false;
+                            ReconstructionControl.export_Button.IsEnabled = false;
+                            // disable unmix buttons
+                            UnmixingControl.unmix_Button.IsEnabled = false;
+                            UnmixingControl.export_Button.IsEnabled = false;
+                            UnmixingControl.cancelUnmix_Button.Visibility = Visibility.Visible;
                         }
                     }
 
@@ -353,6 +421,10 @@ namespace ViewRSOM
                             ReconstructionControl.recon_Button.IsEnabled = true;
                             ReconstructionControl.export_Button.IsEnabled = true;
 
+                            // re-enable unmix buttons
+                            UnmixingControl.unmix_Button.IsEnabled = true;
+                            UnmixingControl.export_Button.IsEnabled = true;
+
                         }
                     }
                 });
@@ -380,17 +452,7 @@ namespace ViewRSOM
                             ReconstructionControl.recon_ProgressBar.Foreground = Brushes.MediumBlue;
 
                         }
-                        else
-                        {
-                            
-                            // show message when finished
-                            ReconstructionControl.recon_MessageBox.AppendText("Finished reconstructing " + value.Substring(16) + "\n");
-                            ReconstructionControl.recon_MessageBox.AppendText("\nExpected time to finish remaining reconstructions: " + reconstructionParameters.remainingReconTime.ToString() + "\n\n");
-                            ReconstructionControl.recon_MessageBox.ScrollToEnd();
-
-                            // update study list
-                            update_scanList(value.Substring(16));
-                        }
+                        
                     }
 
                 });
@@ -398,11 +460,48 @@ namespace ViewRSOM
 
 
         }
+
+        private void unmixFinished(string sender, string receiver, string value)
+        {
+            System.Windows.Application.Current.Dispatcher.Invoke(
+                System.Windows.Threading.DispatcherPriority.Normal, (Action)delegate
+                {
+                    if (value.Substring(16).Contains("unmixing finished with errors"))
+                    {
+                        // show message when finished
+                        UnmixingControl.unmix_MessageBox.AppendText(value);
+                        UnmixingControl.unmix_MessageBox.ScrollToEnd();
+                    }
+                    else
+                    {
+                        if (value.Substring(16).Contains("All unmixing finished") || value.Substring(16).Contains("Export of image stacks is finished"))
+                        {
+                            // notify user when finished
+                            systemState.reconThreadFree = true;
+                            UnmixingControl.unmix_ProgressBarTot.Foreground = Brushes.MediumBlue;
+                            UnmixingControl.unmix_ProgressBar.Foreground = Brushes.MediumBlue;
+
+                        }
+                        else
+                        {
+
+                            // show message when finished
+                            UnmixingControl.unmix_MessageBox.AppendText("Finished unmixing " + value.Substring(16) + "\n");
+                            //UnmixingControl.unmix_MessageBox.AppendText("\nExpected time to finish remaining reconstructions: " + reconstructionParameters.remainingReconTime.ToString() + "\n\n");
+                            UnmixingControl.unmix_MessageBox.ScrollToEnd();
+
+                            // update study list
+                            //update_scanList(value.Substring(16));
+                        }
+                    }
+
+                });
+        }
         #endregion
 
 
-        // update scan list
-        #region update_scanList
+            // update scan list
+            #region update_scanList
         private void update_scanList()
         {
             // Delete OverviewPanel
