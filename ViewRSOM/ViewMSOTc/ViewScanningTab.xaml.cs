@@ -1227,6 +1227,17 @@ namespace ViewRSOM
 
         }
 
-
+        private void SwitchChannel_Click(object sender, RoutedEventArgs e)
+        {
+        //    if  (myProgrammSettings.Channel.Equals(0) || myProgrammSettings.Channel.Equals(1))
+        //        {
+        //        myProgrammSettings.Channel = 2;
+        //    }
+            
+                
+                
+                
+        //        =  my_laser.switchToChannelTwo();
+        //}
     }
 }

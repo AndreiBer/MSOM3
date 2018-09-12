@@ -25,6 +25,7 @@ namespace Laser.Parameter
         public static int PockelscellDelay = PockelscellDelayMin;
         public static int ActualPulseDivider = 1;
         public static double GlobalAttenuator = 0;
+        public static int Channel = 0;
 
 
         public static double LaserMinAllowedWavelength = 415;

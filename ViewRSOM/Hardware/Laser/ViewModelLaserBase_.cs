@@ -208,7 +208,8 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
 
         public bool AcceptTriggerChangeAndAttenuationCommands;
         public double Attenuation;
-        public abstract bool switchToChannelTwo();       
+        public abstract bool switchToChannelTwo();
+        public abstract bool switchbtwChannels();
         public abstract bool sendTriggerChangeCommand(int counter);
         public abstract bool setAttenuationViaPockelScell(int attenuation);
 
