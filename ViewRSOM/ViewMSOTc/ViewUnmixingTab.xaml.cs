@@ -25,13 +25,14 @@ namespace ViewRSOM
         // define recon list item
         private static List<Unmixing.UnmixItem> myUnmixItems = new List<Unmixing.UnmixItem>();
         private static List<Unmixing.CompItem> myCompItems = new List<Unmixing.CompItem>();
+        private static List<Unmixing.UnmixFolderItem> myUnmixFolderItems = new List<Unmixing.UnmixFolderItem>(); // existing folders with unmixed files  
         private static List<string> unmixFolders_list = new List<string>();
 
         public ViewUnmixingTab()
         {
             InitializeComponent();
             // define IO-stream for wlchange
-            ConsoleStream.IOEventHandler.myIOEvent  += new ConsoleStream.CharEventHandler(ErrorLog);
+            ConsoleStream.IOEventHandler.myIOEvent += new ConsoleStream.CharEventHandler(ErrorLog);
             //ConsoleStream.IOEventHandler.myStatusUnmix += new ConsoleStream.UnmixStatusEventHandler(UnmixProgressUpdate);
 
         }
@@ -58,6 +59,7 @@ namespace ViewRSOM
             load_unmixItems();
             // load unmix components 
             load_unmixCompItems();
+            load_unmixFolderItems();
 
         }
 
@@ -71,24 +73,14 @@ namespace ViewRSOM
             {
                 // list of acquisition files
                 string[] acqFileEntries = Directory.GetFiles(dateFolderEntries[i_date], "*.mat").Select(System.IO.Path.GetFileNameWithoutExtension).ToArray();
-
-
                 // list of reconstruction folders
                 string[] reconFolderEntries = Directory.GetDirectories(dateFolderEntries[i_date]).ToArray();
-
                 // run through all reconstructed files found
-                
-                // initialize acq file list
-                List<acqFileItem> myAcqFiles_list = new List<acqFileItem>();
-                // initialize recon file list
-                List<reconFileItem> myReconFiles_list = new List<reconFileItem>();
-                List<unmixFileItem> myUnmixFiles_list = new List<unmixFileItem>();
-
                 // run through all acquisition files found
                 for (int i_acq = 0; i_acq < acqFileEntries.Length; i_acq++)
                 {
                     // initialize recon list
-                   // List<unmixFileItem> myUnmixFolders_list = new List<unmixFileItem>();
+                    // List<unmixFileItem> myUnmixFolders_list = new List<unmixFileItem>();
 
                     // run through all subfolders within the current study date
                     for (int i_recon = 0; i_recon < reconFolderEntries.Length; i_recon++)
@@ -108,27 +100,50 @@ namespace ViewRSOM
                                     {
                                         if (reconFileEntries[i_recon_files].Contains("OPO"))
                                         {
-                                            //unmixFileItem myUnmixItems = new unmixFileItem(i_recon, reconFileEntries[i_recon_files], reconFolderEntries[i_recon], true);
                                             // path to reconstructed file
                                             myUnmixItems.Add(new Unmixing.UnmixItem(i_acq, reconFolderEntries[i_recon], reconFileEntries[i_recon_files], false));
-
-                                            //myUnmixFiles_list.Add(myUnmixItems);
                                         }
-                                       
-                                    }
 
+                                    }
                                     UnmixFiles_ListBox.ItemsSource = myUnmixItems;
                                     UnmixFiles_ListBox.Items.Refresh();
-                                    
                                 }
                             }
                         }
-
                     }
                 }
             }
-            //if (studyParameters.myStudyDates_listIndex >= 0)
-            //    loadReconThumbnails();
+            if (studyParameters.myStudyDates_listIndex >= 0)
+                loadUnmixThumbnails();
+        }
+
+        private void load_unmixFolderItems()
+        {
+            string[] dateFolderEntries = Directory.GetDirectories(fileParameters.studyFolder).ToArray();
+            //myReconFolders_list
+            for (int i_date = 0; i_date < dateFolderEntries.Length; i_date++)
+            {
+                // list of acquisition files
+                string[] acqFileEntries = Directory.GetFiles(dateFolderEntries[i_date], "*.mat").Select(System.IO.Path.GetFileNameWithoutExtension).ToArray();
+                // list of reconstruction folders
+                string[] unmixFolderEntries = Directory.GetDirectories(dateFolderEntries[i_date]).ToArray();
+
+                // run through all unmixing folders
+                for (int i_unmixFold = 0; i_unmixFold < unmixFolderEntries.Length; i_unmixFold++)
+                {
+                    string unmixFolderWithoutPath = unmixFolderEntries[i_unmixFold].Split('\\')
+                        [unmixFolderEntries[i_unmixFold].Split('\\').Length - 1];
+                    if (unmixFolderWithoutPath.Length > 7 && unmixFolderWithoutPath.StartsWith("U_"))
+                    {
+                        //myUnmixFolderItems.Add();
+                        myUnmixFolderItems.Add(new Unmixing.UnmixFolderItem(i_unmixFold, fileParameters.studyFolder, unmixFolderWithoutPath, false));
+                    }
+                }
+                UnmixedFolders_ListBox.ItemsSource = myUnmixFolderItems;
+                UnmixedFolders_ListBox.Items.Refresh();
+                //if (studyParameters.myStudyDates_listIndex >= 0)
+                loadUnmixThumbnails();
+            }
 
         }
         #endregion
@@ -145,30 +160,30 @@ namespace ViewRSOM
             var item = cb.DataContext;
             UnmixFiles_ListBox.SelectedItem = item;
             //if (studyParameters.myStudyDates_listIndex >= 0)
-            //    loadReconThumbnails();
+            loadUnmixThumbnails();
         }
 
         private void export_Button_Click(object sender, RoutedEventArgs e)
-        {            
+        {
         }
 
         private void unmix_Button_Click(object sender, RoutedEventArgs e)
         {
             // initialize and start recon thread
-            
-                Thread unmixThread = new Thread(new ThreadStart(initUnmixThread));
-                unmixThread.IsBackground = true;
-                unmixThread.Start();
 
-                // allow thread to be cancelled
-                systemState.unmixHandle = (innersender, args) => cancelUnmix_Button_Click(innersender, args, unmixThread);
-                cancelUnmix_Button.Click += systemState.unmixHandle;
-                unmix_MessageBox.Text = "Starting unmixing routine \n";
-                //unmix_ProgressBar.Value = 1;
-                //unmix_ProgressBar.Foreground = Brushes.LimeGreen;
-                //unmix_ProgressBarTot.Value = 1;
-                //unmix_ProgressBarTot.Foreground = Brushes.LimeGreen;
-                systemState.unmixThreadFree = false;
+            Thread unmixThread = new Thread(new ThreadStart(initUnmixThread));
+            unmixThread.IsBackground = true;
+            unmixThread.Start();
+
+            // allow thread to be cancelled
+            systemState.unmixHandle = (innersender, args) => cancelUnmix_Button_Click(innersender, args, unmixThread);
+            cancelUnmix_Button.Click += systemState.unmixHandle;
+            unmix_MessageBox.Text = "Starting unmixing routine \n";
+            //unmix_ProgressBar.Value = 1;
+            //unmix_ProgressBar.Foreground = Brushes.LimeGreen;
+            //unmix_ProgressBarTot.Value = 1;
+            //unmix_ProgressBarTot.Foreground = Brushes.LimeGreen;
+            systemState.unmixThreadFree = false;
         }
 
         private void initUnmixThread()
@@ -177,7 +192,7 @@ namespace ViewRSOM
             try
             {
                 Unmixing.initUnmix newUnmix = new Unmixing.initUnmix();
-                newUnmix.start(myUnmixItems, myCompItems); 
+                newUnmix.start(myUnmixItems, myCompItems);
             }
             catch (ThreadAbortException abortException)
             {
@@ -201,6 +216,15 @@ namespace ViewRSOM
         {
 
         }
+
+        private void UnmixedFolders_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+        }
+        private void UnmixedFolders_CheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            loadUnmixThumbnails();
+        }
+
 
         private void UnmixComponents_CheckBox_Click(object sender, RoutedEventArgs e)
         {
@@ -247,88 +271,80 @@ namespace ViewRSOM
             System.Windows.Application.Current.Dispatcher.Invoke(
                 System.Windows.Threading.DispatcherPriority.Normal, (Action)delegate
                 {
-                    unmix_MessageBox.Text = value; 
+                    unmix_MessageBox.Text = value;
                 });
         }
 
 
 
 
-        private void loadReconThumbnails()
+        private void loadUnmixThumbnails()
         {
             // clear thumbnails
-           // ReconThumbnailPanel.Children.Clear();
+            //studyParameters.myStudyDates_listIndex
+            UnmixThumbnailPanel.Children.Clear();
+            for (int i_unmixFolder = 0; i_unmixFolder < myUnmixFolderItems.Count; i_unmixFolder++)
+            {
+                if (myUnmixFolderItems[i_unmixFolder].isChecked == true)
+                {
+                    string unmixFolders_curr = studyParameters.myStudyDates_list[studyParameters.myStudyDates_listIndex].folderPath
+                        + "\\" + myUnmixFolderItems[i_unmixFolder].folderName + "\\" + "Images" ;
+                    string[] unmixFileImages = Directory.GetFiles(unmixFolders_curr, "*.png").Select(System.IO.Path.GetFileNameWithoutExtension).ToArray();
+                    for (int i_unIm = 0; i_unIm < unmixFileImages.Length; i_unIm++)
+                    {
+                        try
+                        {
+                            // get source image
+                            BitmapImage src = new BitmapImage();
+                            src.BeginInit();
+                            src.CacheOption = BitmapCacheOption.OnLoad;
+                            src.UriSource = new Uri(unmixFolders_curr + "\\"+ unmixFileImages[i_unIm] + ".png", UriKind.Absolute);
+                            src.EndInit();
 
-            //// run through all acquisition files in selected study date list
-            //for (int i_acq = 0; i_acq < studyParameters.myStudyDates_list[studyParameters.myStudyDates_listIndex].myAcqFiles_list.Count; i_acq++)
-            //{
-            //    // check if the acquisition file is checked
-            //    if (studyParameters.myStudyDates_list[studyParameters.myStudyDates_listIndex].myAcqFiles_list[i_acq].isChecked)
-            //    {
-            //        for (int i_recon = 0; i_recon < studyParameters.myStudyDates_list[studyParameters.myStudyDates_listIndex].myAcqFiles_list[i_acq].myReconFolders_list.Count; i_recon++)
-            //        {
-            //            string thumbnailPath = studyParameters.myStudyDates_list[studyParameters.myStudyDates_listIndex].myAcqFiles_list[i_acq].myReconFolders_list[i_recon].folderPath
-            //                    + "\\Thumbnail\\R_thumb_" + studyParameters.myStudyDates_list[studyParameters.myStudyDates_listIndex].myAcqFiles_list[i_acq].fileName;
-            //            for (int i_freq = 0; i_freq < 3; i_freq++)
-            //            {
-            //                string extension = "";
-            //                if (i_freq == 1)
-            //                    extension = "_LF";
-            //                if (i_freq == 2)
-            //                    extension = "_HF";
-            //                try
-            //                {
-            //                    // get source image
-            //                    BitmapImage src = new BitmapImage();
-            //                    src.BeginInit();
-            //                    src.CacheOption = BitmapCacheOption.OnLoad;
-            //                    src.UriSource = new Uri(thumbnailPath + extension + ".png", UriKind.Absolute);
-            //                    src.EndInit();
+                            // create bitmap image
+                            Image myThumb = new Image();
+                            myThumb.Source = src;
+                            //myThumb.Height = 140;
+                            myThumb.Height = 400;
+                            //myThumb.Width = 150;
 
-            //                    // create bitmap image
-            //                    Image myThumb = new Image();
-            //                    myThumb.Source = src;
-            //                    myThumb.Height = 140;
+                            //create border and add image inside
+                            Border myImage = new Border();
+                            myImage.BorderBrush = Brushes.Transparent;
+                            myImage.BorderThickness = new Thickness(1.5);
+                            string nameHelp = unmixFolders_curr + "\\" + unmixFileImages[i_unIm];
+                            nameHelp = nameHelp.Split('\\')[nameHelp.Split('\\').Length - 3] + nameHelp.Split('\\')[nameHelp.Split('\\').Length - 1];
+                            nameHelp = "_" + Regex.Replace(nameHelp, @"[^a-zA-Z0-9]", "_");
+                            myImage.Name = nameHelp;
+                            myImage.Child = myThumb;
+                            Thickness margin = myThumb.Margin;
+                            margin.Left = 0;
+                            margin.Top = 0;
+                            margin.Right = 0;
+                            margin.Bottom = 0;
+                            myImage.Margin = margin;
+                            
 
-            //                    //create border and add image inside
-            //                    Border myImage = new Border();
-            //                    myImage.BorderBrush = Brushes.Transparent;
-            //                    myImage.BorderThickness = new Thickness(1.5);
-            //                    string nameHelp = thumbnailPath + extension;
-            //                    nameHelp = nameHelp.Split('\\')[nameHelp.Split('\\').Length - 3] + nameHelp.Split('\\')[nameHelp.Split('\\').Length - 1];
-            //                    nameHelp = "_" + Regex.Replace(nameHelp, @"[^a-zA-Z0-9]", "_");
-            //                    myImage.Name = nameHelp;
-            //                    myImage.Child = myThumb;
-            //                    Thickness margin = myThumb.Margin;
-            //                    margin.Left = 5;
-            //                    margin.Top = 5;
-            //                    margin.Right = 5;
-            //                    margin.Bottom = 5;
-            //                    myImage.Margin = margin;
+                            // add to Stack panel
+                            UnmixThumbnailPanel.Children.Add(myImage);
 
-            //                    // add to Stack panel
-            //                    ReconThumbnailPanel.Children.Add(myImage);
+                            // setup event handler when thumbnail is clicked
+                            //int iHelp_date = studyParameters.myStudyDates_listIndex;
+                            //int iHelp_acq = i_acq;
+                            //int iHelp_recon = i_recon;
+                            //int iHelp_freq = i_freq;
+                            //myImage.MouseLeftButtonDown += (sender, args) => showRecon(sender, args, iHelp_date, iHelp_acq, iHelp_recon, iHelp_freq);
+                        }
+                        catch
+                        {
+                            //if (i_freq == 0)
+                            //    recon_MessageBox.Text = "ERROR: Thumbnail " + thumbnailPath + " does not exist.";
+                        }
+                    }
+                }
+            }
 
-            //                    // setup event handler when thumbnail is clicked
-            //                    int iHelp_date = studyParameters.myStudyDates_listIndex;
-            //                    int iHelp_acq = i_acq;
-            //                    int iHelp_recon = i_recon;
-            //                    int iHelp_freq = i_freq;
-            //                    myImage.MouseLeftButtonDown += (sender, args) => showRecon(sender, args, iHelp_date, iHelp_acq, iHelp_recon, iHelp_freq);
-            //                }
-            //                catch
-            //                {
-            //                    if (i_freq == 0)
-            //                        recon_MessageBox.Text = "ERROR: Thumbnail " + thumbnailPath + " does not exist.";
-            //                }
-
-            //            }
-
-            //        }
-
-            //    }
-
-            //}
+            
 
         }
     }

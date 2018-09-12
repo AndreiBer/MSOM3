@@ -181,6 +181,7 @@
     </Compile>
     <Compile Include="Unmixing\CompItem.cs" />
     <Compile Include="Unmixing\initUnmix.cs" />
+    <Compile Include="Unmixing\UnmixFolderItem.cs" />
     <Compile Include="Unmixing\UnmixItem.cs" />
     <Compile Include="ViewMSOTc\ViewAboutRSOM.xaml.cs">
       <DependentUpon>ViewAboutRSOM.xaml</DependentUpon>
