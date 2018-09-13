@@ -450,6 +450,7 @@ namespace ViewRSOM
                             systemState.reconThreadFree = true;
                             ReconstructionControl.recon_ProgressBarTot.Foreground = Brushes.MediumBlue;
                             ReconstructionControl.recon_ProgressBar.Foreground = Brushes.MediumBlue;
+                            UnmixingControl.studyList_Updated();
 
                         }
                         
@@ -479,6 +480,7 @@ namespace ViewRSOM
                             // notify user when finished
                             systemState.reconThreadFree = true;
                             UnmixingControl.unmix_ProgressBar.Foreground = Brushes.MediumBlue;
+                            UnmixingControl.studyList_Updated();
 
                         }
                         else
@@ -488,7 +490,7 @@ namespace ViewRSOM
                             UnmixingControl.unmix_MessageBox.AppendText("Finished unmixing " + value.Substring(16) + "\n");
                             //UnmixingControl.unmix_MessageBox.AppendText("\nExpected time to finish remaining reconstructions: " + reconstructionParameters.remainingReconTime.ToString() + "\n\n");
                             UnmixingControl.unmix_MessageBox.ScrollToEnd();
-
+                            UnmixingControl.studyList_Updated();
                             // update study list
                             //update_scanList(value.Substring(16));
                         }

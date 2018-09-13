@@ -1007,7 +1007,7 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
             return result;
         }
 
-        //public override bool switchbtwChannels()
+       // public override bool switchbtwChannels()
         //{
         //    bool result = switchChannel(DataModelLaserInnolas.InnolasChannelSwitch.Channel2);
         //    return result;

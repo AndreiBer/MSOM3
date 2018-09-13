@@ -1238,6 +1238,6 @@ namespace ViewRSOM
                 
                 
         //        =  my_laser.switchToChannelTwo();
-        //}
+        }
     }
 }

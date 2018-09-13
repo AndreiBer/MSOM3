@@ -66,7 +66,7 @@ namespace ViewRSOM
         private void load_unmixItems()
         {
 
-
+            myUnmixItems.Clear();
             string[] dateFolderEntries = Directory.GetDirectories(fileParameters.studyFolder).ToArray();
             //myReconFolders_list
             for (int i_date = 0; i_date < dateFolderEntries.Length; i_date++)
@@ -93,12 +93,12 @@ namespace ViewRSOM
                             // if (String.Equals(reconFolderWithoutPath.Substring(0, 8), "R_" + acqFileEntries[i_acq].Substring(0, 6)))
                             if (reconFolderWithoutPath.StartsWith("R_" + acqFileEntries[i_acq]))
                             {
-                                if (reconFolderWithoutPath.Contains("OPO"))
+                               // if (reconFolderWithoutPath.Contains("OPO"))
                                 {
                                     string[] reconFileEntries = Directory.GetFiles(reconFolderEntries[i_recon], "*.mat").Select(System.IO.Path.GetFileNameWithoutExtension).ToArray();
                                     for (int i_recon_files = 0; i_recon_files < reconFileEntries.Length; i_recon_files++)
                                     {
-                                        if (reconFileEntries[i_recon_files].Contains("OPO"))
+                                        //if (reconFileEntries[i_recon_files].Contains("OPO"))
                                         {
                                             // path to reconstructed file
                                             myUnmixItems.Add(new Unmixing.UnmixItem(i_acq, reconFolderEntries[i_recon], reconFileEntries[i_recon_files], false));
@@ -119,6 +119,7 @@ namespace ViewRSOM
 
         private void load_unmixFolderItems()
         {
+            myUnmixFolderItems.Clear();
             string[] dateFolderEntries = Directory.GetDirectories(fileParameters.studyFolder).ToArray();
             //myReconFolders_list
             for (int i_date = 0; i_date < dateFolderEntries.Length; i_date++)
@@ -204,6 +205,7 @@ namespace ViewRSOM
 
         private void load_unmixCompItems()
         {
+            myCompItems.Clear();
             for (int i_comp = 0; i_comp < unmixingParameters.myUnmixComponents.Count; i_comp++)
             {
                 myCompItems.Add(new Unmixing.CompItem(i_comp, unmixingParameters.myUnmixComponents[i_comp], false));
@@ -305,8 +307,8 @@ namespace ViewRSOM
                             Image myThumb = new Image();
                             myThumb.Source = src;
                             //myThumb.Height = 140;
-                            myThumb.Height = 400;
-                            //myThumb.Width = 150;
+                            myThumb.Height = 700;
+                            //myThumb.Width =650;
 
                             //create border and add image inside
                             Border myImage = new Border();
@@ -323,11 +325,8 @@ namespace ViewRSOM
                             margin.Right = 0;
                             margin.Bottom = 0;
                             myImage.Margin = margin;
-                            
-
                             // add to Stack panel
                             UnmixThumbnailPanel.Children.Add(myImage);
-
                             // setup event handler when thumbnail is clicked
                             //int iHelp_date = studyParameters.myStudyDates_listIndex;
                             //int iHelp_acq = i_acq;
