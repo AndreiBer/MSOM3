@@ -86,11 +86,19 @@ namespace ViewRSOM
 
         private void studyDate_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // Update selected item
-            studyParameters.myStudyDates_listIndex = studyDate_ComboBox.SelectedIndex;
+            //// Update selected item
+            //studyParameters.myStudyDates_listIndex = studyDate_ComboBox.SelectedIndex;
 
-            // load recon files combo box
-            load_reconItems();
+            //// load recon files combo box
+            //load_reconItems();
+
+            if (studyParameters.myStudyDates_listIndex == -1)
+                studyParameters.myStudyDates_listIndex = studyDate_ComboBox.SelectedIndex;
+            else
+            {
+                if (studyDate_ComboBox.SelectedIndex != -1)
+                { studyParameters.myStudyDates_listIndex = studyDate_ComboBox.SelectedIndex; }
+            }
 
         }
 

@@ -43,6 +43,9 @@ namespace ViewRSOM
         {
             // list of reconstruction folders
             unmixFolders_list.Clear();
+            //UnmixFiles_ListBox.Items.Clear();
+            //UnmixFiles_ListBox.Items.Refresh();
+            UnmixFiles_ListBox.ItemsSource = null;
 
             for (int i_date = 0; i_date < studyParameters.myStudyDates_list.Count; i_date++)
             {
@@ -93,7 +96,7 @@ namespace ViewRSOM
                             // if (String.Equals(reconFolderWithoutPath.Substring(0, 8), "R_" + acqFileEntries[i_acq].Substring(0, 6)))
                             if (reconFolderWithoutPath.StartsWith("R_" + acqFileEntries[i_acq]))
                             {
-                               // if (reconFolderWithoutPath.Contains("OPO"))
+                                // if (reconFolderWithoutPath.Contains("OPO"))
                                 {
                                     string[] reconFileEntries = Directory.GetFiles(reconFolderEntries[i_recon], "*.mat").Select(System.IO.Path.GetFileNameWithoutExtension).ToArray();
                                     for (int i_recon_files = 0; i_recon_files < reconFileEntries.Length; i_recon_files++)
@@ -105,13 +108,15 @@ namespace ViewRSOM
                                         }
 
                                     }
-                                    UnmixFiles_ListBox.ItemsSource = myUnmixItems;
-                                    UnmixFiles_ListBox.Items.Refresh();
+                                    //UnmixFiles_ListBox.ItemsSource = myUnmixItems;
+                                    //UnmixFiles_ListBox.Items.Refresh();
                                 }
                             }
                         }
                     }
                 }
+                UnmixFiles_ListBox.ItemsSource = myUnmixItems;
+                UnmixFiles_ListBox.Items.Refresh();
             }
             if (studyParameters.myStudyDates_listIndex >= 0)
                 loadUnmixThumbnails();
@@ -152,7 +157,19 @@ namespace ViewRSOM
 
         private void studyDate_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // Update selected item
+            if (studyParameters.myStudyDates_listIndex == -1)
+                studyParameters.myStudyDates_listIndex = studyDate_ComboBox.SelectedIndex;
+            else
+            {
+                if (studyDate_ComboBox.SelectedIndex != -1)
+                { studyParameters.myStudyDates_listIndex = studyDate_ComboBox.SelectedIndex; }
+            }
 
+
+
+            // load unmix files combo box
+            load_unmixItems();
         }
 
         private void UnmixFiles_CheckBox_Click(object sender, RoutedEventArgs e)
@@ -290,7 +307,7 @@ namespace ViewRSOM
                 if (myUnmixFolderItems[i_unmixFolder].isChecked == true)
                 {
                     string unmixFolders_curr = studyParameters.myStudyDates_list[studyParameters.myStudyDates_listIndex].folderPath
-                        + "\\" + myUnmixFolderItems[i_unmixFolder].folderName + "\\" + "Images" ;
+                        + "\\" + myUnmixFolderItems[i_unmixFolder].folderName + "\\" + "Images";
                     string[] unmixFileImages = Directory.GetFiles(unmixFolders_curr, "*.png").Select(System.IO.Path.GetFileNameWithoutExtension).ToArray();
                     for (int i_unIm = 0; i_unIm < unmixFileImages.Length; i_unIm++)
                     {
@@ -300,7 +317,7 @@ namespace ViewRSOM
                             BitmapImage src = new BitmapImage();
                             src.BeginInit();
                             src.CacheOption = BitmapCacheOption.OnLoad;
-                            src.UriSource = new Uri(unmixFolders_curr + "\\"+ unmixFileImages[i_unIm] + ".png", UriKind.Absolute);
+                            src.UriSource = new Uri(unmixFolders_curr + "\\" + unmixFileImages[i_unIm] + ".png", UriKind.Absolute);
                             src.EndInit();
 
                             // create bitmap image
@@ -343,7 +360,7 @@ namespace ViewRSOM
                 }
             }
 
-            
+
 
         }
     }
