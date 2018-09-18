@@ -94,7 +94,7 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
 
         protected ViewModelLaserBase()
         {
-            _minWaveLength = _maxWaveLength = 555.0;
+            _minWaveLength = _maxWaveLength = 532.0;
             _waveLength = 0;
             _power = 0;
             _wavelengths = new List<double>();
@@ -209,7 +209,8 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
         public bool AcceptTriggerChangeAndAttenuationCommands;
         public double Attenuation;
         public abstract bool switchToChannelTwo();
-        //public abstract bool switchbtwChannels();
+        public abstract bool switchbtwChannels(int Channel);
+        public abstract int  getChannel();
         public abstract bool sendTriggerChangeCommand(int counter);
         public abstract bool setAttenuationViaPockelScell(int attenuation);
 

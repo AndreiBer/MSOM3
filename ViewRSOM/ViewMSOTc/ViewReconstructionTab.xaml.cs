@@ -306,6 +306,7 @@ namespace ViewRSOM
         {
             try
             {
+
                 Reconstruction.initRecon newRecon = new Reconstruction.initRecon();
                 newRecon.start(myReconItems);
             }

@@ -16,7 +16,7 @@ namespace ViewRSOM.Unmixing
 {
     class initUnmix
     {
-        public void start(List<UnmixItem> _myUnmixItems, List<CompItem> _myCompItems)
+        public void start(string studyFolder, List<UnmixItem> _myUnmixItems, List<CompItem> _myCompItems)
         {
 
             // create timer to estimate recon time
@@ -24,7 +24,7 @@ namespace ViewRSOM.Unmixing
             TimeSpan duration;
 
             // define own private dataFolder and list of data names that is not updated/affected from outside
-            MWArray dataFolder = studyParameters.myStudyDates_list[studyParameters.myStudyDates_listIndex].folderPath + "\\";
+            MWArray dataFolder = studyFolder + "\\";
             List<string> dataNames = new List<string>();
             List<string> compNames = new List<string>();
 
@@ -52,7 +52,7 @@ namespace ViewRSOM.Unmixing
                     compNames.Add(_myCompItems[i].compName);
                 }
             }
-            
+
             //unmixingParameters.unmixProgressTot = new int[2] { 0, N_tot };
             MWCellArray dataName = null;
             MWCellArray compName = null;
@@ -97,6 +97,10 @@ namespace ViewRSOM.Unmixing
             {
                 Directory.CreateDirectory(unmixThumbnailFolder.ToString());
             }
+            if (!Directory.Exists(unmixExportFolder.ToString()))
+            {
+                Directory.CreateDirectory(unmixExportFolder.ToString());
+            }
 
             // copy file parameters to structure
             string[] fieldNames = { "dataFolder", "unmixingFolder", "unmixingLogFolder", "unmixingImageFolder",
@@ -108,20 +112,22 @@ namespace ViewRSOM.Unmixing
             fP.SetField("unmixingLogFolder", unmixLogFolder);
             fP.SetField("unmixingImageFolder", unmixImageFolder);
             fP.SetField("unmixingThumbnailFolder", unmixThumbnailFolder);
-            fP.SetField("unmixingExportFolder", unmixExportFolder);            
+            fP.SetField("unmixingExportFolder", unmixExportFolder);
             fP.SetField("dataName", dataName);
             fP.SetField("fileExtension", fileExtension);
 
             //Define unmixing paramteers
             // copy file parameters to structure
             string[] fieldNames2 = { "compName", "Spectra", "LaserEnergy", "Unmixing3D" };
-            MWStructArray uP = new MWStructArray(1, 1, fieldNames2);            
+            MWStructArray uP = new MWStructArray(1, 1, fieldNames2);
             uP.SetField("Spectra", Spectra);
             uP.SetField("LaserEnergy", LaserEnergy);
             uP.SetField("Unmixing3D", Unmixing3D);
             uP.SetField("compName", compName);
-            
-                iUnmixing3DClass obj = null; // it has to be referenced
+
+            if (dataNames.Count != 0 && compNames.Count != 0 && dataNames.Count >= compNames.Count)
+            {
+                iUnmixing3DClass obj = null;
                 try
                 {
                     // Instantiate your component class.                    
@@ -154,10 +160,18 @@ namespace ViewRSOM.Unmixing
                         Console.WriteLine("Unmix-finished: unmixing finished with errors.");
                     }
                 }
-            
-            Console.WriteLine("Unmix-finished: All unmixing finished");
 
+                Console.WriteLine("Unmix-finished: All unmixing finished");
+
+            }
+            else
+            {
+                //Console.WriteLine("Wrong selection of files or unmixing components");
+                Console.WriteLine("Unmix-finished: unmixing finished with errors.");
+                Console.WriteLine("ERROR:" + "Wrong selection of files or unmixing components" + "\n");
+            }
         }
+
         private static MWCellArray UnmixfilesToMWarray(List<string> dataNames)
         {
             MWCellArray unmixFiles = null;

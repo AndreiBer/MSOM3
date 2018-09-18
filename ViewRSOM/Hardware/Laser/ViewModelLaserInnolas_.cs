@@ -24,7 +24,7 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
         //ProtocolWrapper<StandardCommandType> innolasModule;
         new DataModelLaserInnolas DMMS;
         bool _isIinterlockOpen;
-        int lastOpo3Counter;        
+        int lastOpo3Counter;
         int _pockelscellDelay;
         double _attenuation;
         int _amplifier;
@@ -42,7 +42,7 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
 
 
         public ViewModelLaserInnolas()
-        {              
+        {
 
         }
 
@@ -56,7 +56,7 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
             get { return _acceptTriggerChangeAndAttenuationCommands; }
             set { _acceptTriggerChangeAndAttenuationCommands = value; }
         }
-        public int PockelscellDelayMin{ get { return LaserParameter.PockelscellDelayMin; } }
+        public int PockelscellDelayMin { get { return LaserParameter.PockelscellDelayMin; } }
         public int PockelscellDelayMax { get { return LaserParameter.PockelscellDelayMax; } }
 
         public int PockelscellDelay
@@ -81,7 +81,7 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
             get { return _attenuation; }
             set
             {
-                if( (value >=0 ) && (value <=100.0))
+                if ((value >= 0) && (value <= 100.0))
                 {
                     if (_attenuation != value)
                     {
@@ -120,10 +120,10 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
         {
             get { return _isIinterlockOpen; }
         }
-        
+
         public DataModelLaserVersionInfo VersionInfo
         {
-           get { return _versionInfo; }
+            get { return _versionInfo; }
         }
         #endregion publicvariables
 
@@ -132,7 +132,7 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
 
         public override void connectOPO(out bool status, out string strStatus)
         {
-            int errorCode = 0;            
+            int errorCode = 0;
             IPAddress proxyIP;
             int proxyPort;
             proxyIP = IPAddress.Parse(LaserParameter.proxyIP);
@@ -145,23 +145,24 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
                 status = false;
                 strStatus = "No Connection to OPO";
             }
-            else {
+            else
+            {
                 status = true;
                 strStatus = "OPO connected";
             }
-            
+
 
         }
 
         public override void AfterInitialize()
         {
-//         base.AfterInitialize();  // aus basisklasse
+            //         base.AfterInitialize();  // aus basisklasse
             GUI_Communicator.sendStatus("Laser", "HardwareMonitor", "AfterInitialize ausgeführt");
             _isIinterlockOpen = false;
             _pockelscellDelay = int.MinValue;
             _attenuation = double.NaN;
             _amplifier = int.MinValue;
-            innolasModule = new ProtocolWrapper<StandardCommandType>(StandardCommandsDictionary.StandardCommands,StandardCommandsDictionary.StandardErrors);
+            innolasModule = new ProtocolWrapper<StandardCommandType>(StandardCommandsDictionary.StandardCommands, StandardCommandsDictionary.StandardErrors);
             _versionInfo = new DataModelLaserVersionInfo();
             AcceptTriggerChangeAndAttenuationCommands = true;
         }
@@ -175,16 +176,16 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
         public override void initTask()
         {
             string message = "";
-            int errorCode=0;
-           
-           // try
+            int errorCode = 0;
+
+            // try
             {
                 //_exitLogging = false;
                 //_activePeriodPowerRegisters = new List<DataModelLaserPowerRegister>();
-    
-               GUI_Communicator.sendStatus("Laser", "GUI", "trying to execute init Task");//your code here...
-               //System.Windows.MessageBox.Show("we are here");
-                
+
+                GUI_Communicator.sendStatus("Laser", "GUI", "trying to execute init Task");//your code here...
+                                                                                           //System.Windows.MessageBox.Show("we are here");
+
                 _pendingPowerSamples = new Queue<PowerSample>();
                 lastOpo3Counter = -1;
                 //_loggingThread = new Thread(new ThreadStart(logTask));
@@ -195,15 +196,15 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
                 int proxyPort;
                 //if (DMMS.ProxyIp != 0)
                 {
-                   // proxyIP = new IPAddress(DMMS.ProxyIp);
+                    // proxyIP = new IPAddress(DMMS.ProxyIp);
                 }
                 //else
                 {
                     proxyIP = IPAddress.Parse(LaserParameter.proxyIP);
                     proxyPort = LaserParameter.proxyPort;
-                    GUI_Communicator.sendStatus("Laser", "HardwareMonitor", "Parsing IpAdress: "+proxyIP);
+                    GUI_Communicator.sendStatus("Laser", "HardwareMonitor", "Parsing IpAdress: " + proxyIP);
                 }
-                GUI_Communicator.sendStatus("Laser", "HardwareMonitor", "Trying to connect to "+proxyIP+ " on Port "+ proxyPort);
+                GUI_Communicator.sendStatus("Laser", "HardwareMonitor", "Trying to connect to " + proxyIP + " on Port " + proxyPort);
                 errorCode = innolasModule.Connect(proxyIP, proxyPort);
 
                 errorCode = innolasModule.ExchangeCommand(StandardCommandType.StartupLaser, "", out receivedCommands, out message);
@@ -217,31 +218,31 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
                 else
                     GUI_Communicator.sendStatus("Laser", "GUI", "NoIPConnection");
 
-                if(errorCode ==0)
+                if (errorCode == 0)
                     GUI_Communicator.sendStatus("Laser", "GUI", "LaserStartUp");
-                    errorCode = innolasModule.ExchangeCommand(StandardCommandType.SetUserModeAdmin, "Innolas", out receivedCommands, out message);
-                
-                
+                errorCode = innolasModule.ExchangeCommand(StandardCommandType.SetUserModeAdmin, "Innolas", out receivedCommands, out message);
+
+
                 if (errorCode == 0)
                 {
                     //Set User mode command above receives as replies several laser info commands
                     // which we do not want to mess with our next communications so we wait for their reception before we start
                     Thread.Sleep(500);
-  /**/ //                   errorCode = switchChannel(MSOTService.IMSOTHardware.SelectedDetector.LaserChannelNumber)?0:1;                    
+                    /**/ //                   errorCode = switchChannel(MSOTService.IMSOTHardware.SelectedDetector.LaserChannelNumber)?0:1;                    
                 }
-                if(errorCode == 0)
+                if (errorCode == 0)
                 {
                     GUI_Communicator.sendStatus("Laser", "HardwareMonitor", "Trying to get Version Information");
                     GetVersionInformation();
-                    
+
                 }
                 if (errorCode == 0)
                 {
                     GUI_Communicator.sendStatus("Laser", "HardwareMonitor", "Trying to get min and max Wavelengths");
                     System.Globalization.NumberFormatInfo nfi = new System.Globalization.NumberFormatInfo();
                     nfi.NumberDecimalSeparator = ".";
-                    errorCode = innolasModule.ExchangeCommand(StandardCommandType.GetMinWavelength,"", out receivedCommands, out message);
-                    
+                    errorCode = innolasModule.ExchangeCommand(StandardCommandType.GetMinWavelength, "", out receivedCommands, out message);
+
                     if ((errorCode == 0) && (receivedCommands.Count == 1))
                     {
                         GUI_Communicator.sendStatus("Laser", "HardwareMonitor", "im if");
@@ -250,24 +251,25 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
                         if ((errorCode == 0) && (receivedCommands.Count == 1))
                             LaserParameter.maxWaveLength = Convert.ToDouble(receivedCommands[0], nfi);
                         else errorCode = -201;
-                        
+
                     }
                     else
                         errorCode = -200;
-                    GUI_Communicator.sendStatus("Laser", "HardwareMonitor", "aktueller Errorcode "+errorCode);
-/*!!!LÖSCHEN!!*/    errorCode = 0;
+                    GUI_Communicator.sendStatus("Laser", "HardwareMonitor", "aktueller Errorcode " + errorCode);
+                    /*!!!LÖSCHEN!!*/
+                    errorCode = 0;
                 }
                 GUI_Communicator.sendStatus("Laser", "HardwareMonitor", "Hier");
                 LaserTriggerRate = LaserParameter.LaserTriggerRate; //AvailableTriggerRates.Min();
                 Amplifier = LaserParameter.Amplifier;
                 PockelscellDelay = LaserParameter.PockelscellDelay;
                 Attenuation = LaserParameter.Attenuator;
-                if(errorCode == 0)//ask for active warnings so as to check (indirectly) for interlock start up state.
+                if (errorCode == 0)//ask for active warnings so as to check (indirectly) for interlock start up state.
                 {
                     GUI_Communicator.sendStatus("Laser", "HardwareMonitor", "Ask for warning list");
                     errorCode = innolasModule.ExchangeCommand(StandardCommandType.GetWarningList, "", out message);
                 }
-                    
+
                 if (errorCode == 0)
                 {/*
                     checkWavelengthRange();
@@ -287,27 +289,27 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
                         GUI_Communicator.sendStatus("Laser", "ErrorDisplay", "Tune (Shooting) failed");
                     }    
                   */
-                        
-                }                
+
+                }
             }
             GUI_Communicator.sendError("Laser", "ErrorDisplay", "Composite init ended: ");
-            
-            if(errorCode!=1)
+
+            if (errorCode != 1)
                 GUI_Communicator.sendStatus("LASER_STATE", "GUI", "InitTaskNotCompleted");
-            else if(errorCode==0)
+            else if (errorCode == 0)
                 GUI_Communicator.sendStatus("LASER_STATE", "GUI", "InitTaskComplete");
         }
 
         public override bool StartChargerChange()
         {
-           return true;
+            return true;
         }
 
-       public bool StopChargerChange()
-       {
-           return true;
-       }
-        
+        public bool StopChargerChange()
+        {
+            return true;
+        }
+
         public override bool compositeClose()
         {
             //SHUTDOWN_LASER
@@ -326,7 +328,7 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
             try
             {
                 //_exitLogging = true;
-                List<String> expectedCommands = new List<string>();                
+                List<String> expectedCommands = new List<string>();
                 if (errorCode == 0)
                 {
                     q_switch(false);
@@ -335,9 +337,9 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
                     if (errorCode == -3) //timeout, then try the workaround...
                     {
                         if (laserTrace.TraceVerbose)
-                        /**/ //  Log MSOT     Xvue.MSOT.ViewModels.Log.ViewModelLog.MsotTrace("Shutdown failed, trying the workaround", laserTrace);
-                        GUI_Communicator.sendError("Laser", "LogMSOT", "Shutdown failed, trying the workaround");
-                        errorCode = innolasModule.ExchangeCommand(StandardCommandType.ShutdownWorkAround, "", out message);                                               
+                            /**/ //  Log MSOT     Xvue.MSOT.ViewModels.Log.ViewModelLog.MsotTrace("Shutdown failed, trying the workaround", laserTrace);
+                            GUI_Communicator.sendError("Laser", "LogMSOT", "Shutdown failed, trying the workaround");
+                        errorCode = innolasModule.ExchangeCommand(StandardCommandType.ShutdownWorkAround, "", out message);
                     }
                     if (errorCode == 0)
                     {
@@ -351,20 +353,20 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
                     }
                     if (innolasModule.Close(out message) < 0)
                     {
-                         /**/  // log  Error  MSOTService.IMSOTLog.HandleError(DisplayName, "Close failed, reason: " + message);
+                        /**/  // log  Error  MSOTService.IMSOTLog.HandleError(DisplayName, "Close failed, reason: " + message);
                         GUI_Communicator.sendError("Laser", "ErroDisplay", "Close failed, reason: " + message);
                         error = true;
                     }
                 }
                 else error = true;
-                
+
             }
             catch (Exception ex)
             {
                 /**/  //  Log Error     MSOTService.IMSOTLog.HandleError(DisplayName, "Shutdown failed, reason: " +ex.Message);
                 GUI_Communicator.sendError("Laser", "ErroDisplay", "Shutdown failed, reason: " + ex);
                 error = true;
-            }                        
+            }
             return !error;
         }
 
@@ -380,7 +382,7 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
                     //errorCode = reenableSimmer(); //in case the simmer is off (init ambiguity)
                     //GUI_Communicator.sendStatus("Laser", "GUI", "reenabled simmer, result: " + errorCode);
                     //if (errorCode == 0)
-                        errorCode = innolasModule.ExchangeCommand(StandardCommandType.FlashLampOn, "", out expectedCommands, out message);
+                    errorCode = innolasModule.ExchangeCommand(StandardCommandType.FlashLampOn, "", out expectedCommands, out message);
                     GUI_Communicator.sendStatus("Laser", "GUI", "Flashlamp on, result: " + errorCode);
                 }
                 else
@@ -404,12 +406,12 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
             }
             return false;
         }
-        
+
         public int getSweepState()
         {
             string message = "";
             List<string> expectedCommands = null;
-            int errorCode = innolasModule.ExchangeCommand(StandardCommandType.GetSweepState, "",out expectedCommands, out message);
+            int errorCode = innolasModule.ExchangeCommand(StandardCommandType.GetSweepState, "", out expectedCommands, out message);
             return errorCode;
         }
 
@@ -425,7 +427,7 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
         {
             int errorCode;
             string message = "";
-            List<string> expectedCommands=null;
+            List<string> expectedCommands = null;
             bool stateChangeFailed = false;
             try
             {
@@ -452,7 +454,7 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
                     errorCode = innolasModule.ExchangeCommand(StandardCommandType.SetShutterState, "OPEN", out expectedCommands, out message);
                     if (errorCode == 0)
                         errorCode = innolasModule.ExchangeCommand(StandardCommandType.SetShutterState, "OPEN", out expectedCommands, out message);
-                    if ( (errorCode == 0) && (expectedCommands.Count>0) )
+                    if ((errorCode == 0) && (expectedCommands.Count > 0))
                     {
                         if (!expectedCommands[0].Contains("OPEN"))//"PcOnShutterOn"))
                         {
@@ -464,12 +466,12 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
                 {
                     ////errorCode = innolasModule.ExchangeCommand(StandardCommandType.StopSweep, "", out message);
                     errorCode = innolasModule.ExchangeCommand(StandardCommandType.SetShutterState, "CLOSE", out expectedCommands, out message);
-                    if (errorCode != 0 )
-                    {                       
-                        stateChangeFailed = true;                        
+                    if (errorCode != 0)
+                    {
+                        stateChangeFailed = true;
                     }
                 }
-                if( (errorCode == 0 ) && !stateChangeFailed )
+                if ((errorCode == 0) && !stateChangeFailed)
                 {
                     /**/ // Log Error    MSOTService.IMSOTLog.HandleError(Services.Log.EnumLogType.Info, DisplayName, "Q-Switch Control, New state: " + state);      
                     GUI_Communicator.sendError("Laser", "ErrorDisplay", "Q-Switch Control, New state: " + state);
@@ -492,7 +494,7 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
         public override void setWavelength(int wl)
         {
             string message = "";
-            innolasModule.ExchangeCommand(StandardCommandType.SetWavelength, wl.ToString(), out message); 
+            innolasModule.ExchangeCommand(StandardCommandType.SetWavelength, wl.ToString(), out message);
         }
 
         public override void illuminationON()
@@ -506,7 +508,7 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
                 Thread.Sleep(1000);
             }
             int wl = Convert.ToInt32(LaserParameter.LaserDefaultWavelength);
-            setWavelength(wl);            
+            setWavelength(wl);
             Thread.Sleep(50);
             lamp(true);
             Thread.Sleep(500);
@@ -515,7 +517,7 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
             setAttenuationViaPockelScell(LaserParameter.PockelscellDelay);
             q_switch(true);
             //Thread.Sleep(1000);
-            
+
             StatusMessage = CheckShutterState();
             while (StatusMessage == "CLOSE")
             {
@@ -529,57 +531,70 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
         {
             q_switch(false);
             lamp(false);
-            
+
         }
 
         public override int[] retrieveWL(string comment)
         {
-            
-            
-                char[] delimiterChars = { ']', '[', '}', '{', '(', ')', ' ', ',', '.', '\t' };
-                string[] words = comment.Split(delimiterChars);
-                words = words.Where(x => !string.IsNullOrEmpty(x)).ToArray(); //delete empty array elements
-                List<int> numArrList = new List<int>();
-                int[] numArrStep = new int[0];
-                string[] tempStr = new string[] { };
-                int firstVal = new int { };
-                int step = new int { };
-                int secondVal = new int { };
-                int count = new int { };
-                // parse the elements
-                for (int i = 0; i < words.Length; i++)
+
+
+            char[] delimiterChars = { ']', '[', '}', '{', '(', ')', ' ', ',', '.', '\t' };
+            string[] words = comment.Split(delimiterChars);
+            words = words.Where(x => !string.IsNullOrEmpty(x)).ToArray(); //delete empty array elements
+            List<int> numArrList = new List<int>();
+            int[] numArrStep = new int[0];
+            string[] tempStr = new string[] { };
+            int firstVal = new int { };
+            int step = new int { };
+            int secondVal = new int { };
+            int count = new int { };
+            // parse the elements
+            for (int i = 0; i < words.Length; i++)
+            {
+                if (words[i].Contains(":") == true)
                 {
-                    if (words[i].Contains(":") == true)
+                    tempStr = words[i].Split(':');
+                    firstVal = int.Parse(tempStr[0]);
+                    step = int.Parse(tempStr[1]);
+                    secondVal = int.Parse(tempStr[2]);
+                    for (int val = firstVal; val <= secondVal; val = (val + step))
                     {
-                        tempStr = words[i].Split(':');
-                        firstVal = int.Parse(tempStr[0]);
-                        step = int.Parse(tempStr[1]);
-                        secondVal = int.Parse(tempStr[2]);
-                        for (int val = firstVal; val <= secondVal; val = (val + step))
-                        {
-                            numArrList.Add(val);
-                        }
-                    }
-                    else
-                    {
-                        numArrList.Add(int.Parse(words[i]));
+                        numArrList.Add(val);
                     }
                 }
-                int[] numArr = numArrList.ToArray();
+                else
+                {
+                    numArrList.Add(int.Parse(words[i]));
+                }
+            }
+            int[] numArr = numArrList.ToArray();
 
-                Array.Sort(numArr);
+            Array.Sort(numArr);
             //string wlArrStr = numArr.ToString(); 
-                
-                //convertedItems = numArr;            
 
+            // make sure that wavelength values are within the range  
+            switch (LaserParameter.Channel)
+            {
+                case 0:
+                    if (numArr.Min() < MinWaveLength || numArr.Max() > MaxWaveLength)
+                        numArr = null;                     
+                    break;
+                case 1:
+                    if(numArr.Min() < MinWaveLength || numArr.Max() > MaxWaveLength)
+                        numArr = null;
+                    break;
+                case 2:
+                    if(numArr.Min() < MinWaveLength*2 || numArr.Max() > MaxWaveLength*2)
+                        numArr = null;
+                    break;
+            }            
             return numArr;
-            
         }
 
         public override bool tune(List<double> wavelengths, int pulsesPerWl, int repeatCount)
         {
             int errorCode = 0;
-            string message="";
+            string message = "";
             int sweepCount;
             if (errorCode == 0)
                 errorCode = innolasModule.ExchangeCommand(StandardCommandType.ResetSweepTable, "", out message);
@@ -589,7 +604,6 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
                 sweepCount = repeatCount;
             else
                 sweepCount = 0;
-
             if (errorCode == 0)
                 errorCode = innolasModule.ExchangeCommand(StandardCommandType.SetNumberOfSweeps, sweepCount.ToString(), out message);
 
@@ -617,7 +631,7 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
                         //  System.Windows.MessageBox.Show(valueAsString);
                     }
                     errorCode = innolasModule.ExchangeCommand(StandardCommandType.AddSweepTableLine, i + "," + valueAsString, out message);
-                    GUI_Communicator.sendError("Laser", "ErrorDisplay", "Added SweepTable Line: " +valueAsString);
+                    GUI_Communicator.sendError("Laser", "ErrorDisplay", "Added SweepTable Line: " + valueAsString);
                 }
 
             }
@@ -626,14 +640,14 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
             {
                 GUI_Communicator.sendError("Laser", "ErrorDisplay", "Request CHecksum");
                 for (int i = 0; i < 3; i++)
-                    errorCode = innolasModule.ExchangeCommand(StandardCommandType.IsChecksumValid, "", out receivedCommands, out message);                  
+                    errorCode = innolasModule.ExchangeCommand(StandardCommandType.IsChecksumValid, "", out receivedCommands, out message);
             }
             if (errorCode == 0)
             {
                 GUI_Communicator.sendError("Laser", "ErrorDisplay", "Start Sweep");
                 errorCode = innolasModule.ExchangeCommand(StandardCommandType.StartSweep, "", out message);
             }
-                
+
             if (errorCode == 0) return true;
             else
             {
@@ -667,8 +681,8 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
         #endregion notsoimportantpublic methods
 
 
-        
-      
+
+
 
         #region privateandprotectedmethods
         bool checkAndUpdateSyncCounter(int newOpo3Counter)
@@ -698,8 +712,8 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
                 //    syncErrorDetected = true;
                 //}
                 if (syncErrorDetected)
-                {                    
-                     /**/ // HW Monitor                  HardwareMonitorReport((ulong)DeviceErrorCode.Opo3SyncError, new string[] { newOpo3Counter + "/" + lastOpo3Counter });
+                {
+                    /**/ // HW Monitor                  HardwareMonitorReport((ulong)DeviceErrorCode.Opo3SyncError, new string[] { newOpo3Counter + "/" + lastOpo3Counter });
                     GUI_Communicator.sendError("Laser", "SyncErrorDisplay", newOpo3Counter + "/" + lastOpo3Counter);
                     lastOpo3Counter = -1; //set to uninitialized - until we exit HW
                 }
@@ -726,7 +740,7 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
             if (innolasModule.ExchangeCommand(StandardCommandType.GetFPGAVersion, "", out receivedCommands, out message) == 0)
             {
                 VersionInfo.FPGAVersion = receivedCommands[0];
-               
+
                 /**/   // Log Error                  MSOTService.IMSOTLog.HandleError(Services.Log.EnumLogType.Info, DisplayName, "FPGA Version: " + VersionInfo.FPGAVersion);
                 GUI_Communicator.sendError("Laser", "ErrorDisplay", "FPGA Version: " + VersionInfo.FPGAVersion);
             }
@@ -739,9 +753,9 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
             if (innolasModule.ExchangeCommand(StandardCommandType.GetEMONVersion, "", out receivedCommands, out message) == 0)
             {
                 VersionInfo.EMONversion = receivedCommands[0];
-               /**/  //   Log Error             MSOTService.IMSOTLog.HandleError(Services.Log.EnumLogType.Info, DisplayName, "Energy Monitor Version: " + VersionInfo.EMONversion);
+                /**/  //   Log Error             MSOTService.IMSOTLog.HandleError(Services.Log.EnumLogType.Info, DisplayName, "Energy Monitor Version: " + VersionInfo.EMONversion);
                 GUI_Communicator.sendError("Laser", "ErrorDisplay", "Energy Monitor Version: " + VersionInfo.EMONversion);
-            }            
+            }
         }
         protected override void warmUpTask()
         {
@@ -755,19 +769,19 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
                     {
                         System.Threading.Thread.Sleep(100);
                     } while ((i++ < DMMS.WarmUpInSecs * 10) && (_abortWarmUp == false));
-/**/ // Status  CommandAcceptInput.Execute(LaserCommand.LampReady);
+                    /**/ // Status  CommandAcceptInput.Execute(LaserCommand.LampReady);
                     return;
                 }
             }
             catch (Exception ex)
             {
-                 /**/  // Log Error   MSOTService.IMSOTLog.HandleError(DisplayName, "Warm up exception: " + ex.Message);
+                /**/  // Log Error   MSOTService.IMSOTLog.HandleError(DisplayName, "Warm up exception: " + ex.Message);
                 GUI_Communicator.sendError("Laser", "ErroDisplay", "Warm up exception: " + ex.Message);
             }
-           
+
             /**/ //  Log Error          MSOTService.IMSOTLog.HandleError(DisplayName, "Warm up failed.");
             GUI_Communicator.sendError("Laser", "ErroDisplay", "Warm up failed");
-/**/ //Status           CommandAcceptInput.Execute(LaserCommand.LampError);
+            /**/ //Status           CommandAcceptInput.Execute(LaserCommand.LampError);
         }
 
         public override string CheckShutterState()
@@ -776,18 +790,18 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
             List<string> expectedCommands = null;
             try
             {
-            int errorCode=innolasModule.ExchangeCommand(StandardCommandType.GetShutterState, "", out expectedCommands, out message);
-            string Status = expectedCommands[0];
-            return Status;
+                int errorCode = innolasModule.ExchangeCommand(StandardCommandType.GetShutterState, "", out expectedCommands, out message);
+                string Status = expectedCommands[0];
+                return Status;
             }
-                catch
+            catch
             {
                 string Status = "OPEN";
                 return Status;
             }
 
         }
-         
+
 
         protected override void waveTask()
         {
@@ -795,9 +809,9 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
             string message;
             List<string> receivedCommands;
             try
-            {              
+            {
                 _triggerState = true;
-/**/ // Status                OnPropertyChanged("TriggerState");
+                /**/ // Status                OnPropertyChanged("TriggerState");
                 q_switch(true);
                 do
                 {
@@ -817,11 +831,11 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
                     }
                     System.Threading.Thread.Sleep(20);
                     //GUI_Communicator.sendError("Laser", "ErrorDisplay", "Error Code: " + errorCode);
-                } while( (errorCode==0) && _triggerState);
+                } while ((errorCode == 0) && _triggerState);
                 if (_triggerState)
                 {
                     _triggerState = false;
- /**/ // Status                   OnPropertyChanged("TriggerState");
+                    /**/ // Status                   OnPropertyChanged("TriggerState");
                 }
                 else
                 {
@@ -844,16 +858,16 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
                 /**/   //  Log Error  MSOTService.IMSOTLog.HandleError(DisplayName, "Error on waving function: " + ex.Message);
                 GUI_Communicator.sendError("Laser", "ErrorDisplay", "Error on waving function: " + ex.Message);
             }
-/**/ // Status            CommandAcceptInput.Execute(LaserCommand.FastScanError);
+            /**/ // Status            CommandAcceptInput.Execute(LaserCommand.FastScanError);
         }
 
         protected override bool tuneChange(object e)
         {
             try
             {
-                if(!_continuousSweep) //(wavelengths.Count > 0)
+                if (!_continuousSweep) //(wavelengths.Count > 0)
                 {
-                    if (tune(wavelengths, framesPerWavelength,sweepRepetitions))
+                    if (tune(wavelengths, framesPerWavelength, sweepRepetitions))
                     {
                         return true;
                     }
@@ -862,7 +876,7 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
                 {
                     List<double> tempWavelengths = new List<double>();
                     tempWavelengths.Add(WaveLength);
-                    if (tune(tempWavelengths, 1,1))
+                    if (tune(tempWavelengths, 1, 1))
                     {
                         return true;
                     }
@@ -890,7 +904,7 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
                 if (command == LaserCommand.FireOn)
                     state = true;
                 else
-                  state = false;
+                    state = false;
                 if (q_switch(state))
                 {
                     return true;
@@ -918,7 +932,7 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
             }
         }
 
-        
+
 
 
         protected override bool setTriggerRate(double triggerRate)
@@ -927,7 +941,7 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
             {
                 int counter = (int)Math.Round(_laserCalibrationFile.LaserUndividedTriggerRate / triggerRate);
                 if (counter == 0) counter = 1;
-                if(AcceptTriggerChangeAndAttenuationCommands)
+                if (AcceptTriggerChangeAndAttenuationCommands)
                 {
                     return sendTriggerChangeCommand(counter);
                 }
@@ -952,7 +966,7 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
             int errorcode = -1;
             try
             {
-                if (number != DataModelLaserInnolas.InnolasChannelSwitch.None )
+                if (number != DataModelLaserInnolas.InnolasChannelSwitch.None)
                 {
                     string channelPrefix = "CHANNEL";
                     string channelName = channelPrefix + "_" + (int)number;
@@ -973,7 +987,7 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
                                     if (receivedCommands[0].Contains(channelName))
                                     {
                                         if (laserTrace.TraceVerbose)
-                                         /**/ // Log MSOT     Xvue.MSOT.ViewModels.Log.ViewModelLog.MsotTrace("Successfully changed fiber channel to #" + (int)number, laserTrace);
+                                            /**/ // Log MSOT     Xvue.MSOT.ViewModels.Log.ViewModelLog.MsotTrace("Successfully changed fiber channel to #" + (int)number, laserTrace);
                                             GUI_Communicator.sendError("Laser", "LogMSOT", "Successfully changed fiber channel to #" + (int)number);
                                     }
                                     else errorcode = -102;
@@ -997,21 +1011,64 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
                 /**/ // Log Error   MSOTService.IMSOTLog.HandleError(DisplayName, "Laser Set Channel Switch failed, exception: " + ex.Message);
                 GUI_Communicator.sendError("Laser", "ErrorDisplay", "Laser Set Channel Switch failed, exception: " + ex.Message);
                 return false;
-            }            
+            }
             return true;
         }
-        
+
         public override bool switchToChannelTwo()
         {
             bool result = switchChannel(DataModelLaserInnolas.InnolasChannelSwitch.Channel2);
             return result;
         }
 
-       // public override bool switchbtwChannels()
-        //{
-        //    bool result = switchChannel(DataModelLaserInnolas.InnolasChannelSwitch.Channel2);
-        //    return result;
-        //}
+        public override int getChannel()
+        {
+            List<string> receivedCommands;
+            string message = "";
+            int errorcode = -1;
+            int Channel = 0;
+            try
+            {
+                {
+                    string channelPrefix = "CHANNEL";
+                    errorcode = innolasModule.ExchangeCommand(StandardCommandType.GetChannelSwitch, "", out receivedCommands, out message);
+                    if (errorcode == 0)
+                    {
+                        if (receivedCommands[0].Contains("CHANNEL_1") || receivedCommands[0].Contains("CHANNEL_2"))
+                        {
+                            Channel = int.Parse(receivedCommands[0].Substring(8));
+                        }
+                        else errorcode = -100;
+                    }
+                    if (errorcode != 0)
+                    {
+                        if (laserTrace.TraceVerbose)
+                            GUI_Communicator.sendError("Laser", "LogMSOT", "Laser Get Channel Switch failed, Error: " + errorcode + ", " + message);
+                        return 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                GUI_Communicator.sendError("Laser", "ErrorDisplay", "Laser Set Channel Switch failed, exception: " + ex.Message);
+                return 0;
+            }
+            return Channel;
+        }
+
+        public override bool switchbtwChannels(int Channel)
+        {
+            if (Channel == 2)
+            {
+                bool result = switchChannel(DataModelLaserInnolas.InnolasChannelSwitch.Channel2);
+                return result;
+            }
+            else
+            {
+                bool result = switchChannel(DataModelLaserInnolas.InnolasChannelSwitch.Channel1);
+                return result;
+            }
+        }
 
 
         public override bool sendTriggerChangeCommand(int counter)
@@ -1028,15 +1085,15 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
                 {
                     if (receivedCommands[0] == counter.ToString())
                     {
-                        _laserTriggerSelector = counter;                        
+                        _laserTriggerSelector = counter;
                     }
                     return true;
                 }
             }
-            
+
             /**/ // log Error  else MSOTService.IMSOTLog.HandleError(DisplayName, "Error (" + errorCode + ") in SetPulseDivider command: " + message);
             else
-            GUI_Communicator.sendError("Laser", "ErrorDisplay", "Error (" + errorCode + ") in SetPulseDivider command: " + message);
+                GUI_Communicator.sendError("Laser", "ErrorDisplay", "Error (" + errorCode + ") in SetPulseDivider command: " + message);
             return false;
         }
 
@@ -1069,9 +1126,9 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
                 {
                     GUI_Communicator.sendStatus("ATTENUATOR_STATE", "GUI", attenuation.ToString());
                     return true;
-               
+
                 }
-                     /**/ // Log Error  else MSOTService.IMSOTLog.HandleError(DisplayName, "Error (" + errorCode + ") in SetAttenuation command: " + message);
+                /**/ // Log Error  else MSOTService.IMSOTLog.HandleError(DisplayName, "Error (" + errorCode + ") in SetAttenuation command: " + message);
                 else
                     GUI_Communicator.sendError("Laser", "ErrorDisplay", "Error (" + errorCode + ") in SetAttenuation command: " + message);
             }
@@ -1081,7 +1138,7 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
         public override bool setAttenuationViaPockelScell(int attenuation)
         {
             try
-            {           
+            {
                 if (AcceptTriggerChangeAndAttenuationCommands)
                 {
                     return sendPockelScellAttenuateCommand(attenuation);
@@ -1142,7 +1199,7 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
             return false;
         }
 
-        
+
 
         void _reenableSimmer(object e)
         {
@@ -1229,14 +1286,14 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
                 {
                     if (expectedCommands[0].Equals("DISABLED", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        errorCode = innolasModule.ExchangeCommand(StandardCommandType.SetPockelscellTriggerState,"ENABLED", out expectedCommands, out message);
+                        errorCode = innolasModule.ExchangeCommand(StandardCommandType.SetPockelscellTriggerState, "ENABLED", out expectedCommands, out message);
                     }
                 }
             }
             return errorCode;
         }
 
-        
+
 
         /// <summary>
         /// Gets the appropriate laser attenuation based on the wavelength used. The implementation uses the 
@@ -1258,17 +1315,17 @@ namespace ViewRSOM.MSOT.Hardware.ViewModels.Laser
             return 0;
         }
 
-        
+
         #endregion privateandprotectedmethods
 
         #region laserPowerLog
-        Queue<PowerSample> _pendingPowerSamples;       
+        Queue<PowerSample> _pendingPowerSamples;
         struct PowerSample
         {
             internal PowerSample(double reading, double wl)
             {
                 Reading = reading;
-                Wl = wl;                
+                Wl = wl;
             }
             internal readonly double Wl;
             internal readonly double Reading;

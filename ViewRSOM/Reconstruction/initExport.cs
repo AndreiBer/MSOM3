@@ -63,7 +63,7 @@ namespace ViewRSOM.Reconstruction
                             for (int i_file = 0; i_file < reconFiles.Length; i_file++)
                             {
                                 // copy file parameters to structure
-                                MWArray dataFile = reconFiles[i_file]; ;
+                                MWArray dataFile = reconFiles[i_file]; 
                                 MWArray reconExportFolder = reconFolderPath + "\\Export\\";
                                 MWArray reconLogFolder = reconFolderPath + "\\LogFile\\";
                                 string[] fieldNames = { "reconExportFolder", "reconLogFolder", "dataFile" };

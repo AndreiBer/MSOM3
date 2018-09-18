@@ -311,7 +311,10 @@ namespace ViewRSOM
                             UnmixingControl.cancelUnmix_Button.Visibility = Visibility.Collapsed;
 
                             // free cancel button event
-                            //ReconstructionControl.cancelRecon_Button.Click -= systemState.reconHandle;
+                            if (systemState.reconHandle != null)
+                            {
+                                ReconstructionControl.cancelRecon_Button.Click -= systemState.reconHandle;
+                            }
 
                             // update camera
                             if (acquisitionToggleButton.IsChecked == true)
@@ -405,26 +408,21 @@ namespace ViewRSOM
                         {
                             // update study list
                             update_scanList();
-
                             // Notify user in acq
                             ScanningControl.acq_ProgressBar.Foreground = Brushes.MediumBlue;
                             ScanningControl.acq_MessageBox.AppendText("\n");
                             ScanningControl.acq_MessageBox.AppendText("Acquisition finished.");
-
                             // re-enable acquisition buttons
                             // ScanningControl.quickScan_Button.IsEnabled = true;
                             // ScanningControl.fullScan_Button.IsEnabled = true;
                             Thread.Sleep(500);
                             systemState.acqThreadFree = true;
-
                             // re-enable recon buttons
                             ReconstructionControl.recon_Button.IsEnabled = true;
                             ReconstructionControl.export_Button.IsEnabled = true;
-
                             // re-enable unmix buttons
                             UnmixingControl.unmix_Button.IsEnabled = true;
                             UnmixingControl.export_Button.IsEnabled = true;
-
                         }
                     }
                 });
@@ -451,15 +449,10 @@ namespace ViewRSOM
                             ReconstructionControl.recon_ProgressBarTot.Foreground = Brushes.MediumBlue;
                             ReconstructionControl.recon_ProgressBar.Foreground = Brushes.MediumBlue;
                             UnmixingControl.studyList_Updated();
-
                         }
-                        
                     }
 
                 });
-
-
-
         }
 
         private void unmixFinished(string sender, string receiver, string value)
@@ -472,20 +465,19 @@ namespace ViewRSOM
                         // show message when finished
                         UnmixingControl.unmix_MessageBox.AppendText(value);
                         UnmixingControl.unmix_MessageBox.ScrollToEnd();
+                        systemState.unmixThreadFree = true;
                     }
                     else
                     {
                         if (value.Substring(16).Contains("All unmixing finished") || value.Substring(16).Contains("Export of image stacks is finished"))
                         {
                             // notify user when finished
-                            systemState.reconThreadFree = true;
+                            systemState.unmixThreadFree = true;
                             UnmixingControl.unmix_ProgressBar.Foreground = Brushes.MediumBlue;
                             UnmixingControl.studyList_Updated();
-
                         }
                         else
                         {
-
                             // show message when finished
                             UnmixingControl.unmix_MessageBox.AppendText("Finished unmixing " + value.Substring(16) + "\n");
                             //UnmixingControl.unmix_MessageBox.AppendText("\nExpected time to finish remaining reconstructions: " + reconstructionParameters.remainingReconTime.ToString() + "\n\n");
@@ -1601,9 +1593,9 @@ namespace ViewRSOM
                 case MessageBoxResult.Yes:
 
                     // Stop camera
-                    myUSBcamera.cameraRecord = false;
+                    //myUSBcamera.cameraRecord = false;
                     Thread.Sleep(100);
-                    myUSBcamera.StopCamera();
+                    //myUSBcamera.StopCamera();
                     try
                     {
                         //my_laser = new ViewModelLaserInnolas();                        
@@ -1665,12 +1657,9 @@ namespace ViewRSOM
 
                     // Stop camera 
                     myUSBcamera.StopCamera();
-
                     Shut();
                     break;
-
                 case MessageBoxResult.No:
-
                     break;
             }
         }

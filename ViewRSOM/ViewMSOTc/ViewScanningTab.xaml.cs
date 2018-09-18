@@ -195,7 +195,6 @@ namespace ViewRSOM
                     acq_MessageBox.Text = value;
                     if (!string.IsNullOrEmpty(commentWL))
                     {
-
                         bool canParse2;
                         Int16 doubleParse2;
                         canParse2 = Int16.TryParse(value.Substring(16, 1), styles, culture, out doubleParse2);
@@ -1229,15 +1228,33 @@ namespace ViewRSOM
 
         private void SwitchChannel_Click(object sender, RoutedEventArgs e)
         {
-        //    if  (myProgrammSettings.Channel.Equals(0) || myProgrammSettings.Channel.Equals(1))
-        //        {
-        //        myProgrammSettings.Channel = 2;
-        //    }
             
-                
-                
-                
-        //        =  my_laser.switchToChannelTwo();
+            try
+            {
+                LaserParameter.Channel = my_laser.getChannel();
+            }
+            catch
+            {
+                acq_MessageBox.Text =  "Could not the get channel switch";
+            }
+            try
+            {
+                if (LaserParameter.Channel == 0 || LaserParameter.Channel == 1)
+                {
+                    my_laser.switchbtwChannels(2);
+                    LaserParameter.Channel = 2;
+                    OPOChannel.Content = "700-2000"; // CHECK THESE VALUES
+                }
+                else
+                {
+                    my_laser.switchbtwChannels(1);
+                    LaserParameter.Channel = 1;
+                    OPOChannel.Content = "420-680";
+                }
+            }
+            catch
+            { acq_MessageBox.Text = "Could not switch the channel"; }
+
         }
     }
 }
