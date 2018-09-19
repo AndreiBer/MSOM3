@@ -79,6 +79,8 @@ namespace ViewRSOM.Unmixing
             MWArray Spectra = unmixingParameters.Spectra;
             MWArray LaserEnergy = unmixingParameters.LaserEnergy;
             MWNumericArray Unmixing3D = unmixingParameters.Unmixing3D;
+            MWNumericArray RegImages = unmixingParameters.RegImages;
+            MWNumericArray RegImage_interp = unmixingParameters.RegImage_interp;
 
             // create recon folder
             if (!Directory.Exists(unmixFolder.ToString()))
@@ -118,12 +120,15 @@ namespace ViewRSOM.Unmixing
 
             //Define unmixing paramteers
             // copy file parameters to structure
-            string[] fieldNames2 = { "compName", "Spectra", "LaserEnergy", "Unmixing3D" };
+            string[] fieldNames2 = { "compName", "Spectra", "LaserEnergy", "Unmixing3D", "RegImages",
+            "RegImage_interp"};
             MWStructArray uP = new MWStructArray(1, 1, fieldNames2);
             uP.SetField("Spectra", Spectra);
             uP.SetField("LaserEnergy", LaserEnergy);
             uP.SetField("Unmixing3D", Unmixing3D);
             uP.SetField("compName", compName);
+            uP.SetField("RegImages", RegImages);
+            uP.SetField("RegImage_interp", RegImage_interp);
 
             if (dataNames.Count != 0 && compNames.Count != 0 && dataNames.Count >= compNames.Count)
             {

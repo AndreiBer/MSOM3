@@ -202,8 +202,8 @@ namespace ViewRSOM
             cancelUnmix_Button.Click += systemState.unmixHandle;
 
             unmix_MessageBox.Text = "Starting export routine \n";
-            unmix_ProgressBar.Value = 1;
-            unmix_ProgressBar.Foreground = Brushes.LimeGreen;
+            //unmix_ProgressBar.Value = 1;
+            //unmix_ProgressBar.Foreground = Brushes.LimeGreen;
             //unmix_ProgressBarTot.Value = 1;
             //unmix_ProgressBarTot.Foreground = Brushes.LimeGreen;
             systemState.unmixThreadFree = false;

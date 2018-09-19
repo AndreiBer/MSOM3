@@ -473,7 +473,7 @@ namespace ViewRSOM
                         {
                             // notify user when finished
                             systemState.unmixThreadFree = true;
-                            UnmixingControl.unmix_ProgressBar.Foreground = Brushes.MediumBlue;
+                            //UnmixingControl.unmix_ProgressBar.Foreground = Brushes.MediumBlue;
                             UnmixingControl.studyList_Updated();
                         }
                         else

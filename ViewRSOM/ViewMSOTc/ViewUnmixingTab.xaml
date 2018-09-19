@@ -229,6 +229,10 @@
             </DataTemplate>
           </ListBox.ItemTemplate>
         </ListBox>
+        <!--<Label Content="Im Reg:" VerticalAlignment="Bottom" Background="Black" Foreground="White"/>
+        <ComboBox x:Name="imReg" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5,5,5,5"  Width="90" Loaded="imReg_Loaded" SelectionChanged="imReg_ComboBox_SelectionChanged" Grid.Column="1"/>
+        <Label Content="Im Reg int:" VerticalAlignment="Bottom" Background="Black" Foreground="White"/>
+        <ComboBox x:Name="imRegInt" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5,5,5,5"  Width="90" Loaded="imRegInt_Loaded" SelectionChanged="imRegInt_ComboBox_SelectionChanged" Grid.Column="1"/>-->
       </DockPanel>
 
       <DockPanel Background="Black" Grid.Row="0" Grid.Column="3"  Margin="5,5,5,5" >
@@ -243,8 +247,8 @@
       </DockPanel>
 
       <DockPanel Background="Black"  Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="1" Margin="5,5,5,5" LastChildFill="True">
-        <Label DockPanel.Dock="Top" x:Name="Unmixing_Label" Content="Unmixing Progress" Foreground="White" />
-        <ProgressBar DockPanel.Dock="Top" x:Name="unmix_ProgressBar" HorizontalAlignment="Stretch" Height="10" Margin="5,0,5,2"/>        
+        <!--<Label DockPanel.Dock="Top" x:Name="Unmixing_Label" Content="Unmixing Progress" Foreground="White" />
+        <ProgressBar DockPanel.Dock="Top" x:Name="unmix_ProgressBar" HorizontalAlignment="Stretch" Height="10" Margin="5,0,5,2"/>-->        
         <Label DockPanel.Dock="Top" Foreground="White" Content="LOG Messages" Margin="0,10,0,0"/>
         <TextBox DockPanel.Dock="Top" x:Name="unmix_MessageBox" VerticalContentAlignment="Top" FontSize="16" Height="Auto" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="White" Margin="5,2,5,5" TextWrapping="Wrap"/>
       </DockPanel>

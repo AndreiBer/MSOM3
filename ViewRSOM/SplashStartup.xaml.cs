@@ -559,11 +559,17 @@ namespace ViewRSOM
                 try
                 {
                     unmixingParameters.LaserEnergy = xml.SelectSingleNode("RSOMsettings/unmixingParameters/LaserEnergy").InnerText;
-
                 }
                 catch { throw new Exception("Cannot load unmixingParameters LaserEnergy for calibration."); }
+
                 try { canParse = Double.TryParse(xml.SelectSingleNode("RSOMsettings/unmixingParameters/Unmixing3D").InnerText, styles, culture, out doubleParse); }
                 catch { throw new Exception("Cannot load unmixingParameters Unmixing3D."); }
+
+                try { canParse = Double.TryParse(xml.SelectSingleNode("RSOMsettings/unmixingParameters/RegImages").InnerText, styles, culture, out doubleParse); }
+                catch { throw new Exception("Cannot load unmixingParameters RegImages."); }
+
+                try { canParse = Double.TryParse(xml.SelectSingleNode("RSOMsettings/unmixingParameters/RegImage_interp").InnerText, styles, culture, out doubleParse); }
+                catch { throw new Exception("Cannot load unmixingParameters RegImage_interp."); }
 
 
                 #endregion

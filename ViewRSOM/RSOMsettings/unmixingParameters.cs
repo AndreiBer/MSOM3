@@ -27,6 +27,8 @@ namespace ViewRSOM
         public static string _Spectra;
         public static string _LaserEnergy;
         public static int _Unmixing3D;
+        public static int _RegImages;
+        public static int _RegImage_interp;
 
 
 
@@ -100,6 +102,26 @@ namespace ViewRSOM
             {
                 _Unmixing3D = value;
                 Notify("Unmixing3D");
+            }
+        }
+
+        public static int RegImages
+        {
+            get { return _RegImages; }
+            set
+            {
+                _RegImages = value;
+                Notify("RegisterImages");
+            }
+        }
+
+        public static int RegImage_interp
+        {
+            get { return _RegImage_interp; }
+            set
+            {
+                _RegImage_interp = value;
+                Notify("InterpolateRegisterImages");
             }
         }
 
